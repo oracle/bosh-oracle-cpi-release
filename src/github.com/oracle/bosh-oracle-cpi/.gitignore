@@ -1,0 +1,7 @@
+out
+pkg
+gobin/*
+*\.test
+.idea/workspace.xml
+test/work
+stemcell/*.tgz
