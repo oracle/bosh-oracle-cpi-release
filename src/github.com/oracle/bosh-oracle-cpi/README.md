@@ -95,17 +95,3 @@ $ echo "{\"method\": \"method_name\", \"arguments\": []}" | cpi -configFile="/pa
 ### Installing BOSH using this CPI
 
 See [Deploying BOSH Director](https://confluence.aka.lgl.grungy.us/pages/viewpage.action?pageId=14285397)
-
-## Features
-
-TODO: Document the various cloud properties available in the deployment manifest
-
-#### BOSH Network options
-
-#### BOSH Resource pool options
-
-#### BOSH Persistent Disks options
-
-#### Deployment Manifest Example
-
-
