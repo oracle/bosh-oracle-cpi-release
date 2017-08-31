@@ -1,0 +1,11 @@
+---
+final_name: bosh-oracle-cpi
+blobstore:
+  provider: local
+  options:
+    blobstore_path: /change-to-valid-path
+#TODO: Use BMC storage
+#blobstore:
+#  provider: s3
+#  options:
+#    bucket_name: bosh-oracle-cpi-blobs

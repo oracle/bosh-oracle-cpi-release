@@ -1,0 +1,8 @@
+---
+name: bosh-oracle-cpi
+
+dependencies:
+  - golang
+
+files:
+  - github.com/oracle/bosh-oracle-cpi/**/*

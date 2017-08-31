@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Set directories
+LOGS_DIR=/var/vcap/sys/log
+JOBS_DIR=${BOSH_JOBS_DIR:-/var/vcap/jobs}
+
+
+if [ -d ${LOGS_DIR} ]; then
+  mkdir -p ${LOGS_DIR}/oracle_cpi
+fi
+chown -R vcap:vcap ${LOGS_DIR}/oracle_cpi
+
+#Change key file permissions
+if [ -f ${JOBS_DIR}/oracle_cpi/config/bmcs_cpikey.pem ]; then
+    chown vcap:vcap ${JOBS_DIR}/oracle_cpi/config/bmcs_cpikey.pem
+    chmod 600 ${JOBS_DIR}/oracle_cpi/config/bmcs_cpikey.pem
+fi

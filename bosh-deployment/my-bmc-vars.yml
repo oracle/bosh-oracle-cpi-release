@@ -1,0 +1,41 @@
+# Properties controlling BOSH director deployment
+# Tenancy
+tenancy: "ocid1.tenancy.oc1..."
+# Connect to BMCS using this user. Specify the user OCID
+user: "ocid1.user.oc1..."
+# OCID of the compartment to deploy to
+compartment: "ocid1.compartment.oc1.."
+# VCN name, Subnet name,  Region name, and availability domain name.
+region: "us-phoenix-1"
+ad1: WZYX:PHX-AD-1
+vcn: "BoshDirectorVCN"
+subnet: "director-subnet-ad1"
+internal_cidr: 10.0.1.0/24
+internal_gw: 10.0.1.1
+# Private IP that will be assigned to the BOSH director VM
+# Must fall within the subnet CIDR range above and must be available
+internal_ip: 10.0.1.XX
+# Name of the first user provisioned in the stemcell.  Typically opc for RHEL, ubuntu for Ubuntu
+provisioned_username: opc
+# Contents of the public part of a SSH keypair that will be added to the provisioned user account.
+# Must conform to the ssh-rsa key format.
+ssh_key: ""
+#Fingerprint and contents of the API signing key
+fingerprint: 6e:74:9d:f7:c3:de:9b:87:09:fc:c0:b2:53:45:b9:ba
+apikey: |
+       -----BEGIN RSA PRIVATE KEY-----
+       MIIEowIBAAKCAQEA3EZNS3CHAZrvg5gdZHZlB93OrOujKYIfRRSnp0y/dogUB/LN
+       RzjyS0fpvQUXWPk2a/ywGS84xb2V/CXJtna6gMzX3oOEKzLLJlSxpF8wHF+gFQUm
+       ......
+       qIcj56P9+mehiKmglQ1Rlwo72hcc0zZAyBhPeZrR5EcsGp6/l6Le4/XIFFVRpqKu
+       LZeO6W6RMUo4nWxZ/ZqgQi0QFguCG3SSqq00PKZcMUOvnJhJCIVo
+       -----END RSA PRIVATE KEY-----
+# Passwords for BOSH director components
+admin_password: admin
+blobstore_agent_password: agent1
+blobstore_director_password: director1
+director_name: cpi-test-director
+hm_password: hm1
+mbus_bootstrap_password: mbus-secret
+nats_password: nats-secret
+postgres_password: postgres

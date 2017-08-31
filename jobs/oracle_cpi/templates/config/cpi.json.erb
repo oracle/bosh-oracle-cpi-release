@@ -1,0 +1,84 @@
+<%=
+params = {
+  "cloud" => {
+    "plugin" => "oracle",
+    "properties" => {
+      "bmcs" => {
+          "tenancy" => p('bmcs.tenancy'),
+          "compartment" => p('bmcs.compartment'),
+          "region" => p('bmcs.region'),
+          "user" => p('bmcs.user'),
+          "fingerprint" => p('bmcs.fingerprint'),
+          "apikeyfile" => 'bmcs_apikey.pem',
+          "cpikeyfile" => 'bmcs_cpikey.pem',
+          "cpiuser" => p('bmcs.cpiuser'),
+          "authorized_keys" => {
+              "cpi" => p('bmcs.authorized_keys.cpi'),
+          },
+      },
+      "registry" => {
+          "username" => p("registry.username"),
+          "password" => p("registry.password"),
+          "protocol" => p("registry.protocol"),
+          "host" => p("registry.host"),
+          "port" => p("registry.port"),
+      },
+      "agent" => {
+        "ntp" => p('ntp')
+      }
+    }
+  }
+}
+
+if_p('bmcs.config-path') do
+  params["cloud"]["properties"]["bmcs"][:config-path] = p('bmcs.config-path')
+end
+
+if_p('bmcs.authorized_keys.user') do
+  params["cloud"]["properties"]["bmcs"]["authorized_keys"][:user] = p('bmcs.authorized_keys.user')
+end
+
+#Use a property without a default value to check if
+#the deployment manifest has sshTunnel configuration
+if_p('bmcs.sshTunnel.localPort') do
+  params["cloud"]["properties"]["bmcs"][:sshTunnel] = {
+     "localPort" => p('bmcs.sshTunnel.localport'),
+     "user" => p('bmcs.sshTunnel.user'),
+     "duration" => p('bmcs.sshTunnel.duration'),
+     "usePublicIP" => p('bmcs.sshTunnel.use_public_ip')
+   }
+end
+
+agent_params = params["cloud"]["properties"]["agent"]
+
+if_p('blobstore') do
+  agent_params["blobstore"] = {
+       "provider" => p('blobstore.provider'),
+       "options" => {}
+  }
+
+  blobstore = agent_params["blobstore"]
+
+  if p('blobstore.provider') == 'local'
+    blobstore["options"] = {
+      "blobstore_path" => p('blobstore.path')
+    }
+  else
+    blobstore["options"] = {
+      "endpoint" => "http://#{p(['agent.blobstore.address', 'blobstore.address'])}:#{p('blobstore.port')}",
+      "user" => p('blobstore.agent.user'),
+      "password" => p('blobstore.agent.password')
+    }
+  end
+end
+
+if_p('agent.mbus') do |mbus|
+  agent_params["mbus"] = mbus
+end.else_if_p('nats') do
+  agent_params["mbus"] = "nats://#{p('nats.user')}:#{p('nats.password')}@#{p(['agent.nats.address', 'nats.address'])}:#{p('nats.port')}"
+end
+
+
+JSON.dump(params)
+
+%>

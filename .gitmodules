@@ -1,0 +1,3 @@
+[submodule "src/github.com/oracle/bosh-oracle-cpi"]
+	path = src/github.com/oracle/bosh-oracle-cpi
+	url = git@github.com:oracle/bosh-oracle-cpi.git

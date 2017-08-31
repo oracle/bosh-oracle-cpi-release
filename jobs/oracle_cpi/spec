@@ -1,0 +1,94 @@
+---
+name: oracle_cpi
+
+packages:
+  - bosh-oracle-cpi
+
+templates:
+  bin/cpi.erb: bin/cpi
+  bin/pre-start.erb: bin/pre-start
+  config/cpi.json.erb: config/cpi.json
+  config/bmcs.apikeyfile.erb: config/bmcs_apikey.pem
+  config/bmcs.cpikeyfile.erb: config/bmcs_cpikey.pem
+
+properties:
+  bmcs.authorized_keys.user:
+    description: Optional Public ssh key added to any new instances
+  bmcs.authorized_keys.cpi:
+    description: Mandatory Public key used for cpi operations
+  bmcs.sshTunnel:
+    desription: Forward tunnel to contact the agent on a newly provisoned instance
+  bmcs.sshTunnel.localport:
+    description: Local port used to forward requests to bosh-agent
+  bmcs.sshTunnel.use_public_ip:
+    description: Use the public or private IP for contacting agent VM
+    default: 'false'
+  bmcs.sshTunnel.user:
+    description: create tunnel as user
+    default: 'opc'
+  bmcs.sshTunnel.duration:
+    description:  Duration of the tunnel in minutes
+    default: '60m'
+  bmcs.user:
+    description: User OCID
+  bmcs.tenancy:
+    description: Tenancy OCID
+  bmcs.region:
+    description: Region name
+  bmcs.compartment:
+    description: Compartment OCID
+  bmcs.apikey:
+    description: Bare Metal Cloud API Signing Key in .PEM format
+  bmcs.fingerprint:
+    description: Fingerprint of the api signing key
+  bmcs.cpikey:
+    description: Private CPI SSH Key
+  bmcs.cpiuser:
+    description: First user provisioned in a VM
+    default: 'opc'
+
+
+  blobstore.provider:
+    description: Provider of the blobstore used by director and agent (dav|local|s3)
+    default: 'dav'
+  blobstore.path:
+    description: local blobstore path
+
+  blobstore.address:
+    description: Address of blobstore server used by simple blobstore plugin
+  blobstore.port:
+    description: Port of blobstore server used by simple blobstore plugin
+    default: 25250
+  blobstore.agent.user:
+    description: Username agent uses to connect to blobstore used by simple blobstore plugin
+  blobstore.agent.password:
+    description: Password agent uses to connect to blobstore used by simple blobstore plugin
+
+  registry.protocol:
+    description: Protocol to use to connect to the Registry. http or https
+    default: 'http'
+  registry.host:
+    description: Address of the Registry to connect to (required)
+  registry.port:
+    description: Port of the Registry for CPI and agent to connect to
+    default: 25777
+  registry.username:
+    description: Username to access the Registry
+  registry.password:
+    description: Password to access the Registry
+
+  ntp:
+    description: List of ntp server IPs
+    default:
+      - 169.254.169.254
+
+  agent.mbus:
+    description: "Mbus URL(https://<nats-user>:<nats-user-passwd>@<private-ip>:42222< used by deployed BOSH agents to start accepting requests."
+    
+  agent.blobstore.address:
+    description: Address for agent to connect to blobstore server used by dav blobstore plugin
+  agent.blobstore.use_ssl:
+    description: Whether the agent blobstore plugin should use SSL to connect to the blobstore server
+  agent.blobstore.ssl_verify_peer:
+    description: Whether the agent blobstore plugin should verify its peer when using SSL
+
