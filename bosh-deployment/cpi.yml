@@ -4,13 +4,13 @@
   value:
     name: bosh-oracle-cpi
     version: 0.1
-    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/vygP71CbfUVRr8WJZ3xDLFRwQ6l5ko6JOq8-yB2RTpU/n/cloudfoundry/b/cpirelease/o/bosh-oracle-cpi-2+dev.3.tgz
-    sha1: d973e242a84f903497de0f3d1df8eaf65d4c020a
+    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/J8321CJteLLI6pvM3hV22A3EOSSY2Lc1zgJfvuIXvh0/n/cloudfoundry/b/cpireleases/o/bosh-oracle-cpi-0+dev.latest.tgz 
+    sha1: 7ff4a013674b5ec17b8b40947c2886e0710f357c 
 
 - type: replace
   path: /resource_pools/name=vms/stemcell?
   value:
-    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/kDdQw1eEUWGoO7TRKJ3mwwgh8zlnBtP4g0qcepIbXrA/n/cloudfoundry/b/stemcells/o/light-oracle-ubuntu-stemcell-2000.6.tgz 
+    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/ERMshBsLoSFBGg6_8bMdceJLPLIM17Sm0Wiq5E--0WA/n/cloudfoundry/b/stemcells/o/light-oracle-ubuntu-stemcell-2000.6.tgz 
     sha1: 7094c1fb6110eef7e374a19be1d59e46daf1b8cf 
 
 # Configure instance shapes 
