@@ -14,31 +14,32 @@ This is an external [BOSH CPI](http://bosh.io/docs/bosh-components.html#cpi) for
 ## Usage
 
 ### Installation
-The CPI implementation contained in this repository is deployed as part of  [BOSH Oracle CPI release](https://gitlab-odx.oracle.com/cloudfoundry/bosh-oracle-cpi-release). 
+The CPI implementation contained in this repository is deployed as part of  [BOSH Oracle CPI release](https://github.com/oracle/bosh-oracle-cpi-release). 
 
 ### Development
 
 The source for this CPI is not intended to be deployed except as a BOSH deployment. 
 To build or install the CPI locally for development or test purposes, you can symlink the repository into your Go workspace.
 
-From the root of the `bosh-oracle-cpi-release` repository:
+From the root of the [BOSH Oracle CPI release](https://github.com/oracle/bosh-oracle-cpi-release) repository:
 
 ```
+mkdir -p  $GOPATH/src/github.com/oracle
 ln -s $(pwd)/src/github.com/oracle/bosh-oracle-cpi $GOPATH/src/github.com/oracle/bosh-oracle-cpi
 ```
 
 ### Building the CPI locally
 
-From $GOPATH/src/oracle/bosh/cpi
+From $GOPATH/src/github.com/oracle/bosh-oracle-cpi
 
 ```
 make build
 ```
-This will build the cpi executable as $GOPATH/src/oracle/bosh/cpi/out/cpi
+Builds the cpi executable as $GOPATH/src/github.com/oracle/bosh-oracle-cpi/out/cpi
 
 #### Running development tests
 
-$GOPATH/src/oracle/bosh/cpi/Makefile has two targets to run development tests
+$GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has two targets to run development tests
 
 1. test
 
@@ -94,4 +95,4 @@ $ echo "{\"method\": \"method_name\", \"arguments\": []}" | cpi -configFile="/pa
 ```
 ### Installing BOSH using this CPI
 
-See [Deploying BOSH Director](https://confluence.aka.lgl.grungy.us/pages/viewpage.action?pageId=14285397)
+Refer to [Deploying BOSH Director](https://github.com/oracle/bosh-oracle-cpi-release/tree/master/bosh-deployment) in the [BOSH Oracle CPI release](https://github.com/oracle/bosh-oracle-cpi-release) repo. 
