@@ -10,7 +10,7 @@ export GOROOT=$(cd "${PACKAGES_DIR}/golang" && pwd -P)
 export PATH=${GOROOT}/bin:${PATH}
 
 # Build BOSH Oracle CPI executable 
-mkdir -p ${BOSH_COMPILE_TARGET}/go/src
+mkdir -p ${BOSH_COMPILE_TARGET}/go/src/github.com/oracle
 mv ${BOSH_COMPILE_TARGET}/github.com/oracle/bosh-oracle-cpi ${BOSH_COMPILE_TARGET}/go/src/github.com/oracle/bosh-oracle-cpi
 cd ${BOSH_COMPILE_TARGET}/go/src/github.com/oracle/bosh-oracle-cpi
 export GOPATH=${BOSH_COMPILE_TARGET}/go

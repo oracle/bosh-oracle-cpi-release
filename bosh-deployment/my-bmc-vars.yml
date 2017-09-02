@@ -18,7 +18,7 @@ internal_ip: 10.0.1.XX
 # Name of the first user provisioned in the stemcell.  Typically opc for RHEL, ubuntu for Ubuntu
 provisioned_username: opc
 # Contents of the public part of a SSH keypair that will be added to the provisioned user account.
-# Must conform to the ssh-rsa key format.
+# Must conform to the ssh-rsa key format. Typically the public key is in ~/.ssh/id_rsa.pub
 ssh_key: ""
 #Fingerprint and contents of the API signing key
 fingerprint: 6e:74:9d:f7:c3:de:9b:87:09:fc:c0:b2:53:45:b9:ba
