@@ -52,8 +52,9 @@ $GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has two targets to run de
 
     ``make bmctest``
 
-    Runs tests in bmc/test package. The tests in this package drive the layer responsible for bulk of the work in the CPI. E.g. creating/deleting  a vm insatnce  or a persistent block volume
-    in the Oracle Bare Metal Cloud. Configuration values required for running this target are specified in the format used by various [BMC SDKs](https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/sdkconfig.htm).
+    Runs tests in bmc/test package. The tests in this package drive the layer responsible for bulk of the work in the CPI. E.g. creating/deleting  a vm instance  or a persistent block volume.
+    
+    Configuration values required for running this target are specified in the format used by various [BMC SDKs](https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/sdkconfig.htm).
 
     The default configuration file name and location is ~/.oraclebmc/config.  The configuration file can contain multiple profiles. Tests run by this target
     use the [CPITEST] profile by default.
@@ -61,7 +62,7 @@ $GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has two targets to run de
     The default file location and the profile name can be changed by
     setting the CPITEST_CONFIG and CPITEST_PROFILE environment variables respectively.
 
-    List of configuration entries required
+    List of configuration entries 
 
     | Entry         | Description
     | ------------- |-------------
@@ -77,7 +78,7 @@ $GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has two targets to run de
     | cpiUser       | Name of the provisioned user in the image. Used by CPI ssh to attach iscsi block volumes
     | cpiPrivateKeyPath | Path to locally provisioned ssh private key
     | cpiPublicKeyPath | Path to locally provisioned ssh public key
-    | userPublicKeyPath | Optional public key to install on newly created instance
+    | userPublicKeyPath | (Optional) Public key to install when creating a new instance
     | stemcellImage | OCID of the stemcell image for creating new instances
 
 
@@ -91,7 +92,7 @@ Create a cpi.json configuration file:
 ##### Run
 Run it using the previously created json
 ```
-$ echo "{\"method\": \"method_name\", \"arguments\": []}" | cpi -configFile="/path/to/configuration_file.json"
+$ echo "{\"method\": \"method_name\", \"arguments\": []}" | cpi -configFile="/path/to/cpi.json"
 ```
 ### Installing BOSH using this CPI
 
