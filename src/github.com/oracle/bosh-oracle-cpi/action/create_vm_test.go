@@ -48,6 +48,7 @@ var _ = Describe("CreateVM", func() {
 
 		connector = &clientfakes.FakeConnector{}
 		uuidGen = &fakeuuid.FakeGenerator{}
+		uuidGen.GeneratedUUID = "fake-uuid"
 		logger = boshlog.NewLogger(boshlog.LevelNone)
 		registryClient = &registryfakes.FakeClient{}
 		registryOptions = registry.ClientOptions{
@@ -75,7 +76,6 @@ var _ = Describe("CreateVM", func() {
 				Shape:              "fake-BM-32",
 				AvailabilityDomain: "fake-availabilityDomain",
 			}
-
 			networks = Networks{
 				"fake-network-name": &Network{
 					Type:    "manual",
@@ -91,59 +91,82 @@ var _ = Describe("CreateVM", func() {
 					},
 				},
 			}
-			uuidGen.GeneratedUUID = "fake-uuid"
-			expectedAgentSettings = registry.AgentSettings{
-				AgentID: "fake-agent-id",
-				Blobstore: registry.BlobstoreSettings{
-					Provider: "fake-blobstore-type",
-				},
-				Disks: registry.DisksSettings{
-					System:     "/dev/sda",
-					Ephemeral:  "/dev/sda",
-					Persistent: map[string]registry.PersistentSettings{},
-				},
-				Mbus: "http://fake-mbus",
-				Networks: registry.NetworksSettings{
-					"fake-network-name": registry.NetworkSetting{
-						Type:          "manual",
-						IP:            "10.0.0.X",
-						Gateway:       "fake-network-gateway",
-						Netmask:       "fake-network-netmask",
-						DNS:           []string{"fake-network-dns"},
-						UseDHCP:       true,
-						Default:       []string{"fake-network-default"},
-						Preconfigured: true,
+		})
+		Context("when no errors in vm creation", func() {
+			BeforeEach(func() {
+				creator = &vmfakes.FakeVMCreator{
+					CreateInstanceResult: resource.NewInstance("fake-ocid", resource.Location{}),
+					CreateInstanceError:  nil,
+				}
+			})
+			It("creates the vm", func() {
+				vmCID, err = createVM.Run("fake-agent-id", "fake-stemcell-id", cloudProps, networks, nil, env)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(creator.CreateInstanceCalled).To(BeTrue())
+				Expect(vmCID).To(Equal(VMCID("fake-ocid")))
+			})
+			It("uses uuid as part of vm name", func() {
+				vmCID, err = createVM.Run("fake-agent-id", "fake-stemcell-id", cloudProps, networks, nil, env)
+				Expect(creator.Configuration.Name).To(ContainSubstring(uuidGen.GeneratedUUID))
+			})
+			It("updates the registry", func() {
+				expectedAgentSettings = registry.AgentSettings{
+					AgentID: "fake-agent-id",
+					Blobstore: registry.BlobstoreSettings{
+						Provider: "fake-blobstore-type",
 					},
-				},
-				VM: registry.VMSettings{
-					Name: fmt.Sprintf("bosh-%s", uuidGen.GeneratedUUID),
-				},
-			}
+					Disks: registry.DisksSettings{
+						System:     "/dev/sda",
+						Ephemeral:  "/dev/sda",
+						Persistent: map[string]registry.PersistentSettings{},
+					},
+					Mbus: "http://fake-mbus",
+					Networks: registry.NetworksSettings{
+						"fake-network-name": registry.NetworkSetting{
+							Type:          "manual",
+							IP:            "10.0.0.X",
+							Gateway:       "fake-network-gateway",
+							Netmask:       "fake-network-netmask",
+							DNS:           []string{"fake-network-dns"},
+							UseDHCP:       true,
+							Default:       []string{"fake-network-default"},
+							Preconfigured: true,
+						},
+					},
+					VM: registry.VMSettings{
+						Name: fmt.Sprintf("bosh-%s", uuidGen.GeneratedUUID),
+					},
+				}
+				vmCID, err = createVM.Run("fake-agent-id", "fake-stemcell-id", cloudProps, networks, nil, env)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(registryClient.UpdateCalled).To(BeTrue())
+				Expect(registryClient.UpdateSettings).To(Equal(expectedAgentSettings))
+				Expect(vmCID).To(Equal(VMCID("fake-ocid")))
+			})
+		})
+		Context("when vm creation fails", func() {
+			BeforeEach(func() {
+				creator = &vmfakes.FakeVMCreator{
+					CreateInstanceResult: nil,
+					CreateInstanceError:  errors.New("fake-launchinstance-error"),
+				}
+			})
+			It("propagates the error", func() {
+				vmCID, err = createVM.Run("fake-agent-id", "fake-stemcell-id", cloudProps, networks, nil, env)
+				Expect(err).To(HaveOccurred())
+				Expect(creator.CreateInstanceCalled).To(BeTrue())
+				Expect(err.Error()).To(ContainSubstring("fake-launchinstance-error"))
+				Expect(vmCID).To(Equal(VMCID("")))
+			})
+			It("doesn't update registry", func() {
+				vmCID, err = createVM.Run("fake-agent-id", "fake-stemcell-id", cloudProps, networks, nil, env)
+				Expect(err).To(HaveOccurred())
+				Expect(creator.CreateInstanceCalled).To(BeTrue())
+				Expect(registryClient.UpdateCalled).To(BeFalse())
+				Expect(vmCID).To(Equal(VMCID("")))
+			})
 		})
 
-		It("creates the vm", func() {
-			creator = &vmfakes.FakeVMCreator{
-				CreateInstanceResult: resource.NewInstance("fake-ocid", resource.Location{}),
-				CreateInstanceError:  nil,
-			}
-			vmCID, err = createVM.Run("fake-agent-id", "fake-stemcell-id", cloudProps, networks, nil, env)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(creator.CreateInstanceCalled).To(BeTrue())
-			Expect(registryClient.UpdateCalled).To(BeTrue())
-			Expect(registryClient.UpdateSettings).To(Equal(expectedAgentSettings))
-			Expect(vmCID).To(Equal(VMCID("fake-ocid")))
-		})
-
-		It("doesn't update registry in case of vm creation error", func() {
-			creator = &vmfakes.FakeVMCreator{
-				CreateInstanceResult: nil,
-				CreateInstanceError:  errors.New("Error launching Instance"),
-			}
-			vmCID, err = createVM.Run("fake-agent-id", "fake-stemcell-id", cloudProps, networks, nil, env)
-			Expect(err).To(HaveOccurred())
-			Expect(creator.CreateInstanceCalled).To(BeTrue())
-			Expect(registryClient.UpdateCalled).To(BeFalse())
-			Expect(vmCID).To(Equal(VMCID("")))
-		})
 	})
+
 })
