@@ -5,7 +5,8 @@ tenancy: "ocid1.tenancy.oc1..."
 user: "ocid1.user.oc1..."
 # OCID of the compartment to deploy to
 compartment: "ocid1.compartment.oc1.."
-# VCN name, Subnet name,  Region name, and availability domain name.
+# VCN name, Subnet name,  Region name, and availability domain name
+# to create the director VM in
 region: "us-phoenix-1"
 ad1: WZYX:PHX-AD-1
 vcn: "BoshDirectorVCN"
@@ -16,12 +17,12 @@ internal_gw: 10.0.1.1
 # Must fall within the subnet CIDR range above and must be available
 internal_ip: 10.0.1.XX
 # Name of the first user provisioned in the stemcell.  Typically opc for RHEL, ubuntu for Ubuntu
-provisioned_username: opc
+provisioned_username: ubuntu
 # Contents of the public part of a SSH keypair that will be added to the provisioned user account.
 # Must conform to the ssh-rsa key format. Typically the public key is in ~/.ssh/id_rsa.pub
 ssh_key: ""
 #Fingerprint and contents of the API signing key
-fingerprint: 6e:74:9d:f7:c3:de:9b:87:09:fc:c0:b2:53:45:b9:ba
+fingerprint:
 apikey: |
        -----BEGIN RSA PRIVATE KEY-----
        MIIEowIBAAKCAQEA3EZNS3CHAZrvg5gdZHZlB93OrOujKYIfRRSnp0y/dogUB/LN
