@@ -10,6 +10,7 @@ tmp
 deployment-env/*
 .dev_builds
 .idea
+*.iml
 .DS_Store
 .final_builds/jobs/**/*.tgz
 .final_builds/packages/**/*.tgz
