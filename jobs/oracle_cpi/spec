@@ -8,44 +8,44 @@ templates:
   bin/cpi.erb: bin/cpi
   bin/pre-start.erb: bin/pre-start
   config/cpi.json.erb: config/cpi.json
-  config/bmcs.apikeyfile.erb: config/bmcs_apikey.pem
-  config/bmcs.cpikeyfile.erb: config/bmcs_cpikey.pem
+  config/oci.apikeyfile.erb: config/oci_apikey.pem
+  config/oci.cpikeyfile.erb: config/oci_cpikey.pem
 
 properties:
-  bmcs.authorized_keys.user:
+  oci.authorized_keys.user:
     description: Optional Public ssh key added to any new instances
-  bmcs.authorized_keys.cpi:
+  oci.authorized_keys.cpi:
     description: Mandatory Public key used for cpi operations
-  bmcs.sshTunnel:
+  oci.sshTunnel:
     desription: Forward tunnel to contact the agent on a newly provisoned instance
-  bmcs.sshTunnel.localport:
+  oci.sshTunnel.localport:
     description: Local port used to forward requests to bosh-agent
-  bmcs.sshTunnel.use_public_ip:
+  oci.sshTunnel.use_public_ip:
     description: Use the public or private IP for contacting agent VM
     default: 'false'
-  bmcs.sshTunnel.user:
+  oci.sshTunnel.user:
     description: create tunnel as user
-    default: 'opc'
-  bmcs.sshTunnel.duration:
+    default: 'ubuntu'
+  oci.sshTunnel.duration:
     description:  Duration of the tunnel in minutes
     default: '60m'
-  bmcs.user:
+  oci.user:
     description: User OCID
-  bmcs.tenancy:
+  oci.tenancy:
     description: Tenancy OCID
-  bmcs.region:
+  oci.region:
     description: Region name
-  bmcs.compartment:
+  oci.compartment:
     description: Compartment OCID
-  bmcs.apikey:
-    description: Bare Metal Cloud API Signing Key in .PEM format
-  bmcs.fingerprint:
+  oci.apikey:
+    description: Oracle Cloud Infrastructure API Signing Key in .PEM format
+  oci.fingerprint:
     description: Fingerprint of the api signing key
-  bmcs.cpikey:
+  oci.cpikey:
     description: Private CPI SSH Key
-  bmcs.cpiuser:
+  oci.cpiuser:
     description: First user provisioned in a VM
-    default: 'opc'
+    default: 'ubuntu'
 
 
   blobstore.provider:

@@ -3,17 +3,17 @@ params = {
   "cloud" => {
     "plugin" => "oracle",
     "properties" => {
-      "bmcs" => {
-          "tenancy" => p('bmcs.tenancy'),
-          "compartment" => p('bmcs.compartment'),
-          "region" => p('bmcs.region'),
-          "user" => p('bmcs.user'),
-          "fingerprint" => p('bmcs.fingerprint'),
-          "apikeyfile" => 'bmcs_apikey.pem',
-          "cpikeyfile" => 'bmcs_cpikey.pem',
-          "cpiuser" => p('bmcs.cpiuser'),
+      "oci" => {
+          "tenancy" => p('oci.tenancy'),
+          "compartment" => p('oci.compartment'),
+          "region" => p('oci.region'),
+          "user" => p('oci.user'),
+          "fingerprint" => p('oci.fingerprint'),
+          "apikeyfile" => 'oci_apikey.pem',
+          "cpikeyfile" => 'oci_cpikey.pem',
+          "cpiuser" => p('oci.cpiuser'),
           "authorized_keys" => {
-              "cpi" => p('bmcs.authorized_keys.cpi'),
+              "cpi" => p('oci.authorized_keys.cpi'),
           },
       },
       "registry" => {
@@ -30,22 +30,22 @@ params = {
   }
 }
 
-if_p('bmcs.config-path') do
-  params["cloud"]["properties"]["bmcs"][:config-path] = p('bmcs.config-path')
+if_p('oci.config-path') do
+  params["cloud"]["properties"]["oci"][:config-path] = p('oci.config-path')
 end
 
-if_p('bmcs.authorized_keys.user') do
-  params["cloud"]["properties"]["bmcs"]["authorized_keys"][:user] = p('bmcs.authorized_keys.user')
+if_p('oci.authorized_keys.user') do
+  params["cloud"]["properties"]["oci"]["authorized_keys"][:user] = p('oci.authorized_keys.user')
 end
 
 #Use a property without a default value to check if
 #the deployment manifest has sshTunnel configuration
-if_p('bmcs.sshTunnel.localPort') do
-  params["cloud"]["properties"]["bmcs"][:sshTunnel] = {
-     "localPort" => p('bmcs.sshTunnel.localport'),
-     "user" => p('bmcs.sshTunnel.user'),
-     "duration" => p('bmcs.sshTunnel.duration'),
-     "usePublicIP" => p('bmcs.sshTunnel.use_public_ip')
+if_p('oci.sshTunnel.localPort') do
+  params["cloud"]["properties"]["oci"][:sshTunnel] = {
+     "localPort" => p('oci.sshTunnel.localport'),
+     "user" => p('oci.sshTunnel.user'),
+     "duration" => p('oci.sshTunnel.duration'),
+     "usePublicIP" => p('oci.sshTunnel.use_public_ip')
    }
 end
 

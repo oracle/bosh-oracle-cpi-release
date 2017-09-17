@@ -4,7 +4,7 @@ blobstore:
   provider: local
   options:
     blobstore_path: /change-to-valid-path
-#TODO: Use BMC storage
+#TODO: Use OCI Object Store
 #blobstore:
 #  provider: s3
 #  options:

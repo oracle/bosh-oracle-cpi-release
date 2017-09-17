@@ -8,8 +8,8 @@ JOBS_DIR=${BOSH_JOBS_DIR:-/var/vcap/jobs}
 LOGS_DIR=${LOGS_DIR:-/var/vcap/sys/log/oracle_cpi}
 
 #Change key file permissions
-if [ -f ${JOBS_DIR}/oracle_cpi/config/bmcs_cpikey.pem ]; then
-   chmod 600 ${JOBS_DIR}/oracle_cpi/config/bmcs_cpikey.pem
+if [ -f ${JOBS_DIR}/oracle_cpi/config/oci_cpikey.pem ]; then
+   chmod 600 ${JOBS_DIR}/oracle_cpi/config/oci_cpikey.pem
 fi
 
 

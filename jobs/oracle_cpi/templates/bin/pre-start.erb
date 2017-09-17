@@ -11,7 +11,7 @@ fi
 chown -R vcap:vcap ${LOGS_DIR}/oracle_cpi
 
 #Change key file permissions
-if [ -f ${JOBS_DIR}/oracle_cpi/config/bmcs_cpikey.pem ]; then
-    chown vcap:vcap ${JOBS_DIR}/oracle_cpi/config/bmcs_cpikey.pem
-    chmod 600 ${JOBS_DIR}/oracle_cpi/config/bmcs_cpikey.pem
+if [ -f ${JOBS_DIR}/oracle_cpi/config/oci_cpikey.pem ]; then
+    chown vcap:vcap ${JOBS_DIR}/oracle_cpi/config/oci_cpikey.pem
+    chmod 600 ${JOBS_DIR}/oracle_cpi/config/oci_cpikey.pem
 fi

@@ -4,8 +4,8 @@
   value:
     name: bosh-oracle-cpi
     version: 0.1
-    url:  https://objectstorage.us-phoenix-1.oraclecloud.com/p/xvF-I7474QTg7PGKX31dMTW_eYsHwNRB93-u35tiojI/n/cloudfoundry/b/cpireleases/o/bosh-oracle-cpi-0+dev.latest.tgz 
-    sha1: 88b9a3f481854d436fc5d68d83025a14dbd07bbb 
+    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/mr9qdyvrAtmaDX_ko1JjY8cggTUrCF_dJ3tDB-oKybE/n/cloudfoundry/b/cpireleases/o/bosh-oracle-cpi-0+dev.11.tgz
+    sha1: 07dd77fca25d4c98c84c12dadad42e10ef9caa76
 
 - type: replace
   path: /resource_pools/name=vms/stemcell?
@@ -57,9 +57,9 @@
     password: ((registry_password))
     port: 25777
 
-# Bare Metal Cloud properties for BOSH job
+# Oracle Cloud Infrastructure properties for BOSH
 - type: replace
-  path: /instance_groups/name=bosh/properties/bmcs?
+  path: /instance_groups/name=bosh/properties/oci?
   value: &cpi_conf
     user: ((user))
     fingerprint: ((fingerprint))
@@ -99,7 +99,7 @@
 
 
 - type: replace
-  path: /cloud_provider/properties/bmcs?
+  path: /cloud_provider/properties/oci?
   value: *cpi_conf
 
 # Additional variables needed by the CPI

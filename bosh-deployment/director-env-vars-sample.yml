@@ -1,7 +1,7 @@
 # Properties controlling BOSH director deployment
 # Tenancy
 tenancy: "ocid1.tenancy.oc1..."
-# Connect to BMCS using this user. Specify the user OCID
+# Connect to OCI using this user. Specify the user OCID
 user: "ocid1.user.oc1..."
 # OCID of the compartment to deploy to
 compartment: "ocid1.compartment.oc1.."
