@@ -2,7 +2,7 @@ package action
 
 import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
 )
 
 // DeleteStemcell action handles the delete_stemcell method invocation

@@ -3,8 +3,8 @@ package action
 import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
-	"github.com/oracle/bosh-oracle-cpi/bmc/resource"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 )
 
 // GetDisks action handles the get_disks request

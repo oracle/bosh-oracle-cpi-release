@@ -17,7 +17,7 @@ import (
 	"github.com/oracle/bosh-oracle-cpi/api/transport"
 	"github.com/oracle/bosh-oracle-cpi/config"
 
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
 )
 
 const mainLogTag = "oracleCpiMain"

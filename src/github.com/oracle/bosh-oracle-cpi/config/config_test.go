@@ -15,8 +15,8 @@ import (
 	"testing"
 )
 
-var apiKeyFile = strings.Replace("~/.oraclebmc/bmcs_api_key.pem", "~", os.Getenv("HOME"), -1)
-var validBmcsConfig = BmcsProperties{
+var apiKeyFile = strings.Replace("~/.oci/oci_api_key.pem", "~", os.Getenv("HOME"), -1)
+var validOCIConfig = OCIProperties{
 	Tenancy:       "Fake-tenancy-ocid",
 	User:          "user-ocid",
 	CompartmentID: "fake-compartment-id",
@@ -33,7 +33,7 @@ var validBmcsConfig = BmcsProperties{
 var forwardSSHTunnel = SSHTunnel{
 	User: "opc", LocalPort: 36868, Duration: "2m",
 }
-var validBmcsConfigWithSSHTunnel = BmcsProperties{
+var validOCIConfigWithSSHTunnel = OCIProperties{
 	Tenancy:       "Fake-tenancy-ocid",
 	User:          "user-ocid",
 	CompartmentID: "fake-compartment-id",
@@ -67,7 +67,7 @@ var validConfig = Config{
 	Cloud: Cloud{
 		Plugin: "oracle",
 		Properties: CPIProperties{
-			Bmcs:     validBmcsConfig,
+			OCI:      validOCIConfig,
 			Agent:    validAgentOptions,
 			Registry: validRegistryOptions,
 		},
@@ -78,7 +78,7 @@ var validConfigWithSSH = Config{
 	Cloud: Cloud{
 		Plugin: "oracle",
 		Properties: CPIProperties{
-			Bmcs:     validBmcsConfigWithSSHTunnel,
+			OCI:      validOCIConfigWithSSHTunnel,
 			Agent:    validAgentOptions,
 			Registry: validRegistryOptions,
 		},
@@ -144,12 +144,12 @@ var _ = Describe("Config", func() {
 			Expect(err).ToNot(HaveOccurred())
 		})
 
-		It("returns error if bmcs section is not valid", func() {
-			config.Cloud.Properties.Bmcs = BmcsProperties{}
+		It("returns error if OCI properties section is not valid", func() {
+			config.Cloud.Properties.OCI = OCIProperties{}
 
 			err := config.Validate()
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Validating bmcs configuration"))
+			Expect(err.Error()).To(ContainSubstring("Validating oci configuration"))
 		})
 
 		It("returns error if agent configuration is not valid", func() {
@@ -181,18 +181,18 @@ var _ = Describe("Config", func() {
 	})
 })
 
-var _ = Describe("DefaultBmcsConfig", func() {
+var _ = Describe("DefaultOCIProperties", func() {
 	var (
-		bmcsProps BmcsProperties
+		ociProperties OCIProperties
 	)
 
 	Describe("DefaultSSHConfig", func() {
 		BeforeEach(func() {
-			bmcsProps = validBmcsConfig
+			ociProperties = validOCIConfig
 		})
 
 		It("checks default configuration uses private IP for ssh", func() {
-			Expect(bmcsProps.CpiSSHConfig().usePublicIP).To(BeFalse())
+			Expect(ociProperties.CpiSSHConfig().usePublicIP).To(BeFalse())
 		})
 	})
 })

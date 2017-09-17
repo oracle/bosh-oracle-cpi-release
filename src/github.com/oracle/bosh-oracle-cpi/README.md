@@ -5,11 +5,11 @@
     #    \___/|_| \_/_/   \_\____|_____|_____|
 ***
 
-# BOSH Oracle Bare Metal CPI
+# BOSH Oracle Cloud Infrastructure CPI
 
 # EXPERIMENTAL
 
-This is an external [BOSH CPI](http://bosh.io/docs/bosh-components.html#cpi) for [Oracle Bare Metal Cloud](https://cloud.oracle.com/en_US/bare-metal)
+This is an external [BOSH CPI](http://bosh.io/docs/bosh-components.html#cpi) for [Oracle Cloud Infrastructure](https://cloud.oracle.com/cloud-infrastructure)
 
 ## Usage
 
@@ -45,18 +45,18 @@ $GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has two targets to run de
 
     ``make test``
 
-    Runs all unit tests. Unit tests use fakes and don't interact with the Bare Metal Cloud.
+    Runs all unit tests. Unit tests use fakes and don't interact with the Oracle Cloud Infrastructure.
 
 
-2. bmctest
+2. ocitest
 
-    ``make bmctest``
+    ``make ocitest``
 
-    Runs tests in bmc/test package. The tests in this package drive the layer responsible for bulk of the work in the CPI. E.g. creating/deleting  a vm instance  or a persistent block volume.
+    Runs tests in oci/test package. The tests in this package drive the layer responsible for bulk of the work in the CPI. E.g. creating/deleting  a vm instance  or a persistent block volume.
     
-    Configuration values required for running this target are specified in the format used by various [BMC SDKs](https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/sdkconfig.htm).
+    Configuration values required for running this target are specified in the format used by various [Oracle Cloud Infrastructure SDKs](https://docs.us-phoenix-1.oraclecloud.com/Content/API/Concepts/sdkconfig.htm).
 
-    The default configuration file name and location is ~/.oraclebmc/config.  The configuration file can contain multiple profiles. Tests run by this target
+    The default configuration file name and location is ~/.oci/config.  The configuration file can contain multiple profiles. Tests run by this target
     use the [CPITEST] profile by default.
 
     The default file location and the profile name can be changed by
@@ -70,7 +70,7 @@ $GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has two targets to run de
     | user          | OCID of the user in that tenancy 
     | region        | Region to use
     | key_file      | API key file used to sign the requests 
-    | fingerprint   | Fingerprint of the API key uploaded to BMC
+    | fingerprint   | Fingerprint of the API key uploaded to OCI
     | compartment   | OCID of the compartment in which the resources will be created
     | ad            | Name of the Avaialibilty Domain in the region
     | vcn           | Name of the VCN to use

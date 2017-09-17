@@ -8,10 +8,10 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
-	clientfakes "github.com/oracle/bosh-oracle-cpi/bmc/client/fakes"
-	"github.com/oracle/bosh-oracle-cpi/bmc/disks"
-	diskfakes "github.com/oracle/bosh-oracle-cpi/bmc/disks/fakes"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
+	clientfakes "github.com/oracle/bosh-oracle-cpi/oci/client/fakes"
+	"github.com/oracle/bosh-oracle-cpi/oci/disks"
+	diskfakes "github.com/oracle/bosh-oracle-cpi/oci/disks/fakes"
 )
 
 var _ = Describe("DeleteDisk", func() {

@@ -3,8 +3,8 @@ package action
 import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
-	"github.com/oracle/bosh-oracle-cpi/bmc/resource"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 )
 
 // HasDisk action handles the has_disk request
@@ -18,7 +18,7 @@ func NewHasDisk(c client.Connector, l boshlog.Logger) HasDisk {
 	return HasDisk{connector: c, logger: l}
 }
 
-// Run queries BMC to determine if the given block volume exists
+// Run queries OCI to determine if the given block volume exists
 func (hd HasDisk) Run(diskCID DiskCID) (bool, error) {
 
 	loc := resource.NewLocation("", "", "", hd.connector.CompartmentId())

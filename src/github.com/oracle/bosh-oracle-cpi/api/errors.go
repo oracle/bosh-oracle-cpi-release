@@ -6,12 +6,12 @@ import (
 
 // CloudError represents an error thrown by
 // CPI upon encountering failures when interacting
-// with BMC
+// with OCI
 type CloudError interface {
 	error
 
 	// Type returns the error type string that can be interpreted
-	// by BOSH (whihc invokes the CPI)
+	// by BOSH (which invokes the CPI)
 	Type() string
 }
 
@@ -31,7 +31,7 @@ type NotSupportedError struct{}
 func (e NotSupportedError) Type() string  { return "Bosh::Clouds::NotSupported" }
 func (e NotSupportedError) Error() string { return "Not supported" }
 
-// VMNotFoundError is raised if a  can't be found in BMC
+// VMNotFoundError is raised if a  can't be found in OCI
 type VMNotFoundError struct {
 	vmID string
 }
@@ -46,7 +46,7 @@ func NewVMNotFoundError(vmID string) VMNotFoundError {
 func (e VMNotFoundError) Type() string  { return "Bosh::Clouds::VMNotFound" }
 func (e VMNotFoundError) Error() string { return fmt.Sprintf("VM '%s' not found", e.vmID) }
 
-// VMCreationFailedError is raised if an instance can't be created in BMC
+// VMCreationFailedError is raised if an instance can't be created in OCI
 type VMCreationFailedError struct {
 	reason   string
 	canRetry bool

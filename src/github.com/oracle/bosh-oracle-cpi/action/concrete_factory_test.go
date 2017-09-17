@@ -5,9 +5,9 @@ import (
 	fakeuuid "github.com/cloudfoundry/bosh-utils/uuid/fakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
-	clientfakes "github.com/oracle/bosh-oracle-cpi/bmc/client/fakes"
 	"github.com/oracle/bosh-oracle-cpi/config"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
+	clientfakes "github.com/oracle/bosh-oracle-cpi/oci/client/fakes"
 	"github.com/oracle/bosh-oracle-cpi/registry"
 )
 

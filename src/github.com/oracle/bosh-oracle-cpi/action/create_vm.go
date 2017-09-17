@@ -6,8 +6,8 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshuuid "github.com/cloudfoundry/bosh-utils/uuid"
 
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
-	"github.com/oracle/bosh-oracle-cpi/bmc/vm"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/vm"
 	"github.com/oracle/bosh-oracle-cpi/registry"
 	"time"
 )
@@ -27,7 +27,7 @@ func NewCreateVM(c client.Connector, l boshlog.Logger, r registry.Client, u bosh
 	return CreateVM{connector: c, logger: l, registry: r, uuidGen: u}
 }
 
-// Run creates an instance for the given configuration in BMC.
+// Run creates an instance for the given configuration in OCI.
 //
 // If the instance is configured to be created in a manual network it assigns the
 // given private IP to that instance.

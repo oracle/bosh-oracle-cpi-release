@@ -39,17 +39,17 @@ vet:
 
 # Runs the unit tests with coverage
 test: get-deps clean fmt lint vet build
-	ginkgo -r -race -skipPackage=bmc/test .
+	ginkgo -r -race -skipPackage=oci/test .
 
 # Runs BMC integration tests
-bmctest: get-deps
+ocitest: get-deps
 	# Uncomment and export variables (in the launch shell) to control test configuration
-	# CPITEST_CONFIG=/path/to/my/oraclebmc/config ini. Default is ~/.oraclebmc/config
+	# CPITEST_CONFIG=/path/to/my/oci/config ini. Default is ~/.oci/config
 	# CPITEST_PROFILE=section inside CPITEST_CONFIG file. Default is CPITEST
-	ginkgo bmc/test -slowSpecThreshold=500 -progress -nodes=3 -randomizeAllSpecs -randomizeSuites $(GINKGO_ARGS) -v
+	ginkgo oci/test -slowSpecThreshold=500 -progress -nodes=3 -randomizeAllSpecs -randomizeSuites $(GINKGO_ARGS) -v
 
 # Runs the integration tests from Concourse
-testintci: get-deps bmctest
+testintci: get-deps ocitest
 
 
 # Checks and creates, if necessary, resources in a project required to run integration tests.

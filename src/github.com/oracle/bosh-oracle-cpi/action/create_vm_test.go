@@ -8,14 +8,14 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
-	"github.com/oracle/bosh-oracle-cpi/bmc/resource"
-	"github.com/oracle/bosh-oracle-cpi/bmc/vm"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/resource"
+	"github.com/oracle/bosh-oracle-cpi/oci/vm"
 	"github.com/oracle/bosh-oracle-cpi/registry"
 
 	fakeuuid "github.com/cloudfoundry/bosh-utils/uuid/fakes"
-	clientfakes "github.com/oracle/bosh-oracle-cpi/bmc/client/fakes"
-	vmfakes "github.com/oracle/bosh-oracle-cpi/bmc/vm/fakes"
+	clientfakes "github.com/oracle/bosh-oracle-cpi/oci/client/fakes"
+	vmfakes "github.com/oracle/bosh-oracle-cpi/oci/vm/fakes"
 	registryfakes "github.com/oracle/bosh-oracle-cpi/registry/fakes"
 )
 

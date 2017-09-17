@@ -5,8 +5,8 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshuuid "github.com/cloudfoundry/bosh-utils/uuid"
 
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
 	"github.com/oracle/bosh-oracle-cpi/config"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/registry"
 )
 

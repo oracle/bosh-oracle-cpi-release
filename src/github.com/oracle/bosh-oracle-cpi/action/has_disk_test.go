@@ -8,12 +8,12 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
-	"github.com/oracle/bosh-oracle-cpi/bmc/disks"
-	"github.com/oracle/bosh-oracle-cpi/bmc/resource"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/disks"
+	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 
-	clientfakes "github.com/oracle/bosh-oracle-cpi/bmc/client/fakes"
-	diskfakes "github.com/oracle/bosh-oracle-cpi/bmc/disks/fakes"
+	clientfakes "github.com/oracle/bosh-oracle-cpi/oci/client/fakes"
+	diskfakes "github.com/oracle/bosh-oracle-cpi/oci/disks/fakes"
 )
 
 var _ = Describe("HasDisk", func() {

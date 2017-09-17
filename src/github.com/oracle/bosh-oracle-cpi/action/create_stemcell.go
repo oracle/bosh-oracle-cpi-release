@@ -4,7 +4,7 @@ import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
 )
 
 // CreateStemcell action handles the create_stemcell method invocation

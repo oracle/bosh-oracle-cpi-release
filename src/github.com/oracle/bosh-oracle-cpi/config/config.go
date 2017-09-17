@@ -27,7 +27,7 @@ type Cloud struct {
 
 // CPIProperties element in Cloud.Config
 type CPIProperties struct {
-	Bmcs     BmcsProperties
+	OCI      OCIProperties
 	Agent    registry.AgentOptions
 	Registry registry.ClientOptions
 }
@@ -51,7 +51,7 @@ func NewConfigFromPath(configFile string, fs boshsys.FileSystem) (Config, error)
 		return config, bosherr.WrapError(err, "Unmarshalling config contents")
 	}
 
-	// Fix relative paths in BMCS config.
+	// Fix relative paths in OCIProperties.
 	// Ideally this should be done by the template scripts (.erb files)
 	// packaged in the release, since the template generates cpi.json and
 	// other keys files (.pem and .pub)
@@ -64,8 +64,8 @@ func NewConfigFromPath(configFile string, fs boshsys.FileSystem) (Config, error)
 	// read the config from the path given to CPI (arg -configFile)
 	// use that information to replace the unmarshalled object
 	// with a new one containing the fixed paths.
-	old := config.Cloud.Properties.Bmcs
-	config.Cloud.Properties.Bmcs = newSanitizedConfig(configFile, old)
+	old := config.Cloud.Properties.OCI
+	config.Cloud.Properties.OCI = newSanitizedConfig(configFile, old)
 
 	if err = config.Validate(); err != nil {
 		return config, bosherr.WrapError(err, "Validating config")
@@ -78,8 +78,8 @@ func (c Config) Validate() error {
 	if c.Cloud.Plugin != "oracle" {
 		return bosherr.Errorf("Unsupported cloud plugin type %q", c.Cloud.Plugin)
 	}
-	if err := c.Cloud.Properties.Bmcs.Validate(); err != nil {
-		return bosherr.WrapError(err, "Validating bmcs configuration")
+	if err := c.Cloud.Properties.OCI.Validate(); err != nil {
+		return bosherr.WrapError(err, "Validating oci configuration")
 	}
 	if err := c.Cloud.Properties.Agent.Validate(); err != nil {
 		return bosherr.WrapError(err, "Validating agent configuration")

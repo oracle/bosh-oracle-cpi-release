@@ -3,7 +3,7 @@ package action
 import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
-	"github.com/oracle/bosh-oracle-cpi/bmc/client"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
 )
 
 // HasVM action handles the has_vm request
@@ -17,7 +17,7 @@ func NewHasVM(c client.Connector, l boshlog.Logger) HasVM {
 	return HasVM{connector: c, logger: l}
 }
 
-// Run queries BMC to determine if the given vm exists
+// Run queries OCI to determine if the given vm exists
 func (hv HasVM) Run(vmCID VMCID) (bool, error) {
 
 	id := string(vmCID)
