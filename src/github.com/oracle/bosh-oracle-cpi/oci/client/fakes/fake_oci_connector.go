@@ -3,7 +3,7 @@ package fakes
 import (
 	"github.com/oracle/bosh-oracle-cpi/config"
 	"github.com/oracle/bosh-oracle-cpi/registry"
-	cclient "oracle/baremetal/core/client"
+	cclient "oracle/oci/core/client"
 )
 
 type FakeConnector struct {

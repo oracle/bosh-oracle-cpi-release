@@ -6,8 +6,8 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
-	"oracle/baremetal/core/client/compute"
-	"oracle/baremetal/core/models"
+	"oracle/oci/core/client/compute"
+	"oracle/oci/core/models"
 )
 
 type diskAttacherDetacher struct {

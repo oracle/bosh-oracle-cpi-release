@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 
-	"oracle/baremetal/core/client/compute"
-	"oracle/baremetal/core/client/virtual_network"
-	"oracle/baremetal/core/models"
+	"oracle/oci/core/client/compute"
+	"oracle/oci/core/client/virtual_network"
+	"oracle/oci/core/models"
 )
 
 type Location struct {
@@ -72,7 +72,7 @@ func (loc Location) instanceIPs(connector client.Connector, instanceID string) (
 	private := make([]string, len(vnics))
 	for i, v := range vnics {
 		public[i] = v.PublicIP
-		private[i] = v.PrivateIP
+		private[i] = *v.PrivateIP
 	}
 	return public, private, nil
 }
@@ -96,7 +96,7 @@ func (loc Location) Vnics(connector client.Connector, instanceID string) ([]*mod
 	vnics := make([]*models.Vnic, len(r.Payload))
 	for i, attachment := range r.Payload {
 
-		req := virtual_network.NewGetVnicParams().WithVnicID(*attachment.VnicID)
+		req := virtual_network.NewGetVnicParams().WithVnicID(attachment.VnicID)
 		res, err := connector.CoreSevice().VirtualNetwork.GetVnic(req)
 		if err != nil {
 			return nil, fmt.Errorf("Error finding Vnic for attachment %s, %v",

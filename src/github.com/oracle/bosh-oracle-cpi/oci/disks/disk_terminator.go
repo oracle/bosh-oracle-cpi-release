@@ -3,7 +3,7 @@ package disks
 import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
-	"oracle/baremetal/core/client/blockstorage"
+	"oracle/oci/core/client/blockstorage"
 )
 
 type diskTerminator struct {

@@ -1,7 +1,7 @@
 package oci
 
 import (
-	"oracle/baremetal/core/models"
+	"oracle/oci/core/models"
 	"reflect"
 )
 

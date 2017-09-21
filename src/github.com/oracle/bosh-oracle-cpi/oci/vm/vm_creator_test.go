@@ -3,8 +3,8 @@ package vm
 import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"oracle/baremetal/core/client/compute"
-	"oracle/baremetal/core/models"
+	"oracle/oci/core/client/compute"
+	"oracle/oci/core/models"
 
 	"errors"
 )

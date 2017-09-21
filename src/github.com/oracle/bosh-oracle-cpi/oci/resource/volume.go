@@ -4,8 +4,8 @@ import (
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshretry "github.com/cloudfoundry/bosh-utils/retrystrategy"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
-	"oracle/baremetal/core/client/compute"
-	"oracle/baremetal/core/models"
+	"oracle/oci/core/client/compute"
+	"oracle/oci/core/models"
 
 	"errors"
 	"fmt"

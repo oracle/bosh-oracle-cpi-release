@@ -2,7 +2,7 @@ package vm
 
 import (
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
-	"oracle/baremetal/core/client/compute"
+	"oracle/oci/core/client/compute"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )

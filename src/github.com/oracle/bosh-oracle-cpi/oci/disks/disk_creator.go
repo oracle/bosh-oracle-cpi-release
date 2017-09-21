@@ -5,8 +5,8 @@ import (
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 
-	"oracle/baremetal/core/client/blockstorage"
-	"oracle/baremetal/core/models"
+	"oracle/oci/core/client/blockstorage"
+	"oracle/oci/core/models"
 )
 
 type diskCreator struct {

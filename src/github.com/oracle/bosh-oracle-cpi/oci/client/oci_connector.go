@@ -5,8 +5,8 @@ import (
 
 	"github.com/oracle/bosh-oracle-cpi/config"
 	"github.com/oracle/bosh-oracle-cpi/registry"
-	cclient "oracle/baremetal/core/client"
-	iclient "oracle/baremetal/identity/client"
+	cclient "oracle/oci/core/client"
+	iclient "oracle/oci/identity/client"
 
 	"oracle/oracle-iaas-go.git/transport"
 

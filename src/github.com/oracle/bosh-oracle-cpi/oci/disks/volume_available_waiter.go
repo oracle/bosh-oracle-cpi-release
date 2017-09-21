@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
-	"oracle/baremetal/core/client/blockstorage"
-	"oracle/baremetal/core/models"
+	"oracle/oci/core/client/blockstorage"
+	"oracle/oci/core/models"
 	"time"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"

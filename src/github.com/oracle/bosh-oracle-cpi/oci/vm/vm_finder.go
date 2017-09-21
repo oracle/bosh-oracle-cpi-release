@@ -5,7 +5,7 @@ import (
 
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
-	"oracle/baremetal/core/client/compute"
+	"oracle/oci/core/client/compute"
 )
 
 type Finder interface {
