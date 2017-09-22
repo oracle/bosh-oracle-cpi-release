@@ -23,7 +23,7 @@ type ImageSourceViaObjectStorageURIDetails struct {
 }
 
 func (m *ImageSourceViaObjectStorageURIDetails) SourceType() string {
-	return "ImageSourceViaObjectStorageUriDetails"
+	return DiscriminatorTypeValues["ImageSourceViaObjectStorageUriDetails"]
 }
 func (m *ImageSourceViaObjectStorageURIDetails) SetSourceType(val string) {
 
@@ -63,7 +63,7 @@ func (m ImageSourceViaObjectStorageURIDetails) MarshalJSON() ([]byte, error) {
 	}
 
 	data.SourceURI = m.SourceURI
-	data.SourceType = "ImageSourceViaObjectStorageUriDetails"
+	data.SourceType = DiscriminatorTypeValues["ImageSourceViaObjectStorageUriDetails"]
 	return json.Marshal(data)
 }
 

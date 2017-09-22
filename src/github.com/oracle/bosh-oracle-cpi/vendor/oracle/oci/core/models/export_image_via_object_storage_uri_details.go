@@ -25,7 +25,7 @@ type ExportImageViaObjectStorageURIDetails struct {
 }
 
 func (m *ExportImageViaObjectStorageURIDetails) DestinationType() string {
-	return "ExportImageViaObjectStorageUriDetails"
+	return DiscriminatorTypeValues["ExportImageViaObjectStorageUriDetails"]
 }
 func (m *ExportImageViaObjectStorageURIDetails) SetDestinationType(val string) {
 
@@ -69,7 +69,7 @@ func (m ExportImageViaObjectStorageURIDetails) MarshalJSON() ([]byte, error) {
 	}
 
 	data.DestinationURI = m.DestinationURI
-	data.DestinationType = "ExportImageViaObjectStorageUriDetails"
+	data.DestinationType = DiscriminatorTypeValues["ExportImageViaObjectStorageUriDetails"]
 	return json.Marshal(data)
 }
 

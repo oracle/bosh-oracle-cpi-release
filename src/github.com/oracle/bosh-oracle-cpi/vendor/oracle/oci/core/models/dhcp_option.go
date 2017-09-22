@@ -79,14 +79,14 @@ func unmarshalDhcpOption(data []byte, consumer runtime.Consumer) (DhcpOption, er
 
 	// The value of type is used to determine which type to create and unmarshal the data into
 	switch getType.Type {
-	case "DhcpDnsOption":
+	case DiscriminatorTypeValues["DhcpDnsOption"]:
 		var result DhcpDNSOption
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
 
-	case "DhcpSearchDomainOption":
+	case DiscriminatorTypeValues["DhcpSearchDomainOption"]:
 		var result DhcpSearchDomainOption
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err

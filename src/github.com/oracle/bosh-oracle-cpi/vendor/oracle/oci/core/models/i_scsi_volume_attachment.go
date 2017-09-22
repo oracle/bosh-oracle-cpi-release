@@ -74,8 +74,7 @@ type IScsiVolumeAttachment struct {
 }
 
 func (m *IScsiVolumeAttachment) AttachmentType() string {
-	//return "IScsiVolumeAttachment"
-	return "iscsi"
+	return DiscriminatorTypeValues["IScsiVolumeAttachment"]
 
 }
 func (m *IScsiVolumeAttachment) SetAttachmentType(val string) {
@@ -298,7 +297,7 @@ func (m IScsiVolumeAttachment) MarshalJSON() ([]byte, error) {
 	data.IPV4 = m.IPV4
 	data.Iqn = m.Iqn
 	data.Port = m.Port
-	data.AttachmentType = "iscsi"
+	data.AttachmentType = DiscriminatorTypeValues["IScsiVolumeAttachment"]
 	return json.Marshal(data)
 }
 

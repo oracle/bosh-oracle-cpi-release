@@ -483,32 +483,27 @@
 		{
 			"checksumSHA1": "bYbSTUumgKnRXXGJHawo4D26aMs=",
 			"path": "oracle/oci/core/client",
-			"revision": "4b2ae2a64580d74149dc5a6528f9a62677bd326a",
-			"revisionTime": "2017-09-21T06:49:22Z"
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "EKBtbNjCsVLIdsBJPhB75EqMRxk=",
 			"path": "oracle/oci/core/client/blockstorage",
-			"revision": "4b2ae2a64580d74149dc5a6528f9a62677bd326a",
-			"revisionTime": "2017-09-21T06:49:22Z"
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "ta9RUh1TAMb63mfoDf0LE8R9BQA=",
 			"path": "oracle/oci/core/client/compute",
-			"revision": "4b2ae2a64580d74149dc5a6528f9a62677bd326a",
-			"revisionTime": "2017-09-21T06:49:22Z"
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "mSObw8dkamuiKO4btHz5g6Achr4=",
 			"path": "oracle/oci/core/client/virtual_network",
-			"revision": "4b2ae2a64580d74149dc5a6528f9a62677bd326a",
-			"revisionTime": "2017-09-21T06:49:22Z"
+			"revision": ""
 		},
 		{
-			"checksumSHA1": "Y/KSi3BcZ2M1E2zkq/1f1Q/N1Ag=",
+			"checksumSHA1": "+oNTBNgghsO1Mzlj4Uz/miQSme8=",
 			"path": "oracle/oci/core/models",
-			"revision": "4b2ae2a64580d74149dc5a6528f9a62677bd326a",
-			"revisionTime": "2017-09-21T06:49:22Z"
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "kZdYzWsT1ulI2xCljBTb8mRtRfY=",

@@ -31,7 +31,7 @@ type ImageSourceViaObjectStorageTupleDetails struct {
 }
 
 func (m *ImageSourceViaObjectStorageTupleDetails) SourceType() string {
-	return "ImageSourceViaObjectStorageTupleDetails"
+	return DiscriminatorTypeValues["ImageSourceViaObjectStorageTupleDetails"]
 }
 func (m *ImageSourceViaObjectStorageTupleDetails) SetSourceType(val string) {
 
@@ -91,7 +91,7 @@ func (m ImageSourceViaObjectStorageTupleDetails) MarshalJSON() ([]byte, error) {
 	data.BucketName = m.BucketName
 	data.NamespaceName = m.NamespaceName
 	data.ObjectName = m.ObjectName
-	data.SourceType = "ImageSourceViaObjectStorageTupleDetails"
+	data.SourceType = DiscriminatorTypeValues["ImageSourceViaObjectStorageTupleDetails"]
 	return json.Marshal(data)
 }
 

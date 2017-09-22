@@ -142,7 +142,7 @@ func unmarshalVolumeAttachment(data []byte, consumer runtime.Consumer) (VolumeAt
 
 	// The value of attachmentType is used to determine which type to create and unmarshal the data into
 	switch getType.AttachmentType {
-	case "iscsi":
+	case DiscriminatorTypeValues["IScsiVolumeAttachment"]:
 		var result IScsiVolumeAttachment
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err

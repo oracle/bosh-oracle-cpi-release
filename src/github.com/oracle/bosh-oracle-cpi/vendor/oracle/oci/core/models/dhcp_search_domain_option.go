@@ -40,7 +40,7 @@ type DhcpSearchDomainOption struct {
 }
 
 func (m *DhcpSearchDomainOption) Type() string {
-	return "DhcpSearchDomainOption"
+	return DiscriminatorTypeValues["DhcpSearchDomainOption"]
 }
 func (m *DhcpSearchDomainOption) SetType(val string) {
 
@@ -108,7 +108,7 @@ func (m DhcpSearchDomainOption) MarshalJSON() ([]byte, error) {
 	}
 
 	data.SearchDomainNames = m.SearchDomainNames
-	data.Type = "DhcpSearchDomainOption"
+	data.Type = DiscriminatorTypeValues["DhcpSearchDomainOption"]
 	return json.Marshal(data)
 }
 

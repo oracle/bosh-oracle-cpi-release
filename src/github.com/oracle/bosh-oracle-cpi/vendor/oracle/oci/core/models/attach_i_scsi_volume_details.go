@@ -43,7 +43,7 @@ func (m *AttachIScsiVolumeDetails) SetInstanceID(val *string) {
 
 func (m *AttachIScsiVolumeDetails) Type() string {
 	//return "AttachIScsiVolumeDetails"
-	return "iscsi"
+	return DiscriminatorTypeValues["AttachIScsiVolumeDetails"]
 }
 func (m *AttachIScsiVolumeDetails) SetType(val string) {
 
@@ -107,7 +107,7 @@ func (m AttachIScsiVolumeDetails) MarshalJSON() ([]byte, error) {
 	data.VolumeID = m.volumeIdField
 	data.UseChap = m.UseChap
 	//data.Type = "AttachIScsiVolumeDetails"
-	data.Type = "iscsi"
+	data.Type = DiscriminatorTypeValues["AttachIScsiVolumeDetails"]
 	return json.Marshal(data)
 }
 

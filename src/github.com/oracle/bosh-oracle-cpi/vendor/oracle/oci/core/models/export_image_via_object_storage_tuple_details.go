@@ -27,7 +27,7 @@ type ExportImageViaObjectStorageTupleDetails struct {
 }
 
 func (m *ExportImageViaObjectStorageTupleDetails) DestinationType() string {
-	return "ExportImageViaObjectStorageTupleDetails"
+	return DiscriminatorTypeValues["ExportImageViaObjectStorageTupleDetails"]
 }
 func (m *ExportImageViaObjectStorageTupleDetails) SetDestinationType(val string) {
 
@@ -81,7 +81,7 @@ func (m ExportImageViaObjectStorageTupleDetails) MarshalJSON() ([]byte, error) {
 	data.BucketName = m.BucketName
 	data.NamespaceName = m.NamespaceName
 	data.ObjectName = m.ObjectName
-	data.DestinationType = "ExportImageViaObjectStorageTupleDetails"
+	data.DestinationType = DiscriminatorTypeValues["ExportImageViaObjectStorageTupleDetails"]
 	return json.Marshal(data)
 }
 

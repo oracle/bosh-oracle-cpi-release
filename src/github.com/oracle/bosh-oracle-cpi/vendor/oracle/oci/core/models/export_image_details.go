@@ -82,14 +82,14 @@ func unmarshalExportImageDetails(data []byte, consumer runtime.Consumer) (Export
 
 	// The value of destinationType is used to determine which type to create and unmarshal the data into
 	switch getType.DestinationType {
-	case "ExportImageViaObjectStorageTupleDetails":
+	case DiscriminatorTypeValues["ExportImageViaObjectStorageTupleDetails"]:
 		var result ExportImageViaObjectStorageTupleDetails
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
 
-	case "ExportImageViaObjectStorageUriDetails":
+	case DiscriminatorTypeValues["ExportImageViaObjectStorageUriDetails"]:
 		var result ExportImageViaObjectStorageURIDetails
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err

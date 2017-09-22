@@ -47,7 +47,8 @@ type DhcpDNSOption struct {
 }
 
 func (m *DhcpDNSOption) Type() string {
-	return "DhcpDnsOption"
+	//return "DhcpDnsOption"
+	return DiscriminatorTypeValues["DhcpDnsOption"]
 }
 func (m *DhcpDNSOption) SetType(val string) {
 
@@ -129,7 +130,8 @@ func (m DhcpDNSOption) MarshalJSON() ([]byte, error) {
 
 	data.CustomDNSServers = m.CustomDNSServers
 	data.ServerType = m.ServerType
-	data.Type = "DhcpDnsOption"
+	//data.Type = "DhcpDnsOption"
+	data.Type = DiscriminatorTypeValues["DhcpDnsOption"]
 	return json.Marshal(data)
 }
 

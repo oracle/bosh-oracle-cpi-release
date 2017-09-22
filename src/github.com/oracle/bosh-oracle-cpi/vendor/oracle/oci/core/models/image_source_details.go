@@ -73,14 +73,14 @@ func unmarshalImageSourceDetails(data []byte, consumer runtime.Consumer) (ImageS
 
 	// The value of sourceType is used to determine which type to create and unmarshal the data into
 	switch getType.SourceType {
-	case "ImageSourceViaObjectStorageTupleDetails":
+	case DiscriminatorTypeValues["ImageSourceViaObjectStorageTupleDetails"]:
 		var result ImageSourceViaObjectStorageTupleDetails
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
 		}
 		return &result, nil
 
-	case "ImageSourceViaObjectStorageUriDetails":
+	case DiscriminatorTypeValues["ImageSourceViaObjectStorageUriDetails"]:
 		var result ImageSourceViaObjectStorageURIDetails
 		if err := consumer.Consume(buf2, &result); err != nil {
 			return nil, err
