@@ -39,16 +39,19 @@ Builds the cpi executable as $GOPATH/src/github.com/oracle/bosh-oracle-cpi/out/c
 
 #### Running development tests
 
-$GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has two targets to run development tests
+$GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has targets to run two kinds of development tests
 
-1. test
+1. Unit tests 
 
-    ``make test``
+    * ``make test``
 
-    Runs all unit tests. Unit tests use fakes and don't interact with the Oracle Cloud Infrastructure.
-
-
-2. ocitest
+        Runs all unit tests. Unit tests use fakes and don't interact with the Oracle Cloud Infrastructure.
+    
+    * ``TEST_SPEC=CreateDisk make single-test``
+    
+        Runs a single unit test specified in the TEST_SPEC variable, CreateDisk spec in this example
+    
+2. Oracle Cloud Infrastructure tests
 
     ``make ocitest``
 

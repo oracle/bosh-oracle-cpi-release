@@ -37,12 +37,16 @@ lint:
 vet:
 	go tool vet $$(ls -d */ | grep -v vendor)
 
-# Runs the unit tests with coverage
+# Runs all the unit tests 
 test: get-deps clean fmt lint vet build
 	ginkgo -r -race -skipPackage=oci/test .
 
-# Runs BMC integration tests
-ocitest: get-deps
+# Runs a single unit test spec specified in TEST_SPEC 
+single-test: get-deps  
+	ginkgo -r -race -skipPackage=oci/test -focus=$(TEST_SPEC) $(GINKGO_ARGS) .
+
+# Runs OCI integration tests
+ocitest: 
 	# Uncomment and export variables (in the launch shell) to control test configuration
 	# CPITEST_CONFIG=/path/to/my/oci/config ini. Default is ~/.oci/config
 	# CPITEST_PROFILE=section inside CPITEST_CONFIG file. Default is CPITEST
