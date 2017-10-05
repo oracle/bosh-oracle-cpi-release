@@ -24,8 +24,8 @@ func (c *ConnectionFixture) Setup(t *testing.T) error {
 		return err
 	}
 	logLevel := boshlog.LevelWarn
-	if ini.logLevel != "" {
-		logLevel, _ = boshlog.Levelify(ini.logLevel)
+	if ini.LogLevel != "" {
+		logLevel, _ = boshlog.Levelify(ini.LogLevel)
 	}
 	logger := boshlog.NewLogger(logLevel)
 	connector := client.NewConnector(cfg, logger)
@@ -65,4 +65,8 @@ func (c *ConnectionFixture) AD() string {
 
 func (c *ConnectionFixture) StemcellImageID() string {
 	return c.cpiTestIni.StemcellImageID
+}
+
+func (c *ConnectionFixture) StemcellImageSourceURI() string {
+	return c.cpiTestIni.StemcellImageSourceURI
 }

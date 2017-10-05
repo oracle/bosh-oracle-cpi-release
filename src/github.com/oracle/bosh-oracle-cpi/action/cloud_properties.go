@@ -15,11 +15,15 @@ type NetworkCloudProperties struct {
 }
 
 // StemcellCloudProperties holds the CPI specific stemcell properties
-// defined in cloud-config
+// defined in stemcell's manifest
 type StemcellCloudProperties struct {
-	Name      string `json:"name,omitempty"`
-	Version   string `json:"version,omitempty"`
-	ImageOCID string `json:"image-ocid,omitempty"`
+	Name    string `json:"name,omitempty"`
+	Version string `json:"version,omitempty"`
+	// Deprecated: Light stemcells with image-ocid attribute are deprecated and
+	// will be removed prior to GA.  Use stemcells with image-source-url attribute
+	// instead.
+	ImageOCID      string `json:"image-ocid,omitempty"`
+	ImageSourceURL string `json:"image-source-url,omitempty"`
 }
 
 // VMCloudProperties holds the CPI specific properties

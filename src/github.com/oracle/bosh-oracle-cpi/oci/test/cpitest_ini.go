@@ -10,22 +10,23 @@ import (
 // used for running the CPI tests
 // Default path is ~/.oci/config
 type CpiTestIni struct {
-	Tenant             string `ini:"tenancy" mapstructure:"tenant"`
-	User               string `ini:"user" mapstructure:"user"`
-	Fingerprint        string `ini:"fingerprint" mapstructure:"fingerprint"`
-	Host               string `ini:"host" mapstructure:"host"`
-	KeyFile            string `ini:"key_file" mapstructure:"KeyFile"`
-	CompartmentId      string `ini:"compartment" mapstructure:"CompartmentId"`
-	Region             string `ini:"region" mapstructure:"Region"`
-	AvailabilityDomain string `ini:"ad" mapstructure:"AvailabilityDomain"`
-	VcnName            string `ini:"vcn" mapstructure:"VcnName"`
-	SubnetName         string `ini:"subnet" mapstructure:"SubnetName"`
-	CpiUser            string `ini:"cpiUser" mapstructure:"CpiUser"`
-	CpiPrivateKeyPath  string `ini:"cpiPrivateKeyPath" mapstructure:"CpiPrivateKeyPath"`
-	CpiPublicKeyPath   string `ini:"cpiPublicKeyPath" mapstructure:"CpiPublicKeyPath"`
-	UserPublicKeyPath  string `ini:"userPublicKeyPath" mapstructure:"UserPublicKeyPath"`
-	StemcellImageID    string `ini:"stemcellImage" mapstructure:"StemcellImageID"`
-	logLevel           string `ini:"loglevel" mapstructure:"logLevel"`
+	Tenant                 string `ini:"tenancy" mapstructure:"tenant"`
+	User                   string `ini:"user" mapstructure:"user"`
+	Fingerprint            string `ini:"fingerprint" mapstructure:"fingerprint"`
+	Host                   string `ini:"host" mapstructure:"host"`
+	KeyFile                string `ini:"key_file" mapstructure:"KeyFile"`
+	CompartmentId          string `ini:"compartment" mapstructure:"CompartmentId"`
+	Region                 string `ini:"region" mapstructure:"Region"`
+	AvailabilityDomain     string `ini:"ad" mapstructure:"AvailabilityDomain"`
+	VcnName                string `ini:"vcn" mapstructure:"VcnName"`
+	SubnetName             string `ini:"subnet" mapstructure:"SubnetName"`
+	CpiUser                string `ini:"cpiUser" mapstructure:"CpiUser"`
+	CpiPrivateKeyPath      string `ini:"cpiPrivateKeyPath" mapstructure:"CpiPrivateKeyPath"`
+	CpiPublicKeyPath       string `ini:"cpiPublicKeyPath" mapstructure:"CpiPublicKeyPath"`
+	UserPublicKeyPath      string `ini:"userPublicKeyPath" mapstructure:"UserPublicKeyPath"`
+	StemcellImageID        string `ini:"stemcellImage" mapstructure:"StemcellImageID"`
+	StemcellImageSourceURI string `ini:"stemcellImageSourceURI" mapstructure:"StemcellImageSourceURI"`
+	LogLevel               string `ini:"logLevel" mapstructure:"LogLevel"`
 }
 
 func NewCpiTestIni(filePath string, section string) (CpiTestIni, error) {

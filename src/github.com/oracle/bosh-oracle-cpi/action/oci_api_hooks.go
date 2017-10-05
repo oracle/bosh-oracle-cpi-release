@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	stemcellFinderFactory    stemcell.FinderFactory    = stemcell.NewFinder
 	stemcellCreatorFactory   stemcell.CreatorFactory   = stemcell.NewCreator
 	stemcellDestroyerFactory stemcell.DestroyerFactory = stemcell.NewDestroyer
 
@@ -22,6 +23,10 @@ var (
 	diskTerminatorFactory   disks.TerminatorFactory               = disks.NewTerminator
 	attacherDetacherFactory disks.InstanceAttacherDetacherFactory = disks.NewAttacherDetacherForInstance
 )
+
+func newStemcellFinder(c client.Connector, l boshlog.Logger) stemcell.Finder {
+	return stemcellFinderFactory(c, l)
+}
 
 func newStemcellCreator(c client.Connector, l boshlog.Logger) stemcell.Creator {
 	return stemcellCreatorFactory(c, l)
@@ -65,6 +70,9 @@ func installStemcellCreatorFactory(fac stemcell.CreatorFactory) {
 func installStemcellDestroyerFactory(fac stemcell.DestroyerFactory) {
 	stemcellDestroyerFactory = fac
 }
+func installStemcellFinderFactory(fac stemcell.FinderFactory) {
+	stemcellFinderFactory = fac
+}
 
 func installVMCreatorFactory(fac vm.CreatorFactory) {
 	vmCreatorFactory = fac
@@ -93,6 +101,7 @@ func installInstanceAttacherDetacherFactory(fac disks.InstanceAttacherDetacherFa
 func resetAllFactories() {
 	stemcellCreatorFactory = stemcell.NewCreator
 	stemcellDestroyerFactory = stemcell.NewDestroyer
+	stemcellFinderFactory = stemcell.NewFinder
 
 	vmFinderFactory = vm.NewFinder
 	vmCreatorFactory = vm.NewCreator

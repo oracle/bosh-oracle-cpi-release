@@ -18,15 +18,28 @@ func NewCreateStemcell(c client.Connector, logger boshlog.Logger) CreateStemcell
 	return CreateStemcell{connector: c, logger: logger}
 }
 
-// Run extracts the image ocid from the properties and delegates the creation
-// to a StemcellCreator
-func (cs CreateStemcell) Run(stemcellPath string, cloudProps StemcellCloudProperties) (StemcellCID, error) {
+// Run extracts the image URL from the properties and delegates to
+// either StemcellFinder or StemcellCreator for creating an image
+func (cs CreateStemcell) Run(_ string, cloudProps StemcellCloudProperties) (StemcellCID, error) {
 
-	c := newStemcellCreator(cs.connector, cs.logger)
-	id, err := c.CreateStemcell(cloudProps.ImageOCID)
-	if err != nil {
-		return "", bosherr.WrapError(err, "Error creating stemcell")
+	if cloudProps.ImageOCID != "" {
+		f := newStemcellFinder(cs.connector, cs.logger)
+		id, err := f.FindStemcell(cloudProps.ImageOCID)
+		if err != nil {
+			return "", bosherr.WrapError(err, "Error creating stemcell")
+		}
+		return StemcellCID(id), nil
 	}
-	return StemcellCID(id), nil
 
+	if cloudProps.ImageSourceURL != "" {
+		c := newStemcellCreator(cs.connector, cs.logger)
+		id, err := c.CreateStemcell(cloudProps.ImageSourceURL, cloudProps.Name+"-"+cloudProps.Version)
+		if err != nil {
+			return "", bosherr.WrapError(err, "Error creating stemcell")
+		}
+		return StemcellCID(id), nil
+
+	}
+
+	return "", bosherr.Error("OCI Image OCID or an ImageSourceURL must be specified in the stemcell manifest")
 }
