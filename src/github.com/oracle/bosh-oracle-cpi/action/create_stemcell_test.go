@@ -50,21 +50,11 @@ var _ = Describe("CreateStemcell", func() {
 					ImageOCID: "fake-image-ocid",
 				}
 			})
-			It("delegates to StemCell Finder", func() {
-				_, err = createStemcell.Run("", cloudProps)
-				Expect(err).NotTo(HaveOccurred())
-				Expect(creator.CreateStemcellCalled).To(BeFalse())
-				Expect(finder.FindStemcellCalled).To(BeTrue())
-				Expect(finder.FindStemcellCalledWithID).To(Equal("fake-image-ocid"))
-			})
-
-			It("returns error if stemcell finder fails ", func() {
-				finder.FindStemcellError = errors.New("fake-find-image-error")
-
+			It("returns an upgrade stemcell error", func() {
 				_, err = createStemcell.Run("", cloudProps)
 				Expect(err).To(HaveOccurred())
-				Expect(finder.FindStemcellCalled).To(BeTrue())
-				Expect(err.Error()).To(ContainSubstring("fake-find-image-error"))
+				Expect(creator.CreateStemcellCalled).To(BeFalse())
+				Expect(finder.FindStemcellCalled).To(BeFalse())
 			})
 
 		})
@@ -104,7 +94,7 @@ var _ = Describe("CreateStemcell", func() {
 			})
 
 		})
-		Context("When called with neither image OCID nor ImageSourceURL", func() {
+		Context("When called with ImageSourceURL not set", func() {
 			It("returns an error", func() {
 				_, err = createStemcell.Run("", StemcellCloudProperties{})
 				Expect(err).To(HaveOccurred())
