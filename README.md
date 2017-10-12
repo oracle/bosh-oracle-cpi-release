@@ -2,12 +2,13 @@
 ## Oracle Cloud Infrastructure Terminology (OCI)
   Consumers of this CPI are expected to be familiar with following OCI concepts
   * Tenancy 
-  * Compartments 
+  * Compartments and Users
   * Virtual Cloud Network(VCN) and Subnets
   * Regions and Availabilty Domains
   * Instance and Shapes
   * API signing key pair
   * Instance SSH key pair 
+  * Oracle Cloud Identifier (OCID)
   
   See [OCI Concepts Documentation](https://docs.us-phoenix-1.oraclecloud.com/Content/GSG/Concepts/concepts.htm) to learn about these concepts
   
