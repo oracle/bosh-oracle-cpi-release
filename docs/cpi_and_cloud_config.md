@@ -19,7 +19,7 @@ This document describes the required Oracle cloud specific properties in [Cpi](h
   fingerprint |  Fingerprint of the API signing public key uploaded to OCI
   region | Name of the region to use
    
-#####Example:
+##### Example:
 
 ```yaml
 cpis:
