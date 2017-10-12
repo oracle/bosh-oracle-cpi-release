@@ -99,4 +99,4 @@ $ echo "{\"method\": \"method_name\", \"arguments\": []}" | cpi -configFile="/pa
 ```
 ### Installing BOSH using this CPI
 
-Refer to [Deploying BOSH Director](https://github.com/oracle/bosh-oracle-cpi-release/tree/master/bosh-deployment) in the [BOSH Oracle CPI release](https://github.com/oracle/bosh-oracle-cpi-release) repo. 
+Refer to [Deploying BOSH Director Guide](https://github.com/oracle/bosh-oracle-cpi-release/tree/master/docs/deploy_director.md) in the [BOSH Oracle CPI release](https://github.com/oracle/bosh-oracle-cpi-release) repository. 
