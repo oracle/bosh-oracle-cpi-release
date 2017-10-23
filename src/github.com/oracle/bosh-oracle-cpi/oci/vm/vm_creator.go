@@ -8,6 +8,7 @@ import (
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 	"oracle/oci/core/client/compute"
 	"oracle/oci/core/models"
+	"fmt"
 )
 
 const logTag = "VMOperations"
@@ -66,8 +67,8 @@ func (cv *creator) launchInstance(name string, assignIP string, imageId string, 
 	res, err := cv.connector.CoreSevice().Compute.LaunchInstance(req)
 	if err != nil {
 		errMsg := extractMsgFromError(err)
-		cv.logger.Debug(logTag, "Error creating instance %s", errMsg)
-		return &instance, err
+		cv.logger.Error(logTag, "Error launching instance. Err:%v Reason: %s", err, errMsg)
+		return &instance, fmt.Errorf("Error launching instance. Reason: %s", errMsg)
 	}
 
 	return resource.NewInstanceWithPrivateIPs(*res.Payload.ID, cv.location, assignedIPs), nil
