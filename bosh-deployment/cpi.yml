@@ -4,8 +4,8 @@
   value:
     name: bosh-oracle-cpi
     version: 0.1
-    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/a_cNy0LVz59L_5dm3lPX1Ak58u2eDF8619MPApImKOA/n/cloudfoundry/b/cpireleases/o/bosh-oracle-cpi-0+dev.14.tgz 
-    sha1: f8ad9712f861650e1a1335927d835f5239561631
+    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/v6pTKDO3762dZoLpNQzwijyzZaE7XUBGxjUPi_VK8Sg/n/cloudfoundry/b/cpireleases/o/bosh-oracle-cpi-0+dev.16.tgz
+    sha1: 4d908a4016e86c744395783015bff8a7752f2029
 
 - type: replace
   path: /resource_pools/name=vms/stemcell?
