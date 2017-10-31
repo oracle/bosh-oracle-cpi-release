@@ -1,10 +1,11 @@
 package disks
 
 import (
+	"fmt"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
+	"github.com/oracle/bosh-oracle-cpi/oci"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
-
 	"oracle/oci/core/client/blockstorage"
 	"oracle/oci/core/models"
 )
@@ -33,8 +34,7 @@ func (dc *diskCreator) CreateVolume(name string, sizeinMB int64) (*resource.Volu
 	res, err := dc.connector.CoreSevice().Blockstorage.CreateVolume(p)
 
 	if err != nil {
-		dc.logger.Error(diskOperationsLogTag, "Error creating volume %v", err)
-		return nil, err
+		return nil, fmt.Errorf("Error creating volume. Reason: %s", oci.CoreModelErrorMsg(err))
 	}
 
 	var volume *resource.Volume
