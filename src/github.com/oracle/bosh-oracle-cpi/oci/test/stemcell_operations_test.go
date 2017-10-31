@@ -1,9 +1,9 @@
 package test
 
 import (
+	"github.com/oracle/bosh-oracle-cpi/oci/stemcell"
 	"net/url"
 	"path"
-	"github.com/oracle/bosh-oracle-cpi/oci/stemcell"
 	"testing"
 )
 
@@ -80,4 +80,3 @@ func Test_StemcellOpsCreateDelete(t *testing.T) {
 	})
 
 }
-

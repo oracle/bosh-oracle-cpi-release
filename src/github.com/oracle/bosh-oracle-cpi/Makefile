@@ -6,7 +6,7 @@ build:
 
 # Build cross-platform binaries
 build-all:
-	gox -output="out/cpi_{{.OS}}_{{.Arch}}" oracle/bosh-cpi/main
+	gox -output="out/cpi_{{.OS}}_{{.Arch}}" github.com/oracle/bosh-oracle-cpi/main 
 
 # Prepration for tests
 get-deps:

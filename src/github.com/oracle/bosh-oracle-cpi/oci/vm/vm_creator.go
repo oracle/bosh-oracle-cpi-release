@@ -1,14 +1,13 @@
 package vm
 
 import (
+	"fmt"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
-
 	"github.com/oracle/bosh-oracle-cpi/oci"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 	"oracle/oci/core/client/compute"
 	"oracle/oci/core/models"
-	"fmt"
 )
 
 const logTag = "VMOperations"

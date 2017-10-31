@@ -70,3 +70,63 @@ func Test_VmOpsCreateInstanceWithUserData(t *testing.T) {
 		t.Fatalf("Unexpected nil instance")
 	}
 }
+
+func Test_VmOpsReCreateVMWithSameIP(t *testing.T) {
+	state := NewConnectionFixture()
+	state.Setup(t)
+	defer state.TearDown(t)
+
+	// Creator and Terminator
+	var in *resource.Instance
+	var err error
+
+	creator := vm.NewCreator(state.Connector(),
+		state.Logger(), state.VCN(),
+		state.Subnet(), state.AD())
+	terminator := vm.NewTerminator(state.Connector(), state.Logger())
+
+	deleteInstance := func() {
+		if err == nil && in != nil {
+			terminator.TerminateInstance(in.ID())
+			in = nil
+		}
+	}
+	defer deleteInstance()
+
+	// Create a VM
+	var ip string
+	in, err = creator.CreateInstance(vm.InstanceConfiguration{
+		ImageId: state.StemcellImageID(),
+		Shape:   vmStandard12config.Shape,
+		Name:    "instance-with-auto-assigned-ip"},
+		vm.InstanceMetadata{})
+
+	if err != nil {
+		t.Fatalf("Error creating initial instance. Err: %v", err)
+	}
+
+	// Record it's IP
+	ip, err = in.PrivateIP(state.connector, state.logger)
+	if err != nil {
+		t.Fatalf("Error obtaining private IP. Err: %v", err)
+	}
+
+	// Delete it
+	deleteInstance()
+
+	// Recreate With same IP
+	defer deleteInstance()
+	in, err = creator.CreateInstance(vm.InstanceConfiguration{
+		ImageId:   state.StemcellImageID(),
+		Shape:     vmStandard12config.Shape,
+		Name:      "recreated-with-deleted-ip",
+		PrivateIP: ip},
+		vm.InstanceMetadata{})
+
+	if err != nil {
+		t.Fatalf("Error re-creating instance with same-ip. Err: %v", err)
+	}
+	if in == nil {
+		t.Fatalf("Unexpected nil instance")
+	}
+}
