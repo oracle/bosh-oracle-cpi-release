@@ -90,6 +90,16 @@ var _ = Describe("CreateDisk", func() {
 				Expect(err.Error()).To(ContainSubstring("fake-create-volume-error"))
 				Expect(vmFinder.FindInstanceCalled).To(BeTrue())
 			})
+
+			It("rounds up the requested disk size to the minimum supported size", func() {
+				diskCreator.CreateVolumeResult = resource.NewVolume("fake-volume-name", "fake-volume-ocid")
+
+				_, err = createDisk.Run(2048, cloudProps, vmCID)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(diskCreator.CreateVolumeCalled).To(BeTrue())
+				Expect(diskCreator.CreateVolumeSize >= minVolumeSize).To(BeTrue())
+			})
+
 		})
 
 		Context("when the given instance is not found", func() {
@@ -107,5 +117,25 @@ var _ = Describe("CreateDisk", func() {
 			})
 
 		})
+	})
+})
+
+var _ = Describe("volumeSize", func() {
+	It("rounds up volume size to minimum 50GiB in 1GiB increments", func() {
+		sizes := []struct {
+			in  int
+			out int64
+		}{
+			{0, 51200},
+			{1024, 51200},
+			{2048, 51200},
+			{51200, 51200},
+			{51201, 52224},
+			{51200 + 2047, 51200 + 2048},
+			{51200 * 2, 51200 * 2},
+		}
+		for _, s := range sizes {
+			Expect(volumeSize(s.in)).To(Equal(s.out))
+		}
 	})
 })

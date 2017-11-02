@@ -9,6 +9,9 @@ import (
 	"time"
 )
 
+const oneGiB int64 = 1024
+const minVolumeSize = 50 * oneGiB
+
 // CreateDisk action handles the create_disk method invocation
 type CreateDisk struct {
 	connector client.Connector
@@ -36,9 +39,21 @@ func (cd CreateDisk) Run(size int, _ DiskCloudProperties, vmCID VMCID) (DiskCID,
 			cd.connector.CompartmentId()))
 
 	volName := fmt.Sprintf("bosh-volume-%s", time.Now().Format(time.Stamp))
-	vol, err := creator.CreateVolume(volName, int64(size))
+	vol, err := creator.CreateVolume(volName, volumeSize(size))
 	if err != nil {
 		return "", bosherr.WrapError(err, "Error creating volume")
 	}
 	return DiskCID(vol.ID()), nil
+}
+
+func volumeSize(size int) int64 {
+	s := int64(size)
+	if s < minVolumeSize {
+		return minVolumeSize
+	}
+	m := s % oneGiB
+	if m != 0 {
+		s += oneGiB - m
+	}
+	return s
 }
