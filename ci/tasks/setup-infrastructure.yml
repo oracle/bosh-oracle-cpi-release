@@ -3,9 +3,8 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: 10.0.1.5:5000/boshcpi/oracle-cpi-release
+    repository: bitsarvi/oci-cpi-release
     tag: "latest"
-    insecure_registries: [ "10.0.1.5:5000" ]
 inputs:
   - name: bosh-cpi-src
 outputs:

@@ -30,8 +30,8 @@ resources:
   - name: bosh-cpi-src-in
     type: git
     source:
-      uri: https://github.com/oracle/bosh-oracle-cpi-release.git
-      branch: master
+      uri: https://(github-repo))
+      branch: (github-branch))
       ignore_paths:
         - .final_builds/**/*.yml
         - releases/**/*.yml

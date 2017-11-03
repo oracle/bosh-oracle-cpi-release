@@ -2,7 +2,7 @@
 
 set -e
 
-DOCKER_IMAGE=${DOCKER_IMAGE:-10.0.1.5:5000/boshcpi/oracle-cpi-release}
+DOCKER_IMAGE=${DOCKER_IMAGE:-bitsarvi/oci-cpi-release}
 DOCKER_IMAGE_VERSION=${DOCKER_IMAGE_VERSION:-v6}
 
 #docker login

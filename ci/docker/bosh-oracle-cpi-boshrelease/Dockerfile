@@ -16,18 +16,19 @@ RUN apt-get install -y libpq-dev; apt-get clean
 RUN apt-get install -y python python-setuptools libyaml-dev libpython-dev; apt-get clean
 RUN apt-get install -y ruby vim; apt-get clean
 RUN apt-get remove python-pip
-RUN easy_install pip Jinja2
+RUN easy_install pip
 
 # Install Golang
-ENV GOLANG_VERSION 1.8.1
+ENV GOLANG_VERSION 1.8.3
 RUN curl -sSL https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz | tar -v -C /usr/local -xz
 ENV GOROOT /usr/local/go
 ENV PATH $PATH:$GOROOT/bin
 
-# Install Google Cloud SDK
-RUN pip install virtualenv oci-cli
+# Install OCI cli
+RUN pip install oci-cli
 ENV PATH $PATH:/usr/local/google-cloud-sdk/bin
 
 # Install BOSH v2 CLI
-RUN curl -sSL -o /usr/local/bin/bosh https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-2.0.28-linux-amd64
+ENV BOSH_CLI_VERSION 2.0.28
+RUN curl -sSL -o /usr/local/bin/bosh https://s3.amazonaws.com/bosh-cli-artifacts/bosh-cli-${BOSH_CLI_VERSION}-linux-amd64
 RUN chmod +x /usr/local/bin/bosh

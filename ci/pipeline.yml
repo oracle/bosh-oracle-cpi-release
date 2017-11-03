@@ -115,8 +115,8 @@ resources:
   - name: bosh-cpi-src-in
     type: git
     source:
-      uri: https://github.com/oracle/bosh-oracle-cpi-release.git
-      branch: master
+      uri: https://((github-repo))
+      branch: ((github-branch))
       ignore_paths:
         - .final_builds/**/*.yml
         - releases/**/*.yml
@@ -139,14 +139,14 @@ resources:
   - name: bats
     type: git
     source:
-      uri: https://github.com/cloudfoundry/bosh-acceptance-tests.git
+      uri: https://github.com/dmutreja/bosh-acceptance-tests.git
       branch: gocli-bats
 
   - name: version-semver
     type: semver
     source:
       driver: git
-      uri: https://((github-user)):((github-password))@github.com/oracle/bosh-oracle-cpi-release.git
+      uri: https://((github-user)):((github-password))@((github-repo))
       branch: version
       file: version
       initial_version: 1.0.0
