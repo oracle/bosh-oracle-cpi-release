@@ -57,7 +57,7 @@ var _ = Describe("CreateDisk", func() {
 		Context("when vmCID instance is found", func() {
 
 			BeforeEach(func() {
-				vmLocation = resource.NewLocation("fake-vcn", "fake-subnet", "fake-ad1", "")
+				vmLocation = resource.NewLocation("fake-ad1", "")
 				vmFinder.FindInstanceResult = resource.NewInstance("fake-vm-ocid", vmLocation)
 				cloudProps = DiskCloudProperties{}
 			})

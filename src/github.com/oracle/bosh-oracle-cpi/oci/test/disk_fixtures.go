@@ -29,7 +29,7 @@ func NewDiskFixture() *DiskFixture {
 func (dff *DiskFactoryFixture) Setup(t *testing.T) error {
 	dff.Connection.Setup(t)
 
-	loc := resource.NewLocation(dff.Connection.VCN(), dff.Connection.Subnet(), dff.Connection.AD(), dff.Connection.Connector().CompartmentId())
+	loc := resource.NewLocation(dff.Connection.AD(), dff.Connection.Connector().CompartmentId())
 
 	dff.creator = disks.NewCreator(dff.Connection.Connector(), dff.Connection.Logger(), loc)
 	dff.terminator = disks.NewTerminator(dff.Connection.Connector(), dff.Connection.Logger())

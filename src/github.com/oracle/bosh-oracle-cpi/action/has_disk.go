@@ -21,7 +21,7 @@ func NewHasDisk(c client.Connector, l boshlog.Logger) HasDisk {
 // Run queries OCI to determine if the given block volume exists
 func (hd HasDisk) Run(diskCID DiskCID) (bool, error) {
 
-	loc := resource.NewLocation("", "", "", hd.connector.CompartmentId())
+	loc := resource.NewLocation("", hd.connector.CompartmentId())
 	vol, err := newDiskFinder(hd.connector, hd.logger, loc).FindVolume(string(diskCID))
 	if err != nil {
 		return false, bosherr.WrapError(err, "Error finding disk")

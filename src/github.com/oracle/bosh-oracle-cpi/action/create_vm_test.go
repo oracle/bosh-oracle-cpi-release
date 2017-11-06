@@ -41,8 +41,7 @@ var _ = Describe("CreateVM", func() {
 	)
 
 	BeforeEach(func() {
-		installVMCreatorFactory(func(c client.Connector, l boshlog.Logger, vcnName string,
-			subnetName string, availabilityDomain string) vm.Creator {
+		installVMCreatorFactory(func(c client.Connector, l boshlog.Logger, availabilityDomain string) vm.Creator {
 			return creator
 		})
 

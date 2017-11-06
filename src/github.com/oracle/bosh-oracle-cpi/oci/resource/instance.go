@@ -42,7 +42,7 @@ func (in *Instance) EnsureReachable(c client.Connector, l boshlog.Logger) error 
 }
 
 func (in *Instance) queryIPs(c client.Connector, l boshlog.Logger) error {
-	err := in.waitUntilStarted(c, l)
+	err := in.WaitUntilStarted(c, l)
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func (in *Instance) queryIPs(c client.Connector, l boshlog.Logger) error {
 	return nil
 }
 
-func (in *Instance) waitUntilStarted(c client.Connector, l boshlog.Logger) (err error) {
+func (in *Instance) WaitUntilStarted(c client.Connector, l boshlog.Logger) (err error) {
 
 	getInstanceState := func() (bool, error) {
 
@@ -100,21 +100,19 @@ func (in *Instance) waitUntilStarted(c client.Connector, l boshlog.Logger) (err 
 }
 
 func (in *Instance) PublicIP(c client.Connector, l boshlog.Logger) (string, error) {
-	if !in.havePublicIP() {
-		if err := in.queryIPs(c, l); err != nil {
-			return "", err
-		}
+	ips, err := in.PublicIPs(c, l)
+	if err != nil {
+		return "", err
 	}
-	return in.publicIPs[0], nil
+	return ips[0], nil
 }
 
 func (in *Instance) PrivateIP(c client.Connector, l boshlog.Logger) (string, error) {
-	if !in.havePrivateIP() {
-		if err := in.queryIPs(c, l); err != nil {
-			return "", err
-		}
+	ips, err := in.PrivateIPs(c, l)
+	if err != nil {
+		return "", err
 	}
-	return in.privateIPs[0], nil
+	return ips[0], nil
 }
 
 func (in *Instance) setupSSHTunnelToAgent(c client.Connector, l boshlog.Logger) (err error) {
@@ -145,11 +143,11 @@ func (in *Instance) setupSSHTunnelToAgent(c client.Connector, l boshlog.Logger) 
 	return nil
 }
 
-func (in *Instance) havePublicIP() bool {
+func (in *Instance) havePublicIPs() bool {
 	return in.publicIPs != nil && len(in.publicIPs) > 0
 }
 
-func (in *Instance) havePrivateIP() bool {
+func (in *Instance) havePrivateIPs() bool {
 	return in.privateIPs != nil && len(in.privateIPs) > 0
 }
 
@@ -159,7 +157,24 @@ func (in *Instance) remoteIP(c client.Connector, l boshlog.Logger, public bool) 
 	} else {
 		return in.PrivateIP(c, l)
 	}
+}
 
+func (in *Instance) PublicIPs(c client.Connector, l boshlog.Logger) ([]string, error) {
+	if !in.havePublicIPs() {
+		if err := in.queryIPs(c, l); err != nil {
+			return nil, err
+		}
+	}
+	return in.publicIPs, nil
+}
+
+func (in *Instance) PrivateIPs(c client.Connector, l boshlog.Logger) ([]string, error) {
+	if !in.havePrivateIPs() {
+		if err := in.queryIPs(c, l); err != nil {
+			return nil, err
+		}
+	}
+	return in.privateIPs, nil
 }
 
 func (in *Instance) Location() Location {

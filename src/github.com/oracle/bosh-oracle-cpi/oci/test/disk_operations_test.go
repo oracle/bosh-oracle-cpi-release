@@ -13,7 +13,7 @@ func Test_DiskOpsNewFactory(t *testing.T) {
 	state.Setup(t)
 	defer state.TearDown(t)
 
-	loc := resource.NewLocation(state.VCN(), state.Subnet(), state.AD(), state.Connector().CompartmentId())
+	loc := resource.NewLocation(state.AD(), state.Connector().CompartmentId())
 
 	assertNotNil(t, disks.NewCreator(state.Connector(), state.Logger(), loc), " Null creator")
 	assertNotNil(t, disks.NewFinder(state.Connector(), state.Logger(), loc), " Null Finder")

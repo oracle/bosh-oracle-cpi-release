@@ -40,41 +40,30 @@ func NewCreateVM(c client.Connector, l boshlog.Logger, r registry.Client, u bosh
 func (cv CreateVM) Run(agentID string, stemcellCID StemcellCID, cloudProps VMCloudProperties,
 	networks Networks, _ []DiskCID, env Environment) (VMCID, error) {
 
-	// network properties
-	n, err := cv.selectNetwork(networks)
-	if err != nil {
-		return "", err
-	}
 	agentNetworks := networks.AsRegistryNetworks()
 
 	// Create the VM
 	name := cv.vmName()
-	creator := newVMCreator(cv.connector, cv.logger,
-		n.CloudProperties.VcnName,
-		n.CloudProperties.SubnetName, cloudProps.AvailabilityDomain)
+	creator := newVMCreator(cv.connector, cv.logger, cloudProps.AvailabilityDomain)
 
 	icfg := vm.InstanceConfiguration{
-		Name:      name,
-		Shape:     cloudProps.Shape,
-		ImageId:   string(stemcellCID),
-		PrivateIP: n.IP,
+		Name:    name,
+		Shape:   cloudProps.Shape,
+		ImageId: string(stemcellCID),
+		Network: networks.AsNetworkConfiguration(),
 	}
 	metadata := vm.InstanceMetadata{
 		vm.NewSSHKeys(cv.connector.AuthorizedKeys()),
 		vm.NewUserData(name, cv.connector.AgentRegistryEndpoint(),
-			n.DNS, agentNetworks),
+			nil, agentNetworks),
 	}
 	instance, err := creator.CreateInstance(icfg, metadata)
 
-	// Optimization: Only do this if we must as in the case of dynamic
-	// network configuration, since this starts ssh waits and pings to the agent.
-	// However, the network type property is not always known
-	// (bosh cli v2 gobbles it and doesn't pass it down to us).
-	// So we guess -- dynamic configuration typically doesn't request a static private
-	// IP and we use that as an indicator
-	if err == nil && n.IP == "" {
+	// Start a local forward ssh tunnel?
+	if err == nil && networks.AllDynamic() {
 		err = instance.EnsureReachable(cv.connector, cv.logger)
 	}
+
 	if err != nil {
 		return "", bosherr.WrapError(err, "Error launching new instance")
 	}
@@ -83,32 +72,6 @@ func (cv CreateVM) Run(agentID string, stemcellCID StemcellCID, cloudProps VMClo
 		return "", err
 	}
 	return VMCID(instance.ID()), nil
-}
-
-// selectNetwork finds a suitable network (to create the VM)
-// from the list of networks configured in the
-// deployment manifest
-func (cv CreateVM) selectNetwork(networks Networks) (*Network, error) {
-
-	// Prefer manual network over dynamic
-	// network. Pick the first one
-	n := networks.FirstStatic()
-	if n == nil {
-		n = networks.FirstDynamic()
-	}
-	// CF-51. Pick first network if type is missing
-	// and we can't determine the network type
-	if n == nil {
-		n = networks.First()
-	}
-	// validate
-	if n == nil {
-		return nil, bosherr.Error("No suitable network defintion for creating a VM")
-	}
-	if err := n.validate(); err != nil {
-		return n, err
-	}
-	return n, nil
 }
 
 func (cv CreateVM) updateRegistry(agentID string, instanceID string, vmName string,

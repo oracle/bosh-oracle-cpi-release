@@ -34,8 +34,7 @@ func (cd CreateDisk) Run(size int, _ DiskCloudProperties, vmCID VMCID) (DiskCID,
 	}
 
 	creator := newDiskCreator(cd.connector, cd.logger,
-		resource.NewLocation("", "",
-			in.Location().AvailabilityDomain(),
+		resource.NewLocation(in.Location().AvailabilityDomain(),
 			cd.connector.CompartmentId()))
 
 	volName := fmt.Sprintf("bosh-volume-%s", time.Now().Format(time.Stamp))

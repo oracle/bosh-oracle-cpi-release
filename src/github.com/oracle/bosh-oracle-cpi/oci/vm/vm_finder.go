@@ -33,8 +33,7 @@ func (f *finder) FindInstance(instanceID string) (*resource.Instance, error) {
 		f.logger.Debug(logTag, "Error GetInstance %s", err.Error())
 		return nil, err
 	}
-	loc := resource.NewLocation("", "", *r.Payload.AvailabilityDomain,
-		*r.Payload.CompartmentID)
+	loc := resource.NewLocation(*r.Payload.AvailabilityDomain, *r.Payload.CompartmentID)
 	return resource.NewInstance(*r.Payload.ID, loc), nil
 
 }

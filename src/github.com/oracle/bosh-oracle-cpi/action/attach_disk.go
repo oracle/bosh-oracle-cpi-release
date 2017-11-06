@@ -34,7 +34,7 @@ func (ad AttachDisk) Run(vmCID VMCID, diskCID DiskCID) (interface{}, error) {
 		return nil, bosherr.WrapError(err, "Unable to find VM")
 	}
 
-	loc := resource.NewLocation("", "", in.Location().AvailabilityDomain(), ad.connector.CompartmentId())
+	loc := resource.NewLocation(in.Location().AvailabilityDomain(), ad.connector.CompartmentId())
 
 	attacher, err := newAttacherDetacherForInstance(in, ad.connector, ad.logger)
 

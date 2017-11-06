@@ -65,7 +65,7 @@ var _ = Describe("DetachDisk", func() {
 
 		detachDisk = NewDetachDisk(connector, logger, registryClient)
 
-		vmLocation = resource.NewLocation("fake-vcn", "fake-subnet", "fake-ad1", "fake-compartment-id")
+		vmLocation = resource.NewLocation("fake-ad1", "fake-compartment-id")
 		foundInstance = resource.NewInstance("fake-vm-ocid", vmLocation)
 		vmFinder.FindInstanceResult = foundInstance
 
