@@ -132,7 +132,7 @@ func (cv *creator) attachSecondaryVnics(in *resource.Instance, secondaries []Net
 	defer deleteInstance()
 
 	for i, secondary := range secondaries {
-		vnicDetail, err := secondary.newCreateVnicDetail(cv.connector, fmt.Sprintf("secondary-%s", i))
+		vnicDetail, err := secondary.newCreateVnicDetail(cv.connector, fmt.Sprintf("secondary-%d", i))
 		if err != nil {
 			return err
 		}

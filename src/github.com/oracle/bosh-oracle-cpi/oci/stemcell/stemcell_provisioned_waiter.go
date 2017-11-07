@@ -11,8 +11,8 @@ import (
 	boshretry "github.com/cloudfoundry/bosh-utils/retrystrategy"
 )
 
-// imageAvailableWaiter waits for a newly image
-// to be provisioned
+// imageAvailableWaiter waits for a newly created
+// image to be fully provisioned
 type imageAvailableWaiter struct {
 	connector client.Connector
 	logger    boshlog.Logger
@@ -48,10 +48,10 @@ func (w *imageAvailableWaiter) WaitFor(img *models.Image) error {
 	}
 
 	retryable := boshretry.NewRetryable(getImageState)
-	delay := 3 * time.Minute
+	delay := 2 * time.Minute
 	retryStrategy := boshretry.NewUnlimitedRetryStrategy(delay, retryable, w.logger)
 
-	w.logger.Debug(stemCellLogTag, "Waiting for image import to complete...will check every %f minutes", delay.Minutes())
+	w.logger.Debug(stemCellLogTag, "Waiting for image import to complete...will check every %d minutes", int(delay.Minutes()))
 	if err := retryStrategy.Try(); err != nil {
 		w.logger.Debug(stemCellLogTag, "Error waiting %v", err)
 		return err
