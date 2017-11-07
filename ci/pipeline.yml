@@ -116,7 +116,7 @@ jobs:
     serial_groups: [run-int]
     plan:
       - aggregate:
-        - {trigger: true, passed: [build-candidate], get: bosh-cpi-src, resource: bosh-cpi-src-in}
+        - {trigger: true, passed: [build-candidate, setup-infrastructure], get: bosh-cpi-src, resource: bosh-cpi-src-in}
 #        - {trigger: true, passed: [setup-infrastructure],                  get: stemcell, resource: google-ubuntu-stemcell}
 
       - task: run-int
