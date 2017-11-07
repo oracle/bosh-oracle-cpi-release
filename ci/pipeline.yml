@@ -8,6 +8,7 @@ groups:
       - deploy-ubuntu
       - run-bats
       - run-int
+      - promote-candidate-major
 
 jobs:
   - name: test-unit
@@ -133,6 +134,38 @@ jobs:
           oracle_ssh_public_key:          {{oracle_ssh_public_key}}
           oracle_ssh_private_key:         {{oracle_ssh_private_key}}
 
+  - name: promote-candidate-major
+    serial: true
+    plan:
+      - aggregate:
+        - {trigger: false, passed: [run-int,run-bats], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
+#        - {trigger: false, passed: [run-int,run-bats], get: stemcell,               resource: google-ubuntu-stemcell}
+#        - {trigger: false, passed: [run-bats], get: bosh-cpi-release,       resource: bosh-cpi-dev-artifacts}
+        - {trigger: false,                             get: release-version-semver, params: {bump: major}}
+      
+      - task: promote
+        file: bosh-cpi-src/ci/tasks/promote-candidate.yml
+#        config:
+#          params:
+#            release_blobs_access_key: {{release_blobs_access_key}}
+#            release_blobs_secret_key: {{release_blobs_secret_key}}
+
+      - put: release-version-semver
+        params: {file: release-version-semver/number}
+
+      - put: bosh-cpi-src-out
+        params: {repository: promoted/repo, rebase: true, tag_prefix: "v", tag: promoted/semver_version}
+
+#      - put: bosh-cpi-artifacts
+#        params:
+#          file: promoted/*.tgz
+#          predefined_acl: "publicRead"
+      
+#      - put: bosh-cpi-artifacts-sha1
+#        params:
+#          file: promoted/*.tgz.sha1
+#          predefined_acl: "publicRead"
+
 resources:
   - name: bosh-cpi-src-in
     type: git
@@ -142,6 +175,12 @@ resources:
       ignore_paths:
         - .final_builds/**/*.yml
         - releases/**/*.yml
+
+  - name: bosh-cpi-src-out
+    type: git
+    source:
+      uri: https://((github-user)):((github-password))@((github-repo))
+      branch: master
 
 #TODO Implement bmc-resource?
 #  - name: bosh-cpi-dev-artifacts
@@ -171,4 +210,13 @@ resources:
       uri: https://((github-user)):((github-password))@((github-repo))
       branch: version
       file: version
+      initial_version: 1.0.0
+
+  - name: release-version-semver
+    type: semver
+    source:
+      driver: git
+      uri: https://((github-user)):((github-password))@((github-repo))
+      branch: version
+      file: release-version
       initial_version: 1.0.0
