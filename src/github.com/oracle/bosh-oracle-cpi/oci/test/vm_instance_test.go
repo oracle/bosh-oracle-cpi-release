@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 	"github.com/oracle/bosh-oracle-cpi/oci/vm"
 	"github.com/oracle/bosh-oracle-cpi/registry"
@@ -71,7 +72,7 @@ func Test_VmOpsCreateInstanceWithUserData(t *testing.T) {
 	}
 }
 
-func Test_VmOpsReCreateVMWithSameIP(t *testing.T) {
+func Test_VmOpsRecreateVMWithSameIP(t *testing.T) {
 	state := NewConnectionFixture()
 	state.Setup(t)
 	defer state.TearDown(t)
@@ -129,4 +130,17 @@ func Test_VmOpsReCreateVMWithSameIP(t *testing.T) {
 	if in == nil {
 		t.Fatalf("Unexpected nil instance")
 	}
+}
+
+func Test_VmOpsUpdateInstanceName(t *testing.T) {
+
+	state := NewVMFixture()
+	state.Setup(t)
+	defer state.TearDown(t)
+
+	instance := state.Instance()
+
+	updater := vm.NewUpdater(state.Connector(), state.Logger())
+	err := updater.UpdateInstanceName(instance.ID(), "test-vm-renamed")
+	assertIsNil(t, err, fmt.Sprintf("Unexpected failure in updateInstance %v", err))
 }
