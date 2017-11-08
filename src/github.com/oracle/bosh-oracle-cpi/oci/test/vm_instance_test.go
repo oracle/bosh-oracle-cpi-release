@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
@@ -74,7 +75,7 @@ func Test_VmOpsCreateInstanceWithUserData(t *testing.T) {
 	}
 }
 
-func Test_VmOpsReCreateVMWithSameIP(t *testing.T) {
+func Test_VmOpsRecreateVMWithSameIP(t *testing.T) {
 	state := NewConnectionFixture()
 	state.Setup(t)
 	defer state.TearDown(t)
@@ -173,4 +174,17 @@ func Test_VmOpsAttachMultipleVnics(t *testing.T) {
 			t.Errorf(" Unexpected number of IPs retuned by %s. Expected 2. Actual %d", n, len(ips))
 		}
 	}
+}
+
+func Test_VmOpsUpdateInstanceName(t *testing.T) {
+
+	state := NewVMFixture()
+	state.Setup(t)
+	defer state.TearDown(t)
+
+	instance := state.Instance()
+
+	updater := vm.NewUpdater(state.Connector(), state.Logger())
+	err := updater.UpdateInstanceName(instance.ID(), "test-vm-renamed")
+	assertIsNil(t, err, fmt.Sprintf("Unexpected failure in updateInstance %v", err))
 }

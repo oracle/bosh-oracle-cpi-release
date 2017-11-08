@@ -35,9 +35,10 @@ func NewConcreteFactory(
 			"delete_stemcell": NewDeleteStemcell(connector, logger),
 
 			// VM management
-			"create_vm": NewCreateVM(connector, logger, registryClient, uuidGen),
-			"delete_vm": NewDeleteVM(connector, logger, registryClient),
-			"has_vm":    NewHasVM(connector, logger),
+			"create_vm":       NewCreateVM(connector, logger, registryClient, uuidGen),
+			"delete_vm":       NewDeleteVM(connector, logger, registryClient),
+			"has_vm":          NewHasVM(connector, logger),
+			"set_vm_metadata": NewSetVMMetadata(connector, logger),
 
 			// Disk Management
 			"create_disk": NewCreateDisk(connector, logger),

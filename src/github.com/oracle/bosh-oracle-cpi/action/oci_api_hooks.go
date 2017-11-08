@@ -17,6 +17,7 @@ var (
 	vmFinderFactory     vm.FinderFactory     = vm.NewFinder
 	vmCreatorFactory    vm.CreatorFactory    = vm.NewCreator
 	vmTerminatorFactory vm.TerminatorFactory = vm.NewTerminator
+	vmUpdaterFactory    vm.UpdaterFactory    = vm.NewUpdater
 
 	diskCreatorFactory      disks.CreatorFactory                  = disks.NewCreator
 	diskFinderFactory       disks.FinderFactory                   = disks.NewFinder
@@ -46,6 +47,9 @@ func newVMCreator(c client.Connector, l boshlog.Logger, availabilityDomain strin
 
 func newVMTerminator(c client.Connector, l boshlog.Logger) vm.Terminator {
 	return vmTerminatorFactory(c, l)
+}
+func newVMUpdater(c client.Connector, l boshlog.Logger) vm.Updater {
+	return vmUpdaterFactory(c, l)
 }
 
 func newDiskCreator(c client.Connector, l boshlog.Logger, loc resource.Location) disks.Creator {
@@ -83,6 +87,9 @@ func installVMTerminatorFactory(fac vm.TerminatorFactory) {
 func installVMFinderFactory(fac vm.FinderFactory) {
 	vmFinderFactory = fac
 }
+func installVMUpdaterFactory(fac vm.UpdaterFactory) {
+	vmUpdaterFactory = fac
+}
 
 func installDiskCreatorFactory(fac disks.CreatorFactory) {
 	diskCreatorFactory = fac
@@ -106,6 +113,7 @@ func resetAllFactories() {
 	vmFinderFactory = vm.NewFinder
 	vmCreatorFactory = vm.NewCreator
 	vmTerminatorFactory = vm.NewTerminator
+	vmUpdaterFactory = vm.NewUpdater
 
 	diskCreatorFactory = disks.NewCreator
 	diskFinderFactory = disks.NewFinder
