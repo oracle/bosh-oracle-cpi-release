@@ -44,7 +44,7 @@ jobs:
     plan:
       - aggregate:
         - {trigger: true, passed: [build-candidate], get: bosh-cpi-src,   resource: bosh-cpi-src-in}
-#TODO        - {trigger: true, get: stemcell,   resource: oracle-ubuntu-stemcell}
+        - {trigger: true, get: stemcell, resource: oracle-ubuntu-stemcell}
 
       - task: setup-infrastructure
         file: bosh-cpi-src/ci/tasks/setup-infrastructure.yml
@@ -67,7 +67,7 @@ jobs:
         - {trigger: true, passed: [build-candidate, setup-infrastructure],  get: bosh-cpi-src, resource: bosh-cpi-src-in}
 #        TODO
 #        - {trigger: true,  passed: [build-candidate],                       get: bosh-cpi-release, resource: bosh-cpi-dev-artifacts}
-#        - {trigger: true, passed: [setup-infrastructure],                   get: stemcell, resource: google-ubuntu-stemcell}
+        - {trigger: true, passed: [setup-infrastructure], get: stemcell, resource: oracle-ubuntu-stemcell}
 # TODO: Do we need bosh-init if using BOSH CLIv2?
 #        - {trigger: false,                                                  get: bosh-init}
         - {trigger: false,                                                  get: bosh-release}
@@ -95,7 +95,7 @@ jobs:
     plan:
       - aggregate:
         - {trigger: true, passed: [build-candidate, deploy-ubuntu], get: bosh-cpi-src, resource: bosh-cpi-src-in}
-#        - {trigger: true, passed: [deploy-ubuntu], get: stemcell, resource: google-ubuntu-stemcell}
+        - {trigger: true, passed: [deploy-ubuntu], get: stemcell, resource: oracle-ubuntu-stemcell}
 #        - {trigger: false, passed: [deploy-ubuntu], get: bosh-cpi-release, resource: bosh-cpi-dev-artifacts}
         - {trigger: false, get: bats}
 
@@ -118,7 +118,7 @@ jobs:
     plan:
       - aggregate:
         - {trigger: true, passed: [build-candidate, setup-infrastructure], get: bosh-cpi-src, resource: bosh-cpi-src-in}
-#        - {trigger: true, passed: [setup-infrastructure],                  get: stemcell, resource: google-ubuntu-stemcell}
+        - {trigger: true, passed: [setup-infrastructure], get: stemcell, resource: oracle-ubuntu-stemcell}
 
       - task: run-int
         file: bosh-cpi-src/ci/tasks/run-int.yml
@@ -138,7 +138,9 @@ jobs:
     serial: true
     plan:
       - aggregate:
-        - {trigger: false, passed: [run-int,run-bats], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
+#        - {trigger: false, passed: [run-int,run-bats], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
+        - {trigger: false, passed: [deploy-ubuntu], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
+        - {trigger: false, passed: [deploy-ubuntu], get: stemcell, resource: oracle-ubuntu-stemcell}
 #        - {trigger: false, passed: [run-int,run-bats], get: stemcell,               resource: google-ubuntu-stemcell}
 #        - {trigger: false, passed: [run-bats], get: bosh-cpi-release,       resource: bosh-cpi-dev-artifacts}
         - {trigger: false,                             get: release-version-semver, params: {bump: major}}
@@ -161,6 +163,13 @@ jobs:
 #        params:
 #          file: promoted/*.tgz.sha1
 #          predefined_acl: "publicRead"
+
+resource_types:
+- name: file-url
+  type: docker-image
+  source:
+    repository: pivotalservices/concourse-curl-resource
+    tag: latest
 
 resources:
   - name: bosh-cpi-src-in
@@ -198,6 +207,12 @@ resources:
     source:
       uri: https://github.com/dmutreja/bosh-acceptance-tests.git
       branch: gocli-bats
+
+  - name: oracle-ubuntu-stemcell
+    type: file-url
+    source:
+      url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/qFzKHkdhfqdDH3BBFhcXWTjZ4VMvSnxB_5n7diUerWw/n/cloudfoundry/b/stemcells/o/light-oracle-ubuntu-stemcell-2000.13.tgz
+      filename: light-oracle-ubuntu-stemcell-2000.13.tgz
 
   - name: version-semver
     type: semver

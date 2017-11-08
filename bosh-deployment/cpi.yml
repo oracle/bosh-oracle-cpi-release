@@ -10,8 +10,7 @@
 - type: replace
   path: /resource_pools/name=vms/stemcell?
   value:
-    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/qFzKHkdhfqdDH3BBFhcXWTjZ4VMvSnxB_5n7diUerWw/n/cloudfoundry/b/stemcells/o/light-oracle-ubuntu-stemcell-2000.13.tgz
-    sha1: 04300c151683fa297cea3ae46a4ec04ed978d0d5 
+    url: file://stemcell.tgz
 
 # Configure instance shapes 
 - type: replace

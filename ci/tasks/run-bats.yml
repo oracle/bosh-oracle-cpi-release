@@ -7,7 +7,7 @@ image_resource:
     tag: "latest"
 inputs:
   - name: bosh-cpi-src
-#  - name: stemcell
+  - name: stemcell
   - name: bats
 run:
   path: bosh-cpi-src/ci/tasks/run-bats.sh

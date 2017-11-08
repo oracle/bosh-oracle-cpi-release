@@ -43,7 +43,7 @@ state_filename="director-manifest-state.json"
 echo "Setting up artifacts..."
 #cp ./bosh-cpi-release/*.tgz ${deployment_dir}/${cpi_release_name}.tgz
 cp ./bosh-release/*.tgz ${deployment_dir}/bosh-release.tgz
-#cp ./stemcell/*.tgz ${deployment_dir}/stemcell.tgz
+cp ./stemcell/*.tgz ${deployment_dir}/stemcell.tgz
 cp ./bosh-cpi-src/bosh-deployment/bosh.yml ${deployment_dir}/${manifest_filename}
 cp ./bosh-cpi-src/bosh-deployment/cpi.yml ${deployment_dir}
 

@@ -44,8 +44,8 @@ chmod 600 $BOSH_SSH_KEY
 cp /usr/local/bin/bosh /usr/local/bin/bosh2
 gem install bundle
 
-echo "Download stemcell..."
-curl -Ls -o stemcell.tgz https://objectstorage.us-phoenix-1.oraclecloud.com/p/ERMshBsLoSFBGg6_8bMdceJLPLIM17Sm0Wiq5E--0WA/n/cloudfoundry/b/stemcells/o/light-oracle-ubuntu-stemcell-2000.6.tgz
+echo "Setting up artifacts..."
+cp ./stemcell/*.tgz stemcell.tgz
 
 # get the terraform artifacts that were created previously
 echo "Download oci infrastructure metadata..."
