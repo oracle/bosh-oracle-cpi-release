@@ -47,10 +47,14 @@ single-test: get-deps
 
 # Runs OCI integration tests
 ocitest: 
-	# Uncomment and export variables (in the launch shell) to control test configuration
+	# Uncomment or export (in the laucnh shell) following variables to control test configuration
 	# CPITEST_CONFIG=/path/to/my/oci/config ini. Default is ~/.oci/config
 	# CPITEST_PROFILE=section inside CPITEST_CONFIG file. Default is CPITEST
-	ginkgo oci/test -slowSpecThreshold=500 -progress -nodes=3 -randomizeAllSpecs -randomizeSuites $(GINKGO_ARGS) -v
+    ginkgo oci/test -slowSpecThreshold=500 -progress -nodes=3 -randomizeAllSpecs -randomizeSuites $(GINKGO_ARGS) -v
+
+# Runs a subset of OCI integration tests
+ocitest-subset:
+	go test -v  ./oci/test/... -run ${TEST_SPEC}
 
 # Runs the integration tests from Concourse
 testintci: get-deps ocitest

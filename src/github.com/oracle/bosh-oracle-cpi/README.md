@@ -53,7 +53,7 @@ $GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has targets to run two ki
     
 2. Oracle Cloud Infrastructure tests
 
-    ``make ocitest``
+    * ``make ocitest``
 
     Runs tests in oci/test package. The tests in this package drive the layer responsible for bulk of the work in the CPI. E.g. creating/deleting  a vm instance  or a persistent block volume.
     
@@ -84,7 +84,16 @@ $GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has targets to run two ki
     | userPublicKeyPath | (Optional) Public key to install when creating a new instance
     | stemcellImage | OCID of the stemcell image for creating new instances
 
-
+     * ``make ocitest-subset``
+    can be used to run a subset of oci tests. 
+    
+    For example,
+     * ``TEST_SPEC=Test_VmOps make ocitest-subset``
+     
+     runs tests containing the expression Test_VmOps in their name
+     
+     Note that by convention vm, disks, and stemcell tests are named 
+     as Test_VmOpsXX, Test_DiskOpsXX, and Test_StemcellOpsXX respectively. 
 
 #### Running the CPI directly
 
