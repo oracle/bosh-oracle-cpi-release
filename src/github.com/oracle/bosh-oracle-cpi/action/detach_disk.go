@@ -37,7 +37,7 @@ func (dd DetachDisk) Run(vmCID VMCID, diskCID DiskCID) (interface{}, error) {
 		return nil, bosherr.WrapError(err, "Error creating detacher")
 	}
 
-	loc := resource.NewLocation("", "", in.Location().AvailabilityDomain(), dd.connector.CompartmentId())
+	loc := resource.NewLocation(in.Location().AvailabilityDomain(), dd.connector.CompartmentId())
 	vol, err := newDiskFinder(dd.connector, dd.logger, loc).FindVolume(string(diskCID))
 	if err != nil {
 		return nil, bosherr.WrapError(err, "Unable to find Volume")

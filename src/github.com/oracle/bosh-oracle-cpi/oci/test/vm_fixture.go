@@ -24,14 +24,11 @@ func NewVMFixture() *VMFixture {
 func (vf *VMFixture) Setup(t *testing.T) error {
 	vf.connectionFixture.Setup(t)
 
-	vf.creator = vm.NewCreator(vf.Connector(),
-		vf.connectionFixture.Logger(), vf.connectionFixture.VCN(),
-		vf.connectionFixture.Subnet(), vf.connectionFixture.AD())
+	vf.creator = vm.NewCreator(vf.Connector(), vf.connectionFixture.Logger(), vf.connectionFixture.AD())
 	vf.terminator = vm.NewTerminator(vf.Connector(), vf.Logger())
 	vf.finder = vm.NewFinder(vf.Connector(), vf.Logger())
 
-	icfg := vmStandard12config
-	icfg.ImageId = vf.connectionFixture.StemcellImageID()
+	icfg := vf.connectionFixture.DefaultInstanceConfiguration()
 
 	agentSettings := registry.NewAgentSettings("vm-fixture-agent-id", icfg.Name,
 		registry.NetworksSettings{"test-network": manualNetworkNoIp},

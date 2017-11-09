@@ -2,6 +2,7 @@ package action
 
 import (
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
+	"github.com/oracle/bosh-oracle-cpi/oci/vm"
 	"github.com/oracle/bosh-oracle-cpi/registry"
 )
 
@@ -31,6 +32,20 @@ func (ns Networks) AsRegistryNetworks() registry.NetworksSettings {
 	return networksSettings
 }
 
+// AsNetworkConfiguration converts the networks map to vm.Networks
+// suitable for use with the vm.Creator
+func (ns Networks) AsNetworkConfiguration() vm.Networks {
+
+	networks := []vm.NetworkConfiguration{}
+	for _, n := range ns {
+		networks = append(networks, vm.NetworkConfiguration{
+			VcnName:    n.CloudProperties.VcnName,
+			SubnetName: n.CloudProperties.SubnetName,
+			PrivateIP:  n.IP})
+	}
+	return networks
+}
+
 // AsRegistryNetwork converts a single network to network setting structure
 // expected by the agent registry
 func (n Network) AsRegistryNetwork() registry.NetworkSetting {
@@ -50,13 +65,18 @@ func (n Network) AsRegistryNetwork() registry.NetworkSetting {
 // isDynamic returns true if the network is configured
 // as a "dynamic" network
 func (n Network) isDynamic() bool {
-	return n.Type == "dynamic"
+	// The network type property is not always known
+	// (Our caller cli v2 or director gobbles it and doesn't pass it down to us).
+	// So we guess -- dynamic configuration typically doesn't request a static private
+	// IP and we use that as an indicator
+
+	return n.Type == "dynamic" || n.IP == ""
 }
 
 // isStatic returns true if the network is configured
 // as a "manual" network
 func (n Network) isStatic() bool {
-	return n.Type == "manual"
+	return n.Type == "manual" || n.IP != ""
 }
 
 // isVip returns true if the network is configured
@@ -85,7 +105,16 @@ func (ns Networks) FirstStatic() *Network {
 		}
 	}
 	return nil
+}
 
+// AllDynamic returns true if all the configured networks are dynamic, otherwise false.
+func (ns Networks) AllDynamic() bool {
+	for _, n := range ns {
+		if !n.isDynamic() {
+			return false
+		}
+	}
+	return true
 }
 
 // First returns the first network in the map. Returns nil if the map is empty

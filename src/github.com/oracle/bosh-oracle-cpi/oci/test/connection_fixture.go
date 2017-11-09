@@ -4,6 +4,7 @@ import (
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
+	"github.com/oracle/bosh-oracle-cpi/oci/vm"
 	"testing"
 )
 
@@ -58,6 +59,9 @@ func (c *ConnectionFixture) VCN() string {
 func (c *ConnectionFixture) Subnet() string {
 	return c.cpiTestIni.SubnetName
 }
+func (c *ConnectionFixture) Subnet2() string {
+	return c.cpiTestIni.Subnet2Name
+}
 
 func (c *ConnectionFixture) AD() string {
 	return c.cpiTestIni.AvailabilityDomain
@@ -69,4 +73,13 @@ func (c *ConnectionFixture) StemcellImageID() string {
 
 func (c *ConnectionFixture) StemcellImageSourceURI() string {
 	return c.cpiTestIni.StemcellImageSourceURI
+}
+
+func (c *ConnectionFixture) DefaultInstanceConfiguration() vm.InstanceConfiguration {
+	icfg := vmStandard12config
+	icfg.ImageId = c.StemcellImageID()
+	icfg.Network = []vm.NetworkConfiguration{
+		{VcnName: c.VCN(), SubnetName: c.Subnet(), PrivateIP: ""},
+	}
+	return icfg
 }

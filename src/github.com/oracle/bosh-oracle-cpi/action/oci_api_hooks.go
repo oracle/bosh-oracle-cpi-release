@@ -41,8 +41,8 @@ func newVMFinder(c client.Connector, l boshlog.Logger) vm.Finder {
 	return vmFinderFactory(c, l)
 }
 
-func newVMCreator(c client.Connector, l boshlog.Logger, vcnName string, subnetName string, availabilityDomain string) vm.Creator {
-	return vmCreatorFactory(c, l, vcnName, subnetName, availabilityDomain)
+func newVMCreator(c client.Connector, l boshlog.Logger, availabilityDomain string) vm.Creator {
+	return vmCreatorFactory(c, l, availabilityDomain)
 }
 
 func newVMTerminator(c client.Connector, l boshlog.Logger) vm.Terminator {

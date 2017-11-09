@@ -21,7 +21,7 @@ func NewGetDisks(c client.Connector, l boshlog.Logger) GetDisks {
 // Run queries and returns the IDs of block volumes attached to the given vm
 func (gd GetDisks) Run(vmCID VMCID) ([]string, error) {
 
-	loc := resource.NewLocation("", "", "", gd.connector.CompartmentId())
+	loc := resource.NewLocation("", gd.connector.CompartmentId())
 	volumes, err := newDiskFinder(gd.connector, gd.logger, loc).FindAllAttachedVolumes(string(vmCID))
 
 	if err != nil {

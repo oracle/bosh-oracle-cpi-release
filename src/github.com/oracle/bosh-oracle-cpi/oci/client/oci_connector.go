@@ -85,7 +85,6 @@ func (c *connectorImpl) AuthorizedKeys() []string {
 		keys = append(keys, cpiKey)
 
 	}
-	c.logger.Debug(logTag, "Authorized keys %v", keys)
 	return keys
 }
 
@@ -137,9 +136,7 @@ func (c *connectorImpl) createIdentityServiceClient() {
 }
 
 func (c *connectorImpl) authenticatedHttpsClient(host string, basePath string, config transport.Config) (*rclient.Runtime, error) {
-	c.logger.Debug(logTag, "Creating Runtime Client")
 	rt := rclient.New(host, basePath, []string{scheme})
-
 	c.logger.Debug(logTag, "Creating authenticating transport to host %s", host)
 	authC, err := transport.CreateAuthenticatedHTTPTarget(rt.Transport, config)
 

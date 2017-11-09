@@ -2,11 +2,15 @@ package test
 
 import (
 	"fmt"
+	boshlog "github.com/cloudfoundry/bosh-utils/logger"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 	"github.com/oracle/bosh-oracle-cpi/oci/vm"
 	"github.com/oracle/bosh-oracle-cpi/registry"
 	"testing"
 )
+
+type getIPsFunc func(client.Connector, boshlog.Logger) ([]string, error)
 
 //  Test_LocationOfFoundInstance verifies that
 // find instance populates availability domain
@@ -39,8 +43,7 @@ func Test_VmOpsCreateInstanceWithUserData(t *testing.T) {
 	var in *resource.Instance
 	var err error
 	creator := vm.NewCreator(state.Connector(),
-		state.Logger(), state.VCN(),
-		state.Subnet(), state.AD())
+		state.Logger(), state.AD())
 	terminator := vm.NewTerminator(state.Connector(), state.Logger())
 
 	deleteInstance := func() {
@@ -50,9 +53,9 @@ func Test_VmOpsCreateInstanceWithUserData(t *testing.T) {
 	}
 	defer deleteInstance()
 
-	icfg := vmStandard12config
-	icfg.Name = "test-instance"
-	icfg.ImageId = state.StemcellImageID()
+	icfg := state.DefaultInstanceConfiguration()
+	icfg.Name = "test-instance-with-metadata"
+
 	in, err = creator.CreateInstance(icfg,
 		vm.InstanceMetadata{
 			vm.NewSSHKeys(state.connector.AuthorizedKeys()),
@@ -82,8 +85,7 @@ func Test_VmOpsRecreateVMWithSameIP(t *testing.T) {
 	var err error
 
 	creator := vm.NewCreator(state.Connector(),
-		state.Logger(), state.VCN(),
-		state.Subnet(), state.AD())
+		state.Logger(), state.AD())
 	terminator := vm.NewTerminator(state.Connector(), state.Logger())
 
 	deleteInstance := func() {
@@ -95,18 +97,16 @@ func Test_VmOpsRecreateVMWithSameIP(t *testing.T) {
 	defer deleteInstance()
 
 	// Create a VM
-	var ip string
-	in, err = creator.CreateInstance(vm.InstanceConfiguration{
-		ImageId: state.StemcellImageID(),
-		Shape:   vmStandard12config.Shape,
-		Name:    "instance-with-auto-assigned-ip"},
-		vm.InstanceMetadata{})
+	icfg := state.DefaultInstanceConfiguration()
+	icfg.Name = "instance-with-auto-assigned-ip"
+	in, err = creator.CreateInstance(icfg, vm.InstanceMetadata{})
 
 	if err != nil {
 		t.Fatalf("Error creating initial instance. Err: %v", err)
 	}
 
-	// Record it's IP
+	// Record its IP
+	var ip string
 	ip, err = in.PrivateIP(state.connector, state.logger)
 	if err != nil {
 		t.Fatalf("Error obtaining private IP. Err: %v", err)
@@ -117,18 +117,62 @@ func Test_VmOpsRecreateVMWithSameIP(t *testing.T) {
 
 	// Recreate With same IP
 	defer deleteInstance()
-	in, err = creator.CreateInstance(vm.InstanceConfiguration{
-		ImageId:   state.StemcellImageID(),
-		Shape:     vmStandard12config.Shape,
-		Name:      "recreated-with-deleted-ip",
-		PrivateIP: ip},
-		vm.InstanceMetadata{})
+	icfg = state.DefaultInstanceConfiguration()
+	icfg.Name = "recreated-with-deleted-ip"
+	icfg.Network[0].PrivateIP = ip
+	in, err = creator.CreateInstance(icfg, vm.InstanceMetadata{})
 
 	if err != nil {
 		t.Fatalf("Error re-creating instance with same-ip. Err: %v", err)
 	}
 	if in == nil {
 		t.Fatalf("Unexpected nil instance")
+	}
+}
+
+func Test_VmOpsAttachMultipleVnics(t *testing.T) {
+
+	state := NewConnectionFixture()
+	state.Setup(t)
+	defer state.TearDown(t)
+
+	// Creator and Terminator
+	var in *resource.Instance
+	var err error
+
+	creator := vm.NewCreator(state.Connector(),
+		state.Logger(), state.AD())
+	terminator := vm.NewTerminator(state.Connector(), state.Logger())
+
+	deleteInstance := func() {
+		if err == nil && in != nil {
+			terminator.TerminateInstance(in.ID())
+			in = nil
+		}
+	}
+	defer deleteInstance()
+
+	icfg := state.DefaultInstanceConfiguration()
+	icfg.Network = append(icfg.Network, vm.NetworkConfiguration{VcnName: state.VCN(),
+		SubnetName: state.Subnet2()})
+	in, err = creator.CreateInstance(icfg, vm.InstanceMetadata{})
+
+	if err != nil {
+		t.Fatalf("Error creating instance %v", err)
+	}
+	ipResults := map[string]getIPsFunc{
+		"privateIPs": in.PrivateIPs,
+		"publicIPs":  in.PublicIPs,
+	}
+
+	for n, r := range ipResults {
+		ips, err := r(state.connector, state.Logger())
+		if err != nil {
+			t.Fatalf("Error finding IPs %s", err.Error())
+		}
+		if len(ips) != 2 {
+			t.Errorf(" Unexpected number of IPs retuned by %s. Expected 2. Actual %d", n, len(ips))
+		}
 	}
 }
 

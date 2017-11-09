@@ -57,7 +57,7 @@ func (dv DeleteVM) detachInstanceVolumes(instanceID string) error {
 	if err != nil {
 		return err
 	}
-	loc := resource.NewLocation("", "", "", dv.connector.CompartmentId())
+	loc := resource.NewLocation("", dv.connector.CompartmentId())
 	volumes, err := newDiskFinder(dv.connector, dv.logger, loc).FindAllAttachedVolumes(instanceID)
 	if err != nil {
 		return err

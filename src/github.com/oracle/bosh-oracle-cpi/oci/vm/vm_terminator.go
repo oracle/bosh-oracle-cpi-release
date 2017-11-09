@@ -53,13 +53,9 @@ func (t *terminator) vnicAttachmentIDs(instanceID string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	if len(r.Payload) == 0 {
-		return nil, nil
-	}
-
-	ids := make([]string, len(r.Payload))
-	for i, attachment := range r.Payload {
-		ids[i] = *attachment.ID
+	ids := []string{}
+	for _, attachment := range r.Payload {
+		ids = append(ids, *attachment.ID)
 	}
 	return ids, nil
 }

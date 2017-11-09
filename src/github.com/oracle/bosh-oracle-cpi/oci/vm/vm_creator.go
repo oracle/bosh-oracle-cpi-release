@@ -13,17 +13,19 @@ import (
 const logTag = "VMOperations"
 
 type InstanceConfiguration struct {
-	ImageId   string
-	Shape     string
-	Name      string
+	ImageId string
+	Shape   string
+	Name    string
+	// Deprecated:
 	PrivateIP string
+	Network   Networks
 }
 
 type Creator interface {
 	CreateInstance(icfg InstanceConfiguration, md InstanceMetadata) (*resource.Instance, error)
 }
 
-type CreatorFactory func(client.Connector, boshlog.Logger, string, string, string) Creator
+type CreatorFactory func(client.Connector, boshlog.Logger, string) Creator
 
 type creator struct {
 	connector client.Connector
@@ -31,81 +33,71 @@ type creator struct {
 	location  resource.Location
 }
 
-func NewCreator(c client.Connector, l boshlog.Logger, vcnName string,
-	subnetName string, availabilityDomain string) Creator {
-
+func NewCreator(c client.Connector, l boshlog.Logger, availabilityDomain string) Creator {
 	return &creator{connector: c, logger: l,
-		location: resource.NewLocation(vcnName, subnetName, availabilityDomain, c.CompartmentId()),
+		location: resource.NewLocation(availabilityDomain, c.CompartmentId()),
 	}
 }
 
 func (cv *creator) CreateInstance(icfg InstanceConfiguration,
 	md InstanceMetadata) (*resource.Instance, error) {
 
-	return cv.launchInstance(icfg.Name, icfg.PrivateIP, icfg.ImageId, icfg.Shape, md)
-}
-
-func (cv *creator) launchInstance(name string, assignIP string, imageId string, shape string,
-	md InstanceMetadata) (*resource.Instance, error) {
-
-	instance := resource.Instance{}
-	var assignedIPs []string
-
-	subnetId, err := cv.location.SubnetID(cv.connector)
-	if err != nil {
+	if err := icfg.Network.validate(); err != nil {
 		return nil, err
 	}
+	return cv.launchInstance(icfg, md)
+}
+func (cv *creator) launchInstance(icfg InstanceConfiguration, md InstanceMetadata) (*resource.Instance, error) {
 
-	req := cv.buildLaunchInstanceParams(name, shape, imageId, subnetId, md.AsMap())
-	if assignIP != "" {
-		req = cv.populateCreateVnicDetails(req, assignIP)
-		assignedIPs = []string{assignIP}
+	primary := icfg.Network.primary()
+	primaryVnic, err := primary.newCreateVnicDetail(cv.connector, "primary")
+	if err != nil {
+		return nil, newLaunchInstanceError(err)
 	}
 
+	req := cv.buildLaunchInstanceParams(icfg, md, &primaryVnic)
 	cv.logLaunchingInstanceDebugMsg(req)
 	res, err := cv.connector.CoreSevice().Compute.LaunchInstance(req)
 	if err != nil {
-		errMsg := extractMsgFromError(err)
-		cv.logger.Error(logTag, "Error launching instance. Err:%v Reason: %s", err, errMsg)
-		return &instance, fmt.Errorf("Error launching instance. Reason: %s", errMsg)
+		return nil, newLaunchInstanceError(err)
 	}
+	instance := resource.NewInstance(*res.Payload.ID, cv.location)
 
-	return resource.NewInstanceWithPrivateIPs(*res.Payload.ID, cv.location, assignedIPs), nil
+	if icfg.Network.hasSecondaries() {
+		err = cv.attachSecondaryVnics(instance, icfg.Network.secondaries())
+		if err != nil {
+			return nil, newLaunchInstanceError(err)
+		}
+	}
+	return instance, nil
 }
 
-func (cv *creator) buildLaunchInstanceParams(name string, shape string,
-	imageId string, subnetId string, metadata map[string]string) *compute.LaunchInstanceParams {
+func (cv *creator) buildLaunchInstanceParams(icfg InstanceConfiguration, md InstanceMetadata,
+	primaryVnic *models.CreateVnicDetails) *compute.LaunchInstanceParams {
+
 	req := compute.NewLaunchInstanceParams()
 	ad := cv.location.AvailabilityDomain()
 	cid := cv.location.CompartmentID()
+
 	details := models.LaunchInstanceDetails{
 		AvailabilityDomain: &ad,
-		DisplayName:        name,
+		DisplayName:        icfg.Name,
 		CompartmentID:      &cid,
-		Shape:              &shape,
-		ImageID:            &imageId,
-		SubnetID:           subnetId,
+		Shape:              &icfg.Shape,
+		ImageID:            &icfg.ImageId,
+		CreateVnicDetails:  primaryVnic,
 	}
-	details.Metadata = metadata
+	details.Metadata = md.AsMap()
 
 	return req.WithLaunchInstanceDetails(&details)
 }
 
-func (cv *creator) populateCreateVnicDetails(param *compute.LaunchInstanceParams,
-	privateIP string) *compute.LaunchInstanceParams {
-
-	vnicDetails := models.CreateVnicDetails{
-		HostnameLabel: param.LaunchInstanceDetails.HostnameLabel,
-		PrivateIP:     privateIP,
-		SubnetID:      &param.LaunchInstanceDetails.SubnetID,
-		DisplayName:   "bosh-assigned"}
-
-	param.LaunchInstanceDetails.CreateVnicDetails = &vnicDetails
-	return param
-}
-
 func extractMsgFromError(err error) string {
 	return oci.CoreModelErrorMsg(err)
+}
+
+func newLaunchInstanceError(err error) error {
+	return fmt.Errorf("Error launching instance. Reason: %s", extractMsgFromError(err))
 }
 
 func (cv *creator) logLaunchingInstanceDebugMsg(p *compute.LaunchInstanceParams) {
@@ -127,4 +119,52 @@ func (cv *creator) logLaunchingInstanceDebugMsg(p *compute.LaunchInstanceParams)
 	args = append(args, p.LaunchInstanceDetails.Metadata)
 
 	cv.logger.Debug(logTag, fmtStr, args...)
+}
+
+func (cv *creator) attachSecondaryVnics(in *resource.Instance, secondaries []NetworkConfiguration) error {
+
+	var attachmentError error
+	deleteInstance := func() {
+		if attachmentError != nil {
+			NewTerminator(cv.connector, cv.logger).TerminateInstance(in.ID())
+		}
+	}
+	defer deleteInstance()
+
+	for i, secondary := range secondaries {
+		vnicDetail, err := secondary.newCreateVnicDetail(cv.connector, fmt.Sprintf("secondary-%d", i))
+		if err != nil {
+			return err
+		}
+		attachmentError = cv.attachVnic(in, vnicDetail)
+		if attachmentError != nil {
+			return attachmentError
+		}
+	}
+	return nil
+}
+
+func (cv *creator) attachVnic(in *resource.Instance, details models.CreateVnicDetails) error {
+
+	in.WaitUntilStarted(cv.connector, cv.logger)
+
+	instanceID := in.ID()
+
+	attachmentDetails := models.AttachVnicDetails{
+		InstanceID:        &instanceID,
+		CreateVnicDetails: &details,
+	}
+	p := compute.NewAttachVnicParams().WithAttachVnicDetails(&attachmentDetails)
+	res, err := cv.connector.CoreSevice().Compute.AttachVnic(p)
+	if err != nil {
+		return err
+	}
+
+	waiter := vnicAttachmentWaiter{logger: cv.logger,
+		connector: cv.connector,
+		attachedHandler: func(attachmentID string, vnicID string) {
+			cv.logger.Debug(logTag, "Attached Vnic to Instance %s. VnicID=%s", in.ID(), vnicID)
+		},
+	}
+	return waiter.WaitFor(*res.Payload.ID)
 }
