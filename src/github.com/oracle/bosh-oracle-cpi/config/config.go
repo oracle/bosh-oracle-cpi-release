@@ -11,6 +11,26 @@ import (
 
 const configLogTag string = "oracleCpiConfig"
 
+type errorMsg int
+
+const (
+	invalidPluginType = 0 + iota
+	invalidOCIConfiguration
+	invalidAgentConfiguration
+	invalidRegistryClientConfiguration
+)
+
+var errMsgs = []string{
+	"Unsupported cloud plugin type %s",
+	"Invalid oci configuration",
+	"Invalid agent options configuration",
+	"Invalid registry client configuration",
+}
+
+func (e errorMsg) String() string {
+	return errMsgs[e]
+}
+
 // Config represents the full CPI configuration
 //
 // It is passed to CPI by its invoker (BOSH cli or Director)
@@ -76,17 +96,16 @@ func NewConfigFromPath(configFile string, fs boshsys.FileSystem) (Config, error)
 // Validate performs a deep validation of a Config
 func (c Config) Validate() error {
 	if c.Cloud.Plugin != "oracle" {
-		return bosherr.Errorf("Unsupported cloud plugin type %q", c.Cloud.Plugin)
+		return bosherr.Errorf(errorMsg(invalidPluginType).String(), c.Cloud.Plugin)
 	}
 	if err := c.Cloud.Properties.OCI.Validate(); err != nil {
-		return bosherr.WrapError(err, "Validating oci configuration")
+		return bosherr.WrapError(err, errorMsg(invalidOCIConfiguration).String())
 	}
 	if err := c.Cloud.Properties.Agent.Validate(); err != nil {
-		return bosherr.WrapError(err, "Validating agent configuration")
+		return bosherr.WrapError(err, errorMsg(invalidAgentConfiguration).String())
 	}
 	if err := c.Cloud.Properties.Registry.Validate(); err != nil {
-		return bosherr.WrapError(err, "Validating registry configuration")
+		return bosherr.WrapError(err, errorMsg(invalidRegistryClientConfiguration).String())
 	}
-
 	return nil
 }

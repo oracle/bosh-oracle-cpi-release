@@ -1,22 +1,19 @@
 package config
 
 import (
+	"encoding/json"
 	"errors"
-
+	fakesys "github.com/cloudfoundry/bosh-utils/system/fakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	fakesys "github.com/cloudfoundry/bosh-utils/system/fakes"
-
-	"encoding/json"
 	"github.com/oracle/bosh-oracle-cpi/registry"
 	"os"
-	"strings"
+	"path/filepath"
 	"testing"
 )
 
-var apiKeyFile = strings.Replace("~/.oci/oci_api_key.pem", "~", os.Getenv("HOME"), -1)
-var validOCIConfig = OCIProperties{
+var apiKeyFile = fakeAPIKeyPath()
+var validOCIProperties = OCIProperties{
 	Tenancy:       "Fake-tenancy-ocid",
 	User:          "user-ocid",
 	CompartmentID: "fake-compartment-id",
@@ -33,7 +30,7 @@ var validOCIConfig = OCIProperties{
 var forwardSSHTunnel = SSHTunnel{
 	User: "opc", LocalPort: 36868, Duration: "2m",
 }
-var validOCIConfigWithSSHTunnel = OCIProperties{
+var validOCIPropertiesWithSSHTunnel = OCIProperties{
 	Tenancy:       "Fake-tenancy-ocid",
 	User:          "user-ocid",
 	CompartmentID: "fake-compartment-id",
@@ -67,7 +64,7 @@ var validConfig = Config{
 	Cloud: Cloud{
 		Plugin: "oracle",
 		Properties: CPIProperties{
-			OCI:      validOCIConfig,
+			OCI:      validOCIProperties,
 			Agent:    validAgentOptions,
 			Registry: validRegistryOptions,
 		},
@@ -78,7 +75,7 @@ var validConfigWithSSH = Config{
 	Cloud: Cloud{
 		Plugin: "oracle",
 		Properties: CPIProperties{
-			OCI:      validOCIConfigWithSSHTunnel,
+			OCI:      validOCIPropertiesWithSSHTunnel,
 			Agent:    validAgentOptions,
 			Registry: validRegistryOptions,
 		},
@@ -130,36 +127,55 @@ var _ = Describe("NewConfigFromPath", func() {
 	})
 })
 
-var _ = Describe("Config", func() {
+var _ = Describe("Validate", func() {
 	var (
 		config Config
 	)
-	Describe("Validate", func() {
+
+	Context("with valid cloud config", func() {
 		BeforeEach(func() {
 			config = validConfig
 		})
 
-		It("does not return error if all sections are valid", func() {
+		It("does not return an error", func() {
 			err := config.Validate()
 			Expect(err).ToNot(HaveOccurred())
 		})
+		Context(" with missing OCIProperties ", func() {
+			BeforeEach(func() {
+				config.Cloud.Properties.OCI = OCIProperties{}
+			})
+			It("returns invalid oci configuration error", func() {
 
-		It("returns error if OCI properties section is not valid", func() {
-			config.Cloud.Properties.OCI = OCIProperties{}
-
-			err := config.Validate()
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Validating oci configuration"))
+				err := config.Validate()
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(errorMsg(invalidOCIConfiguration).String()))
+			})
 		})
+		Context(" with missing agent options", func() {
+			BeforeEach(func() {
+				config.Cloud.Properties.Agent = registry.AgentOptions{}
+			})
 
-		It("returns error if agent configuration is not valid", func() {
+			It("returns invalid agent configuration error", func() {
 
-			config.Cloud.Properties.Agent = registry.AgentOptions{}
-			config.Cloud.Properties.Registry = registry.ClientOptions{}
+				err := config.Validate()
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(errorMsg(invalidAgentConfiguration).String()))
+			})
+		})
+		Context(" with missing client registry configuration", func() {
+			BeforeEach(func() {
+				config.Cloud.Properties.Registry = registry.ClientOptions{}
+			})
 
-			err := config.Validate()
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Validating agent configuration"))
+			It("returns invalid registry client configuration error", func() {
+
+				err := config.Validate()
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(errorMsg(invalidRegistryClientConfiguration).String()))
+			})
+
 		})
 	})
 })
@@ -188,7 +204,7 @@ var _ = Describe("DefaultOCIProperties", func() {
 
 	Describe("DefaultSSHConfig", func() {
 		BeforeEach(func() {
-			ociProperties = validOCIConfig
+			ociProperties = validOCIProperties
 		})
 
 		It("checks default configuration uses private IP for ssh", func() {
@@ -211,4 +227,13 @@ func TestConfigWithSSHTunnel_Validate(t *testing.T) {
 		t.FailNow()
 	}
 	t.Logf("Marshalled struct %s\n", string(b))
+}
+
+func assetsDir() string {
+	dir, _ := os.Getwd()
+	return filepath.Join(dir, "test/assets")
+}
+
+func fakeAPIKeyPath() string {
+	return filepath.Join(assetsDir(), "fake_api_key.pem")
 }
