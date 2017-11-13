@@ -1,0 +1,67 @@
+---
+groups:
+  - name: bosh-oracle-cpi-release
+    jobs:
+      - build-cpi
+      - build-cpi-release
+
+jobs:
+  - name: build-cpi
+    plan:
+      - {trigger: true, get: cpi-src, resource: bosh-cpi-src}
+
+      - task: unit-tests
+        file: cpi-src/ci/tasks/unit-tests.yml
+
+  - name: build-cpi-release
+    serial: true
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [build-cpi], get: cpi-src, resource: bosh-cpi-src}
+        - {trigger: true, get: cpi-release, resource: bosh-cpi-release-src}
+        - {trigger: false, get: version-semver,   params: {bump: patch}}
+
+      - put: version-semver
+        params: {file: version-semver/version}
+
+      - task: build-dev-release-tarball
+        file: cpi-release/ci/tasks/build-dev-release.yml
+
+      - task: upload-release
+        file: cpi-release/ci/tasks/upload-release-artifacts.yml
+        params:
+          tenancy: ((tenancy))
+          user:    ((user))
+          fingerprint: ((fingerprint))
+          apikey:  ((apikey))
+          region: ((region))
+          namespace: ((namespace))
+          bucket:  ((cpi-release-bucket))
+
+resources:
+  - name: bosh-cpi-release-src
+    type: git
+    source:
+      uri: https://github.com/((github-user))/bosh-oracle-cpi-release.git 
+      branch: ((cpi-release-branch)) 
+      username: ((github-user))
+      password: ((github-password))
+
+  - name: bosh-cpi-src
+    type: git
+    source:
+      uri: https://github.com/oracle/bosh-oracle-cpi.git
+      branch: master 
+      username: ((github-user))
+      password: ((github-password))
+
+  - name: version-semver
+    type: semver
+    source:
+      driver: git
+      uri: https://github.com/((github-user))/bosh-oracle-cpi-release.git 
+      username: ((github-user))
+      password: ((github-password))
+      branch: version
+      file: version
+      initial_version: 0.0.20
