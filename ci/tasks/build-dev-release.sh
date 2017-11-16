@@ -7,7 +7,7 @@ semver=`cat version-semver/number`
 golang_ver=1.8.3
 
 pwd=`pwd`
-tarball_name=${cpi_release_name}-${semver}.tgz
+tarball_name=${cpi_release_name}-dev-${semver}.tgz
 tarball_path=${pwd}/artifacts/${tarball_name}
 tarball_sha=${pwd}/artifacts/${tarball_name}.sha1
 release_dir=${pwd}/cpi-release
