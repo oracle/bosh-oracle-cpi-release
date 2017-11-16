@@ -25,7 +25,7 @@ properties:
     default: 'false'
   oci.sshTunnel.user:
     description: create tunnel as user
-    default: 'ubuntu'
+    default: 'vcap'
   oci.sshTunnel.duration:
     description:  Duration of the tunnel in minutes
     default: '60m'
@@ -45,7 +45,7 @@ properties:
     description: Private CPI SSH Key
   oci.cpiuser:
     description: First user provisioned in a VM
-    default: 'ubuntu'
+    default: 'vcap'
 
 
   blobstore.provider:
