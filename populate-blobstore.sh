@@ -6,7 +6,7 @@ set -e -x
 MYDIR=`dirname $0`
 DOWNLOAD_DIR=$MYDIR/tmp
 PACKAGE=golang
-PACKAGE_VERSION=1.8.1
+PACKAGE_VERSION=1.8.3
 PLATFORMS="linux darwin"
 create_dir=true
 keep_download=false
