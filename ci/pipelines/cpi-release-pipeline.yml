@@ -27,16 +27,9 @@ jobs:
       - task: build-dev-release-tarball
         file: cpi-release/ci/tasks/build-dev-release.yml
 
-      - task: upload-release
-        file: cpi-release/ci/tasks/upload-release-artifacts.yml
+      - put: oci-s3-compat-storage
         params:
-          tenancy: ((tenancy))
-          user:    ((user))
-          fingerprint: ((fingerprint))
-          apikey:  ((apikey))
-          region: ((region))
-          namespace: ((namespace))
-          bucket:  ((cpi-release-bucket))
+          file: artifacts/*.tgz
 
 resources:
   - name: bosh-cpi-release-src
@@ -65,3 +58,14 @@ resources:
       branch: version
       file: version
       initial_version: 0.0.20
+
+  - name: oci-s3-compat-storage
+    type: s3
+    source:
+       endpoint: https://((namespace)).compat.objectstorage.((region)).oraclecloud.com
+       region_name: ((region))
+       bucket: ((cpi-release-bucket))
+       regexp: bosh-oracle-cpi-(.*).tgz
+       access_key_id: ((s3-access-key-id))
+       secret_access_key: ((s3-secret-access-key))
+       private: true
