@@ -50,7 +50,7 @@ resources:
   - name: bosh-cpi-release-src
     type: git
     source:
-      uri: https://github.com/dmutreja/bosh-oracle-cpi-release.git
+      uri: https://github.com/oracle/bosh-oracle-cpi-release.git
       branch: ((cpi-release-branch)) 
       username: ((github-user))
       password: ((github-password))
@@ -58,7 +58,7 @@ resources:
   - name: bosh-cpi-src
     type: git
     source:
-      uri: https://github.com/dmutreja/bosh-oracle-cpi.git
+      uri: https://github.com/oracle/bosh-oracle-cpi.git
       branch: master 
       username: ((github-user))
       password: ((github-password))
@@ -67,7 +67,7 @@ resources:
     type: semver
     source:
       driver: git
-      uri: https://github.com/dmutreja/bosh-oracle-cpi-release.git
+      uri: https://github.com/oracle/bosh-oracle-cpi-release.git
       username: ((github-user))
       password: ((github-password))
       branch: version
