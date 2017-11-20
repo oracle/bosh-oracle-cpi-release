@@ -9,5 +9,6 @@ RUN curl -sSL -o /usr/local/bin/bosh https://s3.amazonaws.com/bosh-cli-artifacts
 RUN chmod +x /usr/local/bin/bosh
 
 ENV GOLANG_VERSION 1.8.3
-ADD https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz /blobstore/golang/
-RUN chmod 644 /blobstore/golang/go${GOLANG_VERSION}*.gz
+ADD https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz /downloads/golang/
+RUN chmod 644 /downloads/golang/go${GOLANG_VERSION}*.gz
+RUN mkdir /blobstore && chmod 755 /blobstore
