@@ -3,7 +3,8 @@ groups:
   - name: bosh-oracle-cpi-release
     jobs:
       - build-cpi
-      - build-cpi-release
+      - build-dev-cpi-release
+      - build-final-cpi-release
 
 jobs:
   - name: build-cpi
@@ -13,7 +14,7 @@ jobs:
       - task: unit-tests
         file: cpi-src/ci/tasks/unit-tests.yml
 
-  - name: build-cpi-release
+  - name: build-dev-cpi-release
     serial: true
     plan:
       - aggregate:
@@ -27,15 +28,29 @@ jobs:
       - task: build-dev-release-tarball
         file: cpi-release/ci/tasks/build-dev-release.yml
 
-      - put: oci-s3-compat-storage
+      - put: dev-release-bucket
         params:
-          file: artifacts/*.tgz
+          file: artifacts/dev_release/bosh-oracle-cpi-dev-*.tgz
+
+  - name: build-final-cpi-release
+    serial: true
+    plan:
+      - aggregate:
+         - {trigger: false, get: version-semver,   params: {bump: major}}
+         - {trigger: true, passed: [build-dev-cpi-release], get: cpi-release, resource: bosh-cpi-release-src}
+
+      - task: build-final-release-tarball
+        file: cpi-release/ci/tasks/build-final-release.yml
+
+      - put: final-release-bucket
+        params:
+          file: artifacts/release/bosh-oracle-cpi-*.tgz
 
 resources:
   - name: bosh-cpi-release-src
     type: git
     source:
-      uri: https://github.com/oracle/bosh-oracle-cpi-release.git 
+      uri: https://github.com/oracle/bosh-oracle-cpi-release.git
       branch: ((cpi-release-branch)) 
       username: ((github-user))
       password: ((github-password))
@@ -52,19 +67,30 @@ resources:
     type: semver
     source:
       driver: git
-      uri: https://github.com/oracle/bosh-oracle-cpi-release.git 
+      uri: https://github.com/oracle/bosh-oracle-cpi-release.git
       username: ((github-user))
       password: ((github-password))
       branch: version
       file: version
       initial_version: 0.0.20
 
-  - name: oci-s3-compat-storage
+  - name: dev-release-bucket
     type: s3
     source:
        endpoint: https://((namespace)).compat.objectstorage.((region)).oraclecloud.com
        region_name: ((region))
-       bucket: ((cpi-release-bucket))
+       bucket: ((cpi-dev-release-bucket))
+       regexp: bosh-oracle-cpi-(.*).tgz
+       access_key_id: ((s3-access-key-id))
+       secret_access_key: ((s3-secret-access-key))
+       private: true
+
+  - name: final-release-bucket
+    type: s3
+    source:
+       endpoint: https://((namespace)).compat.objectstorage.((region)).oraclecloud.com
+       region_name: ((region))
+       bucket: ((cpi-final-release-bucket))
        regexp: bosh-oracle-cpi-(.*).tgz
        access_key_id: ((s3-access-key-id))
        secret_access_key: ((s3-secret-access-key))

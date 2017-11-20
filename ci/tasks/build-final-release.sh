@@ -4,7 +4,6 @@ set -e
 
 cpi_release_name="bosh-oracle-cpi"
 semver=`cat version-semver/number`
-golang_ver=1.8.3
 
 pwd=`pwd`
 
@@ -12,8 +11,8 @@ pwd=`pwd`
 release_dir=${pwd}/cpi-release
 
 #Outputs
-release_artifact_path=${pwd}/artifacts/dev_release
-tarball_name=${cpi_release_name}-dev-${semver}.tgz
+release_artifact_path=${pwd}/artifacts/release
+tarball_name=${cpi_release_name}-${semver}.tgz
 tarball_path=${release_artifact_path}/${tarball_name}
 tarball_sha=${release_artifact_path}/${tarball_name}.sha1
 
@@ -24,8 +23,8 @@ bosh -v
 
 source ${release_dir}/ci/tasks/add-blobs.sh
 
-echo "Creating BOSH Oracle CPI Dev Release..."
-bosh create-release --dir ${release_dir} --name ${cpi_release_name} --version ${semver} --force --tarball="$tarball_path"
+echo "Creating BOSH Oracle CPI Final Release..."
+bosh create-release --final --dir ${release_dir} --name ${cpi_release_name} --version ${semver} --force --tarball="$tarball_path"
 
 echo -n $(sha1sum $tarball_path | awk '{print $1}') > ${tarball_sha} 
 
