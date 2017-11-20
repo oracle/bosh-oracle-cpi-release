@@ -3,7 +3,7 @@ final_name: bosh-oracle-cpi
 blobstore:
   provider: local
   options:
-    blobstore_path: /change-to-valid-path
+    blobstore_path: /blobstore
 #TODO: Use OCI Object Store
 #blobstore:
 #  provider: s3
