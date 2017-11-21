@@ -20,10 +20,10 @@ jobs:
       - aggregate:
         - {trigger: true, passed: [build-cpi], get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, get: cpi-release, resource: bosh-cpi-release-src}
-        - {trigger: false, get: version-semver,   params: {bump: patch}}
+        - {trigger: false, get: dev-version-semver,   params: {bump: patch}}
 
-      - put: version-semver
-        params: {file: version-semver/version}
+      - put: dev-version-semver
+        params: {file: dev-version-semver/version}
 
       - task: build-dev-release-tarball
         file: cpi-release/ci/tasks/build-dev-release.yml
@@ -36,11 +36,14 @@ jobs:
     serial: true
     plan:
       - aggregate:
-         - {trigger: false, get: version-semver,   params: {bump: major}}
+         - {trigger: false, get: final-version-semver,   params: {bump: major}}
          - {trigger: true, passed: [build-dev-cpi-release], get: cpi-release, resource: bosh-cpi-release-src}
 
       - task: build-final-release-tarball
         file: cpi-release/ci/tasks/build-final-release.yml
+
+      - put: final-version-semver
+        params: {file: final-version-semver/version}
 
       - put: final-release-bucket
         params:
@@ -63,17 +66,6 @@ resources:
       username: ((github-user))
       password: ((github-password))
 
-  - name: version-semver
-    type: semver
-    source:
-      driver: git
-      uri: https://github.com/oracle/bosh-oracle-cpi-release.git
-      username: ((github-user))
-      password: ((github-password))
-      branch: version
-      file: version
-      initial_version: 0.0.20
-
   - name: dev-release-bucket
     type: s3
     source:
@@ -95,3 +87,25 @@ resources:
        access_key_id: ((s3-access-key-id))
        secret_access_key: ((s3-secret-access-key))
        private: true
+
+  - name: dev-version-semver
+    type: semver
+    source:
+      key: current-dev-version
+      bucket: ((version_semver_bucket_name))
+      access_key_id: ((s3-access-key-id))
+      secret_access_key: ((s3-secret-access-key))
+      region_name: ((region))
+      endpoint: https://((namespace)).compat.objectstorage.((region)).oraclecloud.com
+      initial_version:   0.0.36
+
+  - name: final-version-semver
+    type: semver
+    source:
+      key: current-final-version
+      bucket: ((version_semver_bucket_name))
+      access_key_id: ((s3-access-key-id))
+      secret_access_key: ((s3-secret-access-key))
+      region_name: ((region))
+      endpoint: https://((namespace)).compat.objectstorage.((region)).oraclecloud.com
+      initial_version: 1.0.0
