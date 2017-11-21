@@ -7,6 +7,8 @@ image_resource:
     tag: "latest"
 inputs:
   - name: bosh-cpi-src
+outputs:
+  - name: infra-out
 run:
   path: bosh-cpi-src/ci/tasks/download-artifacts.sh
 params:
@@ -17,4 +19,3 @@ params:
   region: replace-me
   namespace: replace-me
   bucket:  replace-me
-  filespec: replace-me

@@ -25,5 +25,8 @@ EOF
 chmod 600 ${OCI_API_KEY}
 chmod 600 ${OCI_CONFIG}
 
-# Download
-oci os object get -ns cloudfoundry -bn ${bucket} --name ${filespec} --file ${filespec}
+# Upload
+for tarball in candidate/*.tgz
+do
+  oci --config-file ${OCI_CONFIG} os object put -ns ${namespace}  -bn ${bucket} --file $tarball
+done

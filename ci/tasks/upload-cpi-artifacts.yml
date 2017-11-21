@@ -7,8 +7,9 @@ image_resource:
     tag: "latest"
 inputs:
   - name: bosh-cpi-src
+  - name: candidate
 run:
-  path: bosh-cpi-src/ci/tasks/download-infra-artifacts.sh
+  path: bosh-cpi-src/ci/tasks/upload-cpi-artifacts.sh
 params:
   tenancy: replace-me
   user:    replace-me

@@ -26,7 +26,7 @@ chmod 600 ${OCI_API_KEY}
 chmod 600 ${OCI_CONFIG}
 
 # Upload
-for tarball in ${filespec}
+for tarball in infra/*.tar.gz
 do
   oci --config-file ${OCI_CONFIG} os object put -ns ${namespace}  -bn ${bucket} --file $tarball
 done
