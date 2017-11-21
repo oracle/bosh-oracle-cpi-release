@@ -33,7 +33,7 @@ jobs:
         file: bosh-cpi-src/ci/tasks/build-candidate.yml
 
       - task: upload-release
-        file: cpi-release/ci/tasks/upload-cpi-artifacts.yml
+        file: bosh-cpi-src/ci/tasks/upload-cpi-artifacts.yml
         params:
           tenancy: ((tenancy))
           user:    ((user))
