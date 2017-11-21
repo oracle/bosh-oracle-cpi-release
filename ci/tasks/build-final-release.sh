@@ -3,7 +3,7 @@
 set -e
 
 cpi_release_name="bosh-oracle-cpi"
-semver=`cat version-semver/number`
+semver=`cat final-version-semver/number`
 
 pwd=`pwd`
 

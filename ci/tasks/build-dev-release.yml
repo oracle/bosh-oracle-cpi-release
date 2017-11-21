@@ -7,7 +7,7 @@ image_resource:
     tag: "latest"
 inputs:
   - name: cpi-release
-  - name: version-semver
+  - name: dev-version-semver
 outputs:
   - name: artifacts
 run:
