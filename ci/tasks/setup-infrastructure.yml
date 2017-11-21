@@ -1,0 +1,24 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: bitsarvi/oci-cpi-release
+    tag: "latest"
+inputs:
+  - name: bosh-cpi-src
+outputs:
+  - name: infra
+run:
+  path: bosh-cpi-src/ci/tasks/setup-infrastructure.sh
+params:
+  oracle_tenancy:                 replace-me
+  oracle_user:                    replace-me
+  oracle_compartment_id:          replace-me
+  oracle_compartment_name:        replace-me
+  oracle_region:                  replace-me
+  oracle_ad:                      replace-me
+  oracle_fingerprint:             replace-me
+  oracle_apikey:                  replace-me
+  oracle_ssh_public_key:          replace-me
+  oracle_ssh_private_key:         replace-me

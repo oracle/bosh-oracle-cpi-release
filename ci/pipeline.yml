@@ -1,0 +1,281 @@
+---
+groups:
+  - name: bosh-oracle-cpi-release
+    jobs:
+      - test-unit
+      - build-candidate
+      - setup-infrastructure
+      - create-director
+      - run-bats
+      - run-int
+      - promote-candidate-major
+
+jobs:
+  - name: test-unit
+    plan:
+      - aggregate:
+        - {trigger: true, get: bosh-cpi-src, resource: bosh-cpi-src-in}
+
+      - task: unit-tests
+        file: bosh-cpi-src/ci/tasks/unit-tests.yml
+
+  - name: build-candidate
+    serial: true
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [test-unit], get: bosh-cpi-src,   resource: bosh-cpi-src-in}
+        - {trigger: false, get: version-semver,   params: {bump: patch}}
+
+      - put: version-semver
+        params: {file: version-semver/version}
+
+      - task: build-release
+        file: bosh-cpi-src/ci/tasks/build-candidate.yml
+
+      - task: upload-release
+        file: bosh-cpi-src/ci/tasks/upload-cpi-artifacts.yml
+        params:
+          tenancy: ((oracle_tenancy))
+          user:    ((oracle_user))
+          fingerprint: ((oracle_fingerprint))
+          apikey:  ((oracle_apikey))
+          region: ((oracle_region))
+          namespace: ((oracle_namespace))
+          bucket:  ((cpi-dev-bucket))
+
+#TODO
+#      - put: bosh-cpi-dev-artifacts
+#        params: {file: candidate/*.tgz}
+
+#      - put: bosh-cpi-dev-artifacts-sha1
+#        params: {file: candidate/*.tgz.sha1}
+
+  - name: setup-infrastructure
+    serial_groups: [run-bats, run-int]
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [build-candidate], get: bosh-cpi-src,   resource: bosh-cpi-src-in}
+        - {trigger: true, get: stemcell, resource: oracle-ubuntu-stemcell}
+
+      - task: setup-infrastructure
+        file: bosh-cpi-src/ci/tasks/setup-infrastructure.yml
+        params:
+          oracle_tenancy:                 {{oracle_tenancy}}
+          oracle_user:                    {{oracle_user}}
+          oracle_compartment_id:          {{oracle_compartment_id}}
+          oracle_compartment_name:        {{oracle_compartment_name}}
+          oracle_region:                  {{oracle_region}}
+          oracle_ad:                      {{oracle_ad}}
+          oracle_fingerprint:             {{oracle_fingerprint}}
+          oracle_apikey:                  {{oracle_apikey}}
+          oracle_ssh_public_key:          {{oracle_ssh_public_key}}
+          oracle_ssh_private_key:         {{oracle_ssh_private_key}}
+
+      - task: upload-infra-state
+        file: bosh-cpi-src/ci/tasks/upload-infra-artifacts.yml
+        params:
+          tenancy: ((tenancy))
+          user:    ((user))
+          fingerprint: ((fingerprint))
+          apikey:  ((apikey))
+          region: ((region))
+          namespace: ((namespace))
+          bucket:  ((build-infra-bucket))
+
+  - name: create-director
+    serial_groups: [run-bats]
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [build-candidate, setup-infrastructure],  get: bosh-cpi-src, resource: bosh-cpi-src-in}
+#        TODO
+#        - {trigger: true,  passed: [build-candidate],                       get: bosh-cpi-release, resource: bosh-cpi-dev-artifacts}
+        - {trigger: true, passed: [setup-infrastructure], get: stemcell, resource: oracle-ubuntu-stemcell}
+# TODO: Do we need bosh-init if using BOSH CLIv2?
+#        - {trigger: false,                                                  get: bosh-init}
+        - {trigger: false,                                                  get: bosh-release}
+
+      - get: version-semver
+
+      - task: download-release
+        file: bosh-cpi-src/ci/tasks/download-cpi-artifacts.yml
+        params:
+          tenancy: ((oracle_tenancy))
+          user:    ((oracle_user))
+          fingerprint: ((oracle_fingerprint))
+          apikey:  ((oracle_apikey))
+          region: ((oracle_region))
+          namespace: ((oracle_namespace))
+          bucket:  ((cpi-dev-bucket))
+
+      - task: setup-director
+        file: bosh-cpi-src/ci/tasks/setup-director.yml
+        params:
+          oracle_tenancy:                 {{oracle_tenancy}}
+          oracle_user:                    {{oracle_user}}
+          oracle_compartment_id:          {{oracle_compartment_id}}
+          oracle_compartment_name:        {{oracle_compartment_name}}
+          oracle_region:                  {{oracle_region}}
+          oracle_ad:                      {{oracle_ad}}
+          oracle_fingerprint:             {{oracle_fingerprint}}
+          oracle_apikey:                  {{oracle_apikey}}
+          oracle_ssh_public_key:          {{oracle_ssh_public_key}}
+          oracle_ssh_private_key:         {{oracle_ssh_private_key}}
+        on_failure:
+          task: teardown-director
+          file: bosh-cpi-src/ci/tasks/teardown-director.yml
+
+  - name: run-bats
+    serial: true
+    serial_groups: [run-bats]
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [build-candidate, create-director], get: bosh-cpi-src, resource: bosh-cpi-src-in}
+        - {trigger: true, passed: [create-director], get: stemcell, resource: oracle-ubuntu-stemcell}
+#        - {trigger: false, passed: [create-director], get: bosh-cpi-release, resource: bosh-cpi-dev-artifacts}
+        - {trigger: false, get: bats}
+
+      - get: version-semver
+
+      - task: download-release
+        file: bosh-cpi-src/ci/tasks/download-cpi-artifacts.yml
+        params:
+          tenancy: ((oracle_tenancy))
+          user:    ((oracle_user))
+          fingerprint: ((oracle_fingerprint))
+          apikey:  ((oracle_apikey))
+          region: ((oracle_region))
+          namespace: ((oracle_namespace))
+          bucket:  ((cpi-dev-bucket))
+
+      - task: run-bats
+        file: bosh-cpi-src/ci/tasks/run-bats.yml
+        params:
+          oracle_tenancy:                 {{oracle_tenancy}}
+          oracle_user:                    {{oracle_user}}
+          oracle_compartment_id:          {{oracle_compartment_id}}
+          oracle_compartment_name:        {{oracle_compartment_name}}
+          oracle_region:                  {{oracle_region}}
+          oracle_ad:                      {{oracle_ad}}
+          oracle_fingerprint:             {{oracle_fingerprint}}
+          oracle_apikey:                  {{oracle_apikey}}
+          oracle_ssh_public_key:          {{oracle_ssh_public_key}}
+          oracle_ssh_private_key:         {{oracle_ssh_private_key}}
+
+  - name: run-int
+    serial_groups: [run-int]
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [build-candidate, setup-infrastructure], get: bosh-cpi-src, resource: bosh-cpi-src-in}
+        - {trigger: true, passed: [setup-infrastructure], get: stemcell, resource: oracle-ubuntu-stemcell}
+
+      - task: run-int
+        file: bosh-cpi-src/ci/tasks/run-int.yml
+        params:
+          oracle_tenancy:                 {{oracle_tenancy}}
+          oracle_user:                    {{oracle_user}}
+          oracle_compartment_id:          {{oracle_compartment_id}}
+          oracle_compartment_name:        {{oracle_compartment_name}}
+          oracle_region:                  {{oracle_region}}
+          oracle_ad:                      {{oracle_ad}}
+          oracle_fingerprint:             {{oracle_fingerprint}}
+          oracle_apikey:                  {{oracle_apikey}}
+          oracle_ssh_public_key:          {{oracle_ssh_public_key}}
+          oracle_ssh_private_key:         {{oracle_ssh_private_key}}
+
+  - name: promote-candidate-major
+    serial: true
+    plan:
+      - aggregate:
+#        - {trigger: false, passed: [run-int,run-bats], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
+        - {trigger: false, passed: [create-director], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
+        - {trigger: false, passed: [create-director], get: stemcell, resource: oracle-ubuntu-stemcell}
+#        - {trigger: false, passed: [run-int,run-bats], get: stemcell,               resource: google-ubuntu-stemcell}
+#        - {trigger: false, passed: [run-bats], get: bosh-cpi-release,       resource: bosh-cpi-dev-artifacts}
+        - {trigger: false,                             get: release-version-semver, params: {bump: major}}
+      
+      - task: promote
+        file: bosh-cpi-src/ci/tasks/promote-candidate.yml
+
+      - put: release-version-semver
+        params: {file: release-version-semver/number}
+
+      - put: bosh-cpi-src-out
+        params: {repository: promoted/repo, rebase: true, tag_prefix: "v", tag: promoted/semver_version}
+
+#      - put: bosh-cpi-artifacts
+#        params:
+#          file: promoted/*.tgz
+#          predefined_acl: "publicRead"
+      
+#      - put: bosh-cpi-artifacts-sha1
+#        params:
+#          file: promoted/*.tgz.sha1
+#          predefined_acl: "publicRead"
+
+resource_types:
+- name: file-url
+  type: docker-image
+  source:
+    repository: pivotalservices/concourse-curl-resource
+    tag: latest
+
+resources:
+  - name: bosh-cpi-src-in
+    type: git
+    source:
+      uri: https://((github-repo))
+      branch: ((github-branch))
+      ignore_paths:
+        - .final_builds/**/*.yml
+        - releases/**/*.yml
+
+  - name: bosh-cpi-src-out
+    type: git
+    source:
+      uri: https://((github-user)):((github-password))@((github-repo))
+      branch: master
+
+#TODO Implement bmc-resource
+#  - name: bosh-cpi-dev-artifacts
+#    type: gcs-resource
+#
+#  - name: bosh-cpi-dev-artifacts-sha1
+#    type: gcs-resource
+#TODO stemcell
+#  - name: oracle-ubuntu-stemcell
+#    type: gcs-resource
+
+  - name: bosh-release
+    type: bosh-io-release
+    source:
+      repository: cloudfoundry/bosh
+
+  - name: bats
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry/bosh-acceptance-tests.git
+      branch: gocli-bats
+
+  - name: oracle-ubuntu-stemcell
+    type: file-url
+    source:
+      url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/qFzKHkdhfqdDH3BBFhcXWTjZ4VMvSnxB_5n7diUerWw/n/cloudfoundry/b/stemcells/o/light-oracle-ubuntu-stemcell-2000.13.tgz
+      filename: light-oracle-ubuntu-stemcell-2000.13.tgz
+
+  - name: version-semver
+    type: semver
+    source:
+      driver: git
+      uri: https://((github-user)):((github-password))@((github-repo))
+      branch: version
+      file: version
+      initial_version: 1.0.0
+
+  - name: release-version-semver
+    type: semver
+    source:
+      driver: git
+      uri: https://((github-user)):((github-password))@((github-repo))
+      branch: version
+      file: release-version
+      initial_version: 1.0.0

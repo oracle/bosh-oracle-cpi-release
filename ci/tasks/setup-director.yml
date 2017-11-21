@@ -1,0 +1,30 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: bitsarvi/oci-cpi-release
+    tag: "latest"
+inputs:
+  - name: bosh-cpi-src
+  - name: bosh-release
+#  - name: bosh-cpi-release
+  - name: stemcell
+#  - name: bosh-init
+outputs:
+  - name: deployment
+run:
+  path: bosh-cpi-src/ci/tasks/setup-director.sh
+params:
+  BOSH_LOG_LEVEL:                 debug
+  BOSH_LOG_PATH:                  ./bosh-init.log
+  oracle_tenancy:                 replace-me
+  oracle_user:                    replace-me
+  oracle_compartment_id:          replace-me
+  oracle_compartment_name:        replace-me
+  oracle_region:                  replace-me
+  oracle_ad:                      replace-me
+  oracle_fingerprint:             replace-me
+  oracle_apikey:                  replace-me
+  oracle_ssh_public_key:          replace-me
+  oracle_ssh_private_key:         replace-me

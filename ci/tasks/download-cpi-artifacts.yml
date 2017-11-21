@@ -1,0 +1,19 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: dmutreja/oci-cli
+    tag: "latest"
+inputs:
+  - name: bosh-cpi-src
+run:
+  path: bosh-cpi-src/ci/tasks/download-infra-artifacts.sh
+params:
+  tenancy: replace-me
+  user:    replace-me
+  fingerprint: replace-me
+  apikey:  replace-me
+  region: replace-me
+  namespace: replace-me
+  bucket:  replace-me
