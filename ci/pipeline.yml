@@ -35,12 +35,12 @@ jobs:
       - task: upload-release
         file: bosh-cpi-src/ci/tasks/upload-cpi-artifacts.yml
         params:
-          tenancy: ((tenancy))
-          user:    ((user))
-          fingerprint: ((fingerprint))
-          apikey:  ((apikey))
-          region: ((region))
-          namespace: ((namespace))
+          tenancy: ((oracle_tenancy))
+          user:    ((oracle_user))
+          fingerprint: ((oracle_fingerprint))
+          apikey:  ((oracle_apikey))
+          region: ((oracle_region))
+          namespace: ((oracle_namespace))
           bucket:  ((cpi-dev-bucket))
 
 #TODO
@@ -99,12 +99,12 @@ jobs:
       - task: download-release
         file: bosh-cpi-src/ci/tasks/download-cpi-artifacts.yml
         params:
-          tenancy: ((tenancy))
-          user:    ((user))
-          fingerprint: ((fingerprint))
-          apikey:  ((apikey))
-          region: ((region))
-          namespace: ((namespace))
+          tenancy: ((oracle_tenancy))
+          user:    ((oracle_user))
+          fingerprint: ((oracle_fingerprint))
+          apikey:  ((oracle_apikey))
+          region: ((oracle_region))
+          namespace: ((oracle_namespace))
           bucket:  ((cpi-dev-bucket))
 
       - task: setup-director
@@ -139,12 +139,12 @@ jobs:
       - task: download-release
         file: bosh-cpi-src/ci/tasks/download-cpi-artifacts.yml
         params:
-          tenancy: ((tenancy))
-          user:    ((user))
-          fingerprint: ((fingerprint))
-          apikey:  ((apikey))
-          region: ((region))
-          namespace: ((namespace))
+          tenancy: ((oracle_tenancy))
+          user:    ((oracle_user))
+          fingerprint: ((oracle_fingerprint))
+          apikey:  ((oracle_apikey))
+          region: ((oracle_region))
+          namespace: ((oracle_namespace))
           bucket:  ((cpi-dev-bucket))
 
       - task: run-bats
