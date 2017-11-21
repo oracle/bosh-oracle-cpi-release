@@ -1,0 +1,18 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: dmutreja/oci-cli
+    tag: "latest"
+run:
+  path: bosh-cpi-src/ci/tasks/upload-artifacts.sh
+params:
+  tenancy: replace-me
+  user:    replace-me
+  fingerprint: replace-me
+  apikey:  replace-me
+  region: replace-me
+  namespace: replace-me
+  bucket:  replace-me
+  filespec: replace-me

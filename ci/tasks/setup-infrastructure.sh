@@ -96,10 +96,10 @@ popd
 
 # save the state/output of terraform for subsequent steps
 tar zcf infra.tar.gz infra
-oci os object put -ns cloudfoundry -bn infra --force --name infra.tar.gz --file infra.tar.gz
+#oci os object put -ns cloudfoundry -bn infra --force --name infra.tar.gz --file infra.tar.gz
 
-ls -al
+#ls -al
 
 #TODO bmcs CLI setup
-oci os object list -ns cloudfoundry -bn infra
+#oci os object list -ns cloudfoundry -bn infra
 #oci compute instance list --compartment-id ${oracle_compartment_id}

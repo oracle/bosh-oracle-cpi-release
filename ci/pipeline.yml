@@ -5,7 +5,7 @@ groups:
       - test-unit
       - build-candidate
       - setup-infrastructure
-      - deploy-ubuntu
+      - create-director
       - run-bats
       - run-int
       - promote-candidate-major
@@ -31,6 +31,21 @@ jobs:
 
       - task: build-release
         file: bosh-cpi-src/ci/tasks/build-candidate.yml
+
+      - task: upload-release
+        inputs:
+          - name: bosh-cpi-src
+          - name: candidate
+        file: cpi-release/ci/tasks/upload-artifacts.yml
+          params:
+            tenancy: ((tenancy))
+            user:    ((user))
+            fingerprint: ((fingerprint))
+            apikey:  ((apikey))
+            region: ((region))
+            namespace: ((namespace))
+            bucket:  ((cpi-dev-bucket))
+            filespec: "candidate/*.tgz"
 
 #TODO
 #      - put: bosh-cpi-dev-artifacts
@@ -60,7 +75,22 @@ jobs:
           oracle_ssh_public_key:          {{oracle_ssh_public_key}}
           oracle_ssh_private_key:         {{oracle_ssh_private_key}}
 
-  - name: deploy-ubuntu
+      - task: upload-infra-state
+              inputs:
+                - name: bosh-cpi-src
+                - name: infra
+              file: cpi-release/ci/tasks/upload-artifacts.yml
+                params:
+                  tenancy: ((tenancy))
+                  user:    ((user))
+                  fingerprint: ((fingerprint))
+                  apikey:  ((apikey))
+                  region: ((region))
+                  namespace: ((namespace))
+                  bucket:  ((build-infra-bucket))
+                  filespec: "infra/intra.tar.gz"
+
+  - name: create-director
     serial_groups: [run-bats]
     plan:
       - aggregate:
@@ -71,6 +101,19 @@ jobs:
 # TODO: Do we need bosh-init if using BOSH CLIv2?
 #        - {trigger: false,                                                  get: bosh-init}
         - {trigger: false,                                                  get: bosh-release}
+
+      - get: version-semver
+
+      - task: download-release
+        file: cpi-release/ci/tasks/download-cpi-artifacts.yml
+          params:
+            tenancy: ((tenancy))
+            user:    ((user))
+            fingerprint: ((fingerprint))
+            apikey:  ((apikey))
+            region: ((region))
+            namespace: ((namespace))
+            bucket:  ((cpi-dev-bucket))
 
       - task: setup-director
         file: bosh-cpi-src/ci/tasks/setup-director.yml
@@ -94,10 +137,23 @@ jobs:
     serial_groups: [run-bats]
     plan:
       - aggregate:
-        - {trigger: true, passed: [build-candidate, deploy-ubuntu], get: bosh-cpi-src, resource: bosh-cpi-src-in}
-        - {trigger: true, passed: [deploy-ubuntu], get: stemcell, resource: oracle-ubuntu-stemcell}
-#        - {trigger: false, passed: [deploy-ubuntu], get: bosh-cpi-release, resource: bosh-cpi-dev-artifacts}
+        - {trigger: true, passed: [build-candidate, create-director], get: bosh-cpi-src, resource: bosh-cpi-src-in}
+        - {trigger: true, passed: [create-director], get: stemcell, resource: oracle-ubuntu-stemcell}
+#        - {trigger: false, passed: [create-director], get: bosh-cpi-release, resource: bosh-cpi-dev-artifacts}
         - {trigger: false, get: bats}
+
+      - get: version-semver
+
+      - task: download-release
+        file: cpi-release/ci/tasks/download-cpi-artifacts.yml
+          params:
+            tenancy: ((tenancy))
+            user:    ((user))
+            fingerprint: ((fingerprint))
+            apikey:  ((apikey))
+            region: ((region))
+            namespace: ((namespace))
+            bucket:  ((cpi-dev-bucket))
 
       - task: run-bats
         file: bosh-cpi-src/ci/tasks/run-bats.yml
@@ -139,8 +195,8 @@ jobs:
     plan:
       - aggregate:
 #        - {trigger: false, passed: [run-int,run-bats], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
-        - {trigger: false, passed: [deploy-ubuntu], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
-        - {trigger: false, passed: [deploy-ubuntu], get: stemcell, resource: oracle-ubuntu-stemcell}
+        - {trigger: false, passed: [create-director], get: bosh-cpi-src,           resource: bosh-cpi-src-in}
+        - {trigger: false, passed: [create-director], get: stemcell, resource: oracle-ubuntu-stemcell}
 #        - {trigger: false, passed: [run-int,run-bats], get: stemcell,               resource: google-ubuntu-stemcell}
 #        - {trigger: false, passed: [run-bats], get: bosh-cpi-release,       resource: bosh-cpi-dev-artifacts}
         - {trigger: false,                             get: release-version-semver, params: {bump: major}}
@@ -205,7 +261,7 @@ resources:
   - name: bats
     type: git
     source:
-      uri: https://github.com/dmutreja/bosh-acceptance-tests.git
+      uri: https://github.com/cloudfoundry/bosh-acceptance-tests.git
       branch: gocli-bats
 
   - name: oracle-ubuntu-stemcell

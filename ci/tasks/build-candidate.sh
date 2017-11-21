@@ -18,12 +18,11 @@ pushd bosh-cpi-src
 
   echo "Downloading dependency blobs (TEMPORARY)..."
   mkdir /tmp/blobs
-  curl -o /tmp/blobs/go1.8.1.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.8.1.linux-amd64.tar.gz
-  bosh add-blob /tmp/blobs/go1.8.1.linux-amd64.tar.gz golang/go1.8.1.linux-amd64.tar.gz
+  curl -o /tmp/blobs/go1.8.3.linux-amd64.tar.gz https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
+  bosh add-blob /tmp/blobs/go1.8.3.linux-amd64.tar.gz golang/go1.8.3.linux-amd64.tar.gz
 
   # We have to use the --force flag because we just added the src/github.com/oracle/bosh-oracle-cpi/release file
   echo "Creating CPI BOSH Release..."
-#  bosh create release --name ${cpi_release_name} --version ${semver} --with-tarball --force
   bosh create-release --name ${cpi_release_name} --version ${semver} --force --tarball="$image_path"
 popd
 

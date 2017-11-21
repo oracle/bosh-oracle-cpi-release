@@ -27,6 +27,8 @@ resource "oci_identity_policy" "bosh_policy" {
         "allow group ${oci_identity_group.bosh_group.name} to manage instance-family in compartment ${var.bosh_compartment["name"]}",
         "allow group ${oci_identity_group.bosh_group.name} to manage volume-family in compartment ${var.bosh_compartment["name"]}",
         "allow group ${oci_identity_group.bosh_group.name} to manage object-family in compartment ${var.bosh_compartment["name"]}",
-        "allow group ${oci_identity_group.bosh_group.name} to manage virtual-network-family in compartment ${var.bosh_compartment["name"]}"
+        "allow group ${oci_identity_group.bosh_group.name} to manage virtual-network-family in compartment ${var.bosh_compartment["name"]}",
+        "allow group bosh-build-group to manage instance-family in compartment ${var.bosh_compartment["name"]}",
+        "allow group bosh-build-group to manage object-family in compartment ${var.bosh_compartment["name"]}"
     ]
 }
