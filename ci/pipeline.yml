@@ -37,15 +37,15 @@ jobs:
           - name: bosh-cpi-src
           - name: candidate
         file: cpi-release/ci/tasks/upload-artifacts.yml
-          params:
-            tenancy: ((tenancy))
-            user:    ((user))
-            fingerprint: ((fingerprint))
-            apikey:  ((apikey))
-            region: ((region))
-            namespace: ((namespace))
-            bucket:  ((cpi-dev-bucket))
-            filespec: "candidate/*.tgz"
+        params:
+          tenancy: ((tenancy))
+          user:    ((user))
+          fingerprint: ((fingerprint))
+          apikey:  ((apikey))
+          region: ((region))
+          namespace: ((namespace))
+          bucket:  ((cpi-dev-bucket))
+          filespec: "candidate/*.tgz"
 
 #TODO
 #      - put: bosh-cpi-dev-artifacts
@@ -76,19 +76,19 @@ jobs:
           oracle_ssh_private_key:         {{oracle_ssh_private_key}}
 
       - task: upload-infra-state
-              inputs:
-                - name: bosh-cpi-src
-                - name: infra
-              file: cpi-release/ci/tasks/upload-artifacts.yml
-                params:
-                  tenancy: ((tenancy))
-                  user:    ((user))
-                  fingerprint: ((fingerprint))
-                  apikey:  ((apikey))
-                  region: ((region))
-                  namespace: ((namespace))
-                  bucket:  ((build-infra-bucket))
-                  filespec: "infra/intra.tar.gz"
+        inputs:
+          - name: bosh-cpi-src
+          - name: infra
+        file: cpi-release/ci/tasks/upload-artifacts.yml
+        params:
+          tenancy: ((tenancy))
+          user:    ((user))
+          fingerprint: ((fingerprint))
+          apikey:  ((apikey))
+          region: ((region))
+          namespace: ((namespace))
+          bucket:  ((build-infra-bucket))
+            filespec: "infra/intra.tar.gz"
 
   - name: create-director
     serial_groups: [run-bats]
@@ -106,14 +106,14 @@ jobs:
 
       - task: download-release
         file: cpi-release/ci/tasks/download-cpi-artifacts.yml
-          params:
-            tenancy: ((tenancy))
-            user:    ((user))
-            fingerprint: ((fingerprint))
-            apikey:  ((apikey))
-            region: ((region))
-            namespace: ((namespace))
-            bucket:  ((cpi-dev-bucket))
+        params:
+          tenancy: ((tenancy))
+          user:    ((user))
+          fingerprint: ((fingerprint))
+          apikey:  ((apikey))
+          region: ((region))
+          namespace: ((namespace))
+          bucket:  ((cpi-dev-bucket))
 
       - task: setup-director
         file: bosh-cpi-src/ci/tasks/setup-director.yml
@@ -146,14 +146,14 @@ jobs:
 
       - task: download-release
         file: cpi-release/ci/tasks/download-cpi-artifacts.yml
-          params:
-            tenancy: ((tenancy))
-            user:    ((user))
-            fingerprint: ((fingerprint))
-            apikey:  ((apikey))
-            region: ((region))
-            namespace: ((namespace))
-            bucket:  ((cpi-dev-bucket))
+        params:
+          tenancy: ((tenancy))
+          user:    ((user))
+          fingerprint: ((fingerprint))
+          apikey:  ((apikey))
+          region: ((region))
+          namespace: ((namespace))
+          bucket:  ((cpi-dev-bucket))
 
       - task: run-bats
         file: bosh-cpi-src/ci/tasks/run-bats.yml
