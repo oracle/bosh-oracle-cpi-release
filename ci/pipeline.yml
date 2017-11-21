@@ -235,7 +235,7 @@ resources:
       uri: https://((github-user)):((github-password))@((github-repo))
       branch: master
 
-#TODO Implement bmc-resource?
+#TODO Implement bmc-resource
 #  - name: bosh-cpi-dev-artifacts
 #    type: gcs-resource
 #
