@@ -25,7 +25,7 @@ EOF
 chmod 600 ${OCI_API_KEY}
 chmod 600 ${OCI_CONFIG}
 
-# Upload
+# Upload CPI
 for tarball in candidate/*.tgz
 do
   oci --config-file ${OCI_CONFIG} os object put -ns ${namespace}  -bn ${bucket} --file $tarball

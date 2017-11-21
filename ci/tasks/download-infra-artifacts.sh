@@ -25,5 +25,5 @@ EOF
 chmod 600 ${OCI_API_KEY}
 chmod 600 ${OCI_CONFIG}
 
-# Download
+# Download infra
 oci os object get -ns cloudfoundry -bn ${bucket} --name infra.tar.gz --file infra-out/infra.tar.gz

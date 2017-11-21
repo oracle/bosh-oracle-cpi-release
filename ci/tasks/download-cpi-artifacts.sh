@@ -28,5 +28,5 @@ chmod 600 ${OCI_CONFIG}
 semver=`cat version-semver/number`
 cpi="bosh-oracle-cpi-${semver}.tgz"
 
-# Download
+# Download CPI
 oci os object get -ns cloudfoundry -bn ${bucket} --name ${cpi} --file ${cpi}
