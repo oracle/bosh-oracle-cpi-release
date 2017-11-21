@@ -33,9 +33,6 @@ jobs:
         file: bosh-cpi-src/ci/tasks/build-candidate.yml
 
       - task: upload-release
-        inputs:
-          - name: bosh-cpi-src
-          - name: candidate
         file: cpi-release/ci/tasks/upload-artifacts.yml
         params:
           tenancy: ((tenancy))
@@ -76,9 +73,6 @@ jobs:
           oracle_ssh_private_key:         {{oracle_ssh_private_key}}
 
       - task: upload-infra-state
-        inputs:
-          - name: bosh-cpi-src
-          - name: infra
         file: cpi-release/ci/tasks/upload-artifacts.yml
         params:
           tenancy: ((tenancy))
