@@ -8,10 +8,10 @@ semver=`cat final-version-semver/number`
 pwd=`pwd`
 
 #Inputs
-release_dir=${pwd}/cpi-release
+release_dir=${pwd}/cpi-release-src
 
 #Outputs
-release_artifact_path=${pwd}/artifacts/release
+release_artifact_path=${pwd}/candidate/release
 tarball_name=${cpi_release_name}-${semver}.tgz
 tarball_path=${release_artifact_path}/${tarball_name}
 tarball_sha=${release_artifact_path}/${tarball_name}.sha1

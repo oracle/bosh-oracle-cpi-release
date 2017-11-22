@@ -6,9 +6,9 @@ image_resource:
     repository: dmutreja/cpi-release-build-env
     tag: "latest"
 inputs:
-  - name: cpi-release
+  - name: cpi-release-src
   - name: dev-version-semver
 outputs:
-  - name: artifacts
+  - name: candidate
 run:
-  path: cpi-release/ci/tasks/build-dev-release.sh
+  path: cpi-release-src/ci/tasks/build-candidate.sh
