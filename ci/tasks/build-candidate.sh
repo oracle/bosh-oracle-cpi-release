@@ -9,10 +9,10 @@ golang_ver=1.8.3
 pwd=`pwd`
 
 #Inputs
-release_dir=${pwd}/cpi-release
+release_dir=${pwd}/cpi-release-src
 
 #Outputs
-release_artifact_path=${pwd}/artifacts/dev_release
+release_artifact_path=${pwd}/candidate/dev_release
 tarball_name=${cpi_release_name}-dev-${semver}.tgz
 tarball_path=${release_artifact_path}/${tarball_name}
 tarball_sha=${release_artifact_path}/${tarball_name}.sha1
