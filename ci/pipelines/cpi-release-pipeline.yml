@@ -3,6 +3,7 @@ groups:
   - name: bosh-oracle-cpi-release
     jobs:
       - test-unit
+      - run-ocitests
       - build-candidate
       - create-director
       - build-final
@@ -14,6 +15,16 @@ jobs:
 
       - task: unit-tests
         file: cpi-src/ci/tasks/unit-tests.yml
+
+  - name: run-ocitests
+    serial: true
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [test-unit], get: cpi-src, resource: bosh-cpi-src}
+        - {trigger: true, get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+
+      - task: oci-tests
+        file: cpi-src/ci/tasks/oci-tests.yml
 
   - name: build-candidate
     serial: true
@@ -66,6 +77,7 @@ jobs:
       - aggregate:
          - {trigger: false, get: final-version-semver,   params: {bump: major}}
          - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
+         - {trigger: true, passed: [run-ocitests], get: cpi-src, resource: bosh-cpi-src}
 
       - task: build-final-release
         file: cpi-release-src/ci/tasks/build-final-release.yml
@@ -149,6 +161,17 @@ resources:
       region_name: ((oracle-region))
       endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
       initial_version: 1.0.0
+
+  - name: fixture-env
+    type: s3
+    source:
+       endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
+       region_name: ((oracle-region))
+       bucket: ((oracle-fixture-env-bucket-name))
+       regexp: (.*).tgz
+       access_key_id: ((oracle-s3-access-key-id))
+       secret_access_key: ((oracle-s3-secret-access-key))
+       private: true
 
    - name: bosh-release
      type: bosh-io-release
