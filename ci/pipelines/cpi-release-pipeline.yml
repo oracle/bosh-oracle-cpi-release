@@ -1,4 +1,43 @@
 ---
+task-definitions:
+  - &terraform-setup
+    task: prepare-terraform-env
+    file: cpi-release-src/ci/tasks/prepare-terraform-env.yml
+    params:
+      oracle_tenancy: ((oracle-tenancy))
+      oracle_user: ((oracle-user))
+      oracle_region: ((oracle-region))
+      oracle_fingerprint: ((oracle-fingerprint))
+      oracle_apikey: ((oracle-apikey))
+      director_vcn: ((director-vcn))
+      director_compartment_name: ((director-compartment-name))
+      director_subnet_cidr: ((director-subnet-cidr))
+
+  - &terraform-apply
+    put: oci-resources-setup
+    params:
+      terraform_source: cpi-release-src/ci/terraform
+      env_name: oci-test-env
+      var_files: [terraform-env/oci.vars]
+      plugin_dir: /.terraform.d/plugins/linux_amd64
+
+  - &oci-tests
+    task: oci-tests
+    file: cpi-src/ci/tasks/oci-tests.yml
+    params:
+      TEST_SPEC: "Test_[^StemcellOps]"
+
+  - &terraform-destroy
+    put: oci-resources-setup
+    params:
+      terraform_source: cpi-release-src/ci/terraform
+      env_name: oci-test-env
+      action: destroy
+      var_files: [terraform-env/oci.vars]
+      plugin_dir: /.terraform.d/plugins/linux_amd64
+    get_params:
+        action: destroy
+
 groups:
   - name: bosh-oracle-cpi-release
     jobs:
@@ -27,7 +66,6 @@ jobs:
         file: cpi-src/ci/tasks/oci-tests.yml
         params:
           TEST_SPEC: "Test_[^StemcellOps]" 
-
 
   - name: build-candidate
     serial: true
@@ -81,7 +119,6 @@ jobs:
     plan:
       - aggregate:
          - {trigger: false, get: final-version-semver,   params: {bump: major}}
-         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
          - {trigger: true, passed: [run-ocitests], get: cpi-src, resource: bosh-cpi-src}
 
       - task: build-final-release
@@ -93,6 +130,12 @@ jobs:
       - put: final-release-cpi
         params:
           file: candidate/release/bosh-oracle-cpi-*.tgz
+
+resource_types:
+  - name: terraform
+    type: docker-image
+    source:
+      repository: dmutreja/oci-terraform-resource
 
 resources:
   - name: bosh-cpi-release-src
@@ -166,7 +209,19 @@ resources:
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
 
-   - name: bosh-release
-     type: bosh-io-release
-     source:
+  - name: bosh-release
+    type: bosh-io-release
+    source:
       repository: cloudfoundry/bosh
+
+  - name: oci-resources-setup
+    type: terraform
+    source:
+       storage:
+         bucket: ((oracle-fixture-env-bucket-name))
+         bucket_path: terraform-ci/
+         access_key_id: ((oracle-s3-access-key-id))
+         secret_access_key: ((oracle-s3-secret-access-key))
+         region_name: ((oracle-region))
+         endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
+         use_signing_v4: true
