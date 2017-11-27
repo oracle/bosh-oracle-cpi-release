@@ -12,10 +12,11 @@ cp ./candidate/*.tgz ${deployment_dir}/${cpi_release_name}.tgz
 cp ./bosh-release/*.tgz ${deployment_dir}/bosh-release.tgz
 cp ./cpi-release-src/bosh-deployment/bosh.yml ${deployment_dir}/${manifest_filename}
 cp ./cpi-release-src/bosh-deployment/cpi.yml ${deployment_dir}
+cp ./oci-config/infra.yml ${deployment_dir}
 
 # Use the candidate CPI
-cpi_local="local-cpi.yml"
-cat >"${cpi_local"<<EOF
+local_cpi="local-cpi.yml"
+cat >"${deployment_dir}/${local_cpi}"<<EOF
 ---
 - type: replace
   path: /releases/-
@@ -42,7 +43,7 @@ pushd ${deployment_dir}
   ls -al 
 
   echo "Deploying BOSH Director..."
-  bosh create-env --ops-file ./cpi.yml --ops-file ./${cpi_local} --vars-store ./creds.yml --state ${state_filename} --vars-file ./infra.yml ${manifest_filename}
+  bosh create-env --ops-file ./cpi.yml --ops-file ./${local_cpi} --vars-store ./creds.yml --state ${state_filename} --vars-file ./infra.yml ${manifest_filename}
 
   trap - ERR
   finish

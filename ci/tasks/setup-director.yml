@@ -10,6 +10,7 @@ inputs:
   - name: cpi-release-src
   - name: bosh-release
   - name: candidate
+  - name: oci-config
 outputs:
   - name: deployment
 run:
