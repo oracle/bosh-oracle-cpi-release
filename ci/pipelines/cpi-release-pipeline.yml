@@ -2,14 +2,14 @@
 groups:
   - name: bosh-oracle-cpi-release
     jobs:
-      - test-unit
+      - run-unittests
       - run-ocitests
       - build-candidate
       - create-director
       - build-final
 
 jobs:
-  - name: test-unit
+  - name: run-unittests
     plan:
       - {trigger: true, get: cpi-src, resource: bosh-cpi-src}
 
@@ -20,7 +20,7 @@ jobs:
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, passed: [test-unit], get: cpi-src, resource: bosh-cpi-src}
+        - {trigger: true, passed: [run-unittests], get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
 
       - task: oci-tests
@@ -33,7 +33,7 @@ jobs:
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, passed: [test-unit], get: cpi-src, resource: bosh-cpi-src}
+        - {trigger: true, passed: [run-unittests, run-ocitests], get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: false, get: dev-version-semver,   params: {bump: patch}}
 
@@ -44,35 +44,24 @@ jobs:
         file: cpi-release-src/ci/tasks/build-candidate.yml
 
       - put: dev-release-cpi
-        params:
-          file: candidate/dev_release/bosh-oracle-cpi-dev-*.tgz
+        params: {file: candidate/dev_release/bosh-oracle-cpi-dev-*.tgz}
 
-    - name: create-director
-      serial_groups: [run-bats]
-      plan:
-        - aggregate:
-          - {trigger: true, passed: [build-candidate], get: cpi-src, resource: bosh-cpi-src}
-          - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
-          - {trigger: true, passed: [build-candidate], get: candidate, resource: dev-release-cpi}
-          - {trigger: true, passed: [build-candidate], get: stemcell, resource: oracle-ubuntu-stemcell}
-          - {trigger: false,                           get: bosh-release}
+  - name: create-director
+    serial_groups: [run-bats]
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [build-candidate], get: cpi-src, resource: bosh-cpi-src}
+        - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true, passed: [build-candidate], get: candidate, resource: dev-release-cpi}
+        - {trigger: true,                            get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+        - {trigger: false,                           get: bosh-release}
 
-        - task: setup-director
-          file: cpi-release-src/ci/tasks/setup-director.yml
-          params:
-            oracle_tenancy:                 {{oracle_tenancy}}
-            oracle_user:                    {{oracle_user}}
-            oracle_compartment_id:          {{oracle_compartment_id}}
-            oracle_compartment_name:        {{oracle_compartment_name}}
-            oracle_region:                  {{oracle_region}}
-            oracle_ad:                      {{oracle_ad}}
-            oracle_fingerprint:             {{oracle_fingerprint}}
-            oracle_apikey:                  {{oracle_apikey}}
-            oracle_ssh_public_key:          {{oracle_ssh_public_key}}
-            oracle_ssh_private_key:         {{oracle_ssh_private_key}}
-          on_failure:
-            task: teardown-director
-            file: cpi-release-src/ci/tasks/teardown-director.yml
+      - task: setup-director
+        file: cpi-release-src/ci/tasks/setup-director.yml
+
+        on_failure:
+          task: teardown-director
+          file: cpi-release-src/ci/tasks/teardown-director.yml
 
   - name: build-final
     serial: true
@@ -131,18 +120,6 @@ resources:
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
 
-  - name: oracle-ubuntu-stemcell
-    type: s3
-    source:
-       endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
-       region_name: ((oracle-region))
-       bucket: stemcells
-       regexp: light-oracle-ubuntu-stemcell-2000.13.tgz
-       access_key_id: ((oracle-s3-access-key-id))
-       secret_access_key: ((oracle-s3-secret-access-key))
-       private: true
-
-
   - name: dev-version-semver
     type: semver
     source:
@@ -171,7 +148,7 @@ resources:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
        region_name: ((oracle-region))
        bucket: ((oracle-fixture-env-bucket-name))
-       regexp: (.*).tgz
+       regexp: ((oracle-fixture-env))-(.*).tgz
        access_key_id: ((oracle-s3-access-key-id))
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
