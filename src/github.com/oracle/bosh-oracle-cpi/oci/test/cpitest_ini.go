@@ -28,6 +28,7 @@ type CpiTestIni struct {
 	StemcellImageID        string `ini:"stemcellImage" mapstructure:"StemcellImageID"`
 	StemcellImageSourceURI string `ini:"stemcellImageSourceURI" mapstructure:"StemcellImageSourceURI"`
 	LogLevel               string `ini:"logLevel" mapstructure:"LogLevel"`
+	UsePublicIPForSSH      bool   `ini:"usePublicIPForSSH" mapstructure:"UsePublicIPForSSH"`
 }
 
 func NewCpiTestIni(filePath string, section string) (CpiTestIni, error) {

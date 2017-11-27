@@ -26,7 +26,7 @@ func NewTestConfig(iniPath string, section string) (config.Cloud, CpiTestIni, er
 		APIKeyFile:        absolutePath(iniPath, ini.KeyFile),
 		CpiKeyFile:        absolutePath(iniPath, ini.CpiPrivateKeyPath),
 		CpiUser:           ini.CpiUser,
-		UsePublicIPForSSH: true,
+		UsePublicIPForSSH: ini.UsePublicIPForSSH,
 		AuthorizedKeys: config.AuthorizedKeys{
 			User: publicKeyFileContent(absolutePath(iniPath, ini.UserPublicKeyPath)),
 			Cpi:  publicKeyFileContent(absolutePath(iniPath, ini.CpiPublicKeyPath)),
