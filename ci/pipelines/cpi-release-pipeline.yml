@@ -24,6 +24,9 @@ jobs:
 
       - task: oci-tests
         file: cpi-src/ci/tasks/oci-tests.yml
+        params:
+          TEST_SPEC: "Test_[^StemcellOps]" 
+
 
   - name: build-candidate
     serial: true
