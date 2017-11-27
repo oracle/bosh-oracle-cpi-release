@@ -19,11 +19,10 @@ local_cpi="local-cpi.yml"
 cat >"${deployment_dir}/${local_cpi}"<<EOF
 ---
 - type: replace
-  path: /releases/-
+  path: /releases/name=bosh-oracle-cpi
   value:
     name: bosh-oracle-cpi
-    version: 0.1
-    url: file:///${cpi_release_name}.tgz
+    url: file://${cpi_release_name}.tgz
 EOF
 
 pushd ${deployment_dir}
