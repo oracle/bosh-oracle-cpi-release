@@ -10,11 +10,10 @@ inputs:
   - name: cpi-release-src
   - name: bosh-release
   - name: candidate
-  - name: stemcell
 outputs:
   - name: deployment
 run:
-  path: cpi-src/ci/tasks/setup-director.sh
+  path: cpi-release-src/ci/tasks/setup-director.sh
 params:
   BOSH_LOG_LEVEL:                 debug
   BOSH_LOG_PATH:                  ./bosh-init.log

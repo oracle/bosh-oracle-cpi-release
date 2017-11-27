@@ -9,7 +9,7 @@ inputs:
   - name: cpi-src
   - name: deployment
 run:
-  path: cpi-src/ci/tasks/teardown-director.sh
+  path: cpi-release-src/ci/tasks/teardown-director.sh
 params:
   BOSH_LOG_LEVEL: debug
   BOSH_LOG_PATH:  ./bosh-init.log
