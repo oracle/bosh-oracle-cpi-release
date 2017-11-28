@@ -41,24 +41,40 @@ task-definitions:
 groups:
   - name: bosh-oracle-cpi-release
     jobs:
-      - test-unit
+      - run-unittests
       - run-ocitests
       - build-candidate
+      - create-director
       - build-final
 
 jobs:
-  - name: test-unit
+  - name: run-unittests
     plan:
       - {trigger: true, get: cpi-src, resource: bosh-cpi-src}
 
       - task: unit-tests
         file: cpi-src/ci/tasks/unit-tests.yml
 
+  - name: run-ocitests
+    serial: true
+    plan:
+      - aggregate:
+        - {trigger: true, passed: [run-unittests], get: cpi-src, resource: bosh-cpi-src}
+        - {trigger: true, get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+
+      - <<: *terraform-setup
+      - <<: *terraform-apply
+      - do:
+        - <<: *oci-tests
+        ensure:
+          do:
+            - <<: *terraform-destroy
+
   - name: build-candidate
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, passed: [test-unit], get: cpi-src, resource: bosh-cpi-src}
+        - {trigger: true, passed: [run-unittests, run-ocitests], get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: false, get: dev-version-semver,   params: {bump: patch}}
 
@@ -68,25 +84,25 @@ jobs:
       - task: build-dev-release
         file: cpi-release-src/ci/tasks/build-candidate.yml
 
-      - put: dev-release-bucket
-        params:
-          file: candidate/dev_release/bosh-oracle-cpi-dev-*.tgz
+      - put: dev-release-cpi
+        params: {file: candidate/dev_release/bosh-oracle-cpi-dev-*.tgz}
 
-  - name: run-ocitests
-    serial: true
+  - name: create-director
+    serial_groups: [run-bats]
     plan:
       - aggregate:
-        - {trigger: true, passed: [test-unit], get: cpi-src, resource: bosh-cpi-src}
-        - {trigger: true, get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+        - {trigger: true, passed: [build-candidate], get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true, passed: [build-candidate], get: candidate, resource: dev-release-cpi}
+        - {trigger: true,                            get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+        - {trigger: false,                           get: bosh-release}
 
-      - <<: *terraform-setup
-      - <<: *terraform-apply
-      - do:
-        - <<: *oci-tests
-        ensure:
-          do:
-            - <<: *terraform-destroy
+      - task: setup-director
+        file: cpi-release-src/ci/tasks/setup-director.yml
+
+        on_failure:
+          task: teardown-director
+          file: cpi-release-src/ci/tasks/teardown-director.yml
 
   - name: build-final
     serial: true
@@ -101,7 +117,7 @@ jobs:
       - put: final-version-semver
         params: {file: final-version-semver/version}
 
-      - put: final-release-bucket
+      - put: final-release-cpi
         params:
           file: candidate/release/bosh-oracle-cpi-*.tgz
 
@@ -128,7 +144,7 @@ resources:
       username: ((github-user))
       password: ((github-password))
 
-  - name: dev-release-bucket
+  - name: dev-release-cpi
     type: s3
     source:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
@@ -139,7 +155,7 @@ resources:
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
 
-  - name: final-release-bucket
+  - name: final-release-cpi
     type: s3
     source:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
@@ -178,7 +194,7 @@ resources:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
        region_name: ((oracle-region))
        bucket: ((oracle-fixture-env-bucket-name))
-       regexp: (.*).tgz
+       regexp: ((oracle-fixture-env))-(.*).tgz
        access_key_id: ((oracle-s3-access-key-id))
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
@@ -195,4 +211,7 @@ resources:
          endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
          use_signing_v4: true
 
-
+  - name: bosh-release
+    type: bosh-io-release
+    source:
+      repository: cloudfoundry/bosh
