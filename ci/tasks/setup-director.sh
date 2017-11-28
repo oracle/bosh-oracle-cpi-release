@@ -15,15 +15,17 @@ cp ./cpi-release-src/bosh-deployment/cpi.yml ${deployment_dir}
 cp ./oci-config/infra.yml ${deployment_dir}
 
 # Use the candidate CPI
+# TODO: Uncomment lines in yml file, when CPI download is fixed
 local_cpi="local-cpi.yml"
 cat >"${deployment_dir}/${local_cpi}"<<EOF
 ---
-- type: replace
-  path: /releases/name=bosh-oracle-cpi
-  value:
-    name: bosh-oracle-cpi
-    url: file://${cpi_release_name}.tgz
+#- type: replace
+#  path: /releases/name=bosh-oracle-cpi
+#  value:
+#    name: bosh-oracle-cpi
+#    url: file://${cpi_release_name}.tgz
 EOF
+
 
 pushd ${deployment_dir}
   function finish {
