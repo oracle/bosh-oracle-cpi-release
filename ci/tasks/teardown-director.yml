@@ -12,4 +12,4 @@ run:
   path: cpi-release-src/ci/tasks/teardown-director.sh
 params:
   BOSH_LOG_LEVEL: debug
-  BOSH_LOG_PATH:  ./bosh-init.log
+  BOSH_LOG_PATH:  ./bosh.log

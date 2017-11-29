@@ -1,0 +1,15 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: dmutreja/ubuntu-xenial-boshcliv2 
+    tag: "latest"
+inputs:
+  - name: terraform-out
+  - name: fixture-ssh-keys
+  - name: cpi-release-src
+outputs:
+  - name: oci-config
+run:
+  path: cpi-release-src/ci/tasks/prepare-test-config.sh

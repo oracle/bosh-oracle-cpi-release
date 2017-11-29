@@ -21,11 +21,25 @@ task-definitions:
       var_files: [terraform-env/oci.vars]
       plugin_dir: /.terraform.d/plugins/linux_amd64
 
+  - &terraform-output
+    get: terraform-out
+    resource: oci-resources-setup
+
+  - &prepare-test-config
+    task: prepare-test-config
+    file: cpi-release-src/ci/tasks/prepare-test-config.yml
+    params:
+      oracle_tenancy: ((oracle-tenancy))
+      oracle_user: ((oracle-user))
+      oracle_region: ((oracle-region))
+      oracle_fingerprint: ((oracle-fingerprint))
+      oracle_apikey: ((oracle-apikey))
+
   - &oci-tests
     task: oci-tests
     file: cpi-src/ci/tasks/oci-tests.yml
     params:
-      TEST_SPEC: "Test_[^StemcellOps]"
+      TEST_SPEC: "Test_Connect*"
 
   - &terraform-destroy
     put: oci-resources-setup
@@ -37,6 +51,14 @@ task-definitions:
       plugin_dir: /.terraform.d/plugins/linux_amd64
     get_params:
         action: destroy
+
+  - &setup-director
+    task: setup-director
+    file: cpi-release-src/ci/tasks/setup-director.yml
+    on_failure:
+      task: teardown-director
+      file: cpi-release-src/ci/tasks/teardown-director.yml
+
 
 groups:
   - name: bosh-oracle-cpi-release
@@ -56,14 +78,18 @@ jobs:
         file: cpi-src/ci/tasks/unit-tests.yml
 
   - name: run-ocitests
+    serial_groups: [oci-resource-consumer]
     serial: true
     plan:
       - aggregate:
         - {trigger: true, passed: [run-unittests], get: cpi-src, resource: bosh-cpi-src}
-        - {trigger: true, get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+        - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true, get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
 
       - <<: *terraform-setup
       - <<: *terraform-apply
+      - <<: *terraform-output
+      - <<: *prepare-test-config
       - do:
         - <<: *oci-tests
         ensure:
@@ -88,21 +114,24 @@ jobs:
         params: {file: candidate/dev_release/bosh-oracle-cpi-dev-*.tgz}
 
   - name: create-director
-    serial_groups: [run-bats]
+    serial_groups: [run-bats, oci-resource-consumer]
     plan:
       - aggregate:
         - {trigger: true, passed: [build-candidate], get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: true, passed: [build-candidate], get: candidate, resource: dev-release-cpi}
-        - {trigger: true,                            get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+        - {trigger: true,                            get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
         - {trigger: false,                           get: bosh-release}
 
-      - task: setup-director
-        file: cpi-release-src/ci/tasks/setup-director.yml
-
-        on_failure:
-          task: teardown-director
-          file: cpi-release-src/ci/tasks/teardown-director.yml
+      - <<: *terraform-setup
+      - <<: *terraform-apply
+      - <<: *terraform-output
+      - <<: *prepare-test-config
+      - do:
+        - <<: *setup-director
+        ensure:
+          do:
+            - <<: *terraform-destroy
 
   - name: build-final
     serial: true
@@ -194,7 +223,7 @@ resources:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
        region_name: ((oracle-region))
        bucket: ((oracle-fixture-env-bucket-name))
-       regexp: ((oracle-fixture-env))-(.*).tgz
+       regexp: (.*).tgz
        access_key_id: ((oracle-s3-access-key-id))
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
