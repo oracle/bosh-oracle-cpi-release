@@ -6,10 +6,10 @@ image_resource:
     repository: dmutreja/ubuntu-xenial-boshcliv2 
     tag: "latest"
 inputs:
+  - name: terraform-out
+  - name: fixture-ssh-keys
   - name: cpi-release-src
-  - name: deployment
+outputs:
+  - name: oci-config
 run:
-  path: cpi-release-src/ci/tasks/teardown-director.sh
-params:
-  BOSH_LOG_LEVEL: debug
-  BOSH_LOG_PATH:  ./bosh.log
+  path: cpi-release-src/ci/tasks/prepare-test-config.sh

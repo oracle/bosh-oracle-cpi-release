@@ -1,0 +1,25 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source: {repository: dmutreja/cpi-release-build-env, tag: "latest"}
+inputs:
+  - name: cpi-release-src
+outputs:
+  - name: terraform-env
+run:
+  path: cpi-release-src/ci/tasks/prepare-terraform-env.sh
+
+params:
+  oracle_tenancy:                 replace-me
+  oracle_user:                    replace-me
+  oracle_compartment_name:        replace-me
+  oracle_region:                  replace-me
+  oracle_fingerprint:             replace-me
+  oracle_apikey:                  replace-me
+  oracle_apikey_file_name:        oci_api_key.pem
+  director_subnet_cidr:           10.0.10.0/24
+  director_compartment_name:      replace_me
+  director_vcn:                   replace_me
+  director_ad:                    WZYX:PHX-AD-1
+
