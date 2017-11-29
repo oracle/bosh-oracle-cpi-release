@@ -1,0 +1,20 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: dmutreja/oci-cli
+    tag: "latest"
+inputs:
+  - name: cpi-release-src
+  - name: candidate
+run:
+  path: bosh-cpi-src/ci/tasks/download-cpi.sh
+params:
+  oracle_tenancy: replace-me
+  oracle_user:    replace-me
+  oracle_fingerprint: replace-me
+  oracle_apikey:  replace-me
+  oracle_region: replace-me
+  oracle_namespace: replace-me
+  oracle_bucket:  replace-me
