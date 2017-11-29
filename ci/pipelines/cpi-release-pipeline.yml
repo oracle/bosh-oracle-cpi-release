@@ -17,7 +17,7 @@ task-definitions:
     put: oci-resources-setup
     params:
       terraform_source: cpi-release-src/ci/terraform
-      env_name: oci-test-env
+      env_name:  oracle-pipeline-env
       var_files: [terraform-env/oci.vars]
       plugin_dir: /.terraform.d/plugins/linux_amd64
 
@@ -45,7 +45,7 @@ task-definitions:
     put: oci-resources-setup
     params:
       terraform_source: cpi-release-src/ci/terraform
-      env_name: oci-test-env
+      env_name: oracle-pipeline-env
       action: destroy
       var_files: [terraform-env/oci.vars]
       plugin_dir: /.terraform.d/plugins/linux_amd64
@@ -115,6 +115,7 @@ jobs:
 
   - name: create-director
     serial_groups: [run-bats, oci-resource-consumer]
+    serial: true
     plan:
       - aggregate:
         - {trigger: true, passed: [build-candidate], get: cpi-src, resource: bosh-cpi-src}
@@ -129,7 +130,6 @@ jobs:
           oracle_tenancy:                 ((oracle-tenancy))
           oracle_user:                    ((oracle-user))
           oracle_region:                  ((oracle-region))
-          oracle_ad:                      ((oracle-ad))
           oracle_fingerprint:             ((oracle-fingerprint))
           oracle_apikey:                  ((oracle-apikey))
           oracle_namespace:               ((oracle-namespace))
