@@ -1,4 +1,65 @@
 ---
+task-definitions:
+  - &terraform-setup
+    task: prepare-terraform-env
+    file: cpi-release-src/ci/tasks/prepare-terraform-env.yml
+    params:
+      oracle_tenancy: ((oracle-tenancy))
+      oracle_user: ((oracle-user))
+      oracle_region: ((oracle-region))
+      oracle_fingerprint: ((oracle-fingerprint))
+      oracle_apikey: ((oracle-apikey))
+      director_vcn: ((director-vcn))
+      director_compartment_name: ((director-compartment-name))
+      director_subnet_cidr: ((director-subnet-cidr))
+
+  - &terraform-apply
+    put: oci-resources-setup
+    params:
+      terraform_source: cpi-release-src/ci/terraform
+      env_name: oci-test-env
+      var_files: [terraform-env/oci.vars]
+      plugin_dir: /.terraform.d/plugins/linux_amd64
+
+  - &terraform-output
+    get: terraform-out
+    resource: oci-resources-setup
+
+  - &prepare-test-config
+    task: prepare-test-config
+    file: cpi-release-src/ci/tasks/prepare-test-config.yml
+    params:
+      oracle_tenancy: ((oracle-tenancy))
+      oracle_user: ((oracle-user))
+      oracle_region: ((oracle-region))
+      oracle_fingerprint: ((oracle-fingerprint))
+      oracle_apikey: ((oracle-apikey))
+
+  - &oci-tests
+    task: oci-tests
+    file: cpi-src/ci/tasks/oci-tests.yml
+    params:
+      TEST_SPEC: "Test_Connect*"
+
+  - &terraform-destroy
+    put: oci-resources-setup
+    params:
+      terraform_source: cpi-release-src/ci/terraform
+      env_name: oci-test-env
+      action: destroy
+      var_files: [terraform-env/oci.vars]
+      plugin_dir: /.terraform.d/plugins/linux_amd64
+    get_params:
+        action: destroy
+
+  - &setup-director
+    task: setup-director
+    file: cpi-release-src/ci/tasks/setup-director.yml
+    on_failure:
+      task: teardown-director
+      file: cpi-release-src/ci/tasks/teardown-director.yml
+
+
 groups:
   - name: bosh-oracle-cpi-release
     jobs:
@@ -17,17 +78,23 @@ jobs:
         file: cpi-src/ci/tasks/unit-tests.yml
 
   - name: run-ocitests
+    serial_groups: [oci-resource-consumer]
     serial: true
     plan:
       - aggregate:
         - {trigger: true, passed: [run-unittests], get: cpi-src, resource: bosh-cpi-src}
-        - {trigger: true, get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+        - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true, get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
 
-      - task: oci-tests
-        file: cpi-src/ci/tasks/oci-tests.yml
-        params:
-          TEST_SPEC: "Test_[^StemcellOps]" 
-
+      - <<: *terraform-setup
+      - <<: *terraform-apply
+      - <<: *terraform-output
+      - <<: *prepare-test-config
+      - do:
+        - <<: *oci-tests
+        ensure:
+          do:
+            - <<: *terraform-destroy
 
   - name: build-candidate
     serial: true
@@ -47,13 +114,12 @@ jobs:
         params: {file: candidate/dev_release/bosh-oracle-cpi-dev-*.tgz}
 
   - name: create-director
-    serial_groups: [run-bats]
+    serial_groups: [run-bats, oci-resource-consumer]
     plan:
       - aggregate:
         - {trigger: true, passed: [build-candidate], get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
-#        - {trigger: true, passed: [build-candidate], get: candidate, resource: dev-release-cpi}
-        - {trigger: true,                            get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+        - {trigger: true,                            get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
         - {trigger: false,                           get: bosh-release}
         - {trigger: false,                           get: dev-version-semver}
 
@@ -69,19 +135,21 @@ jobs:
           oracle_namespace:               ((oracle-namespace))
           oracle_bucket:                  ((cpi-dev-release-bucket))
 
-      - task: setup-director
-        file: cpi-release-src/ci/tasks/setup-director.yml
-
-        on_failure:
-          task: teardown-director
-          file: cpi-release-src/ci/tasks/teardown-director.yml
+      - <<: *terraform-setup
+      - <<: *terraform-apply
+      - <<: *terraform-output
+      - <<: *prepare-test-config
+      - do:
+        - <<: *setup-director
+        ensure:
+          do:
+            - <<: *terraform-destroy
 
   - name: build-final
     serial: true
     plan:
       - aggregate:
          - {trigger: false, get: final-version-semver,   params: {bump: major}}
-         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
          - {trigger: true, passed: [run-ocitests], get: cpi-src, resource: bosh-cpi-src}
 
       - task: build-final-release
@@ -93,6 +161,12 @@ jobs:
       - put: final-release-cpi
         params:
           file: candidate/release/bosh-oracle-cpi-*.tgz
+
+resource_types:
+  - name: terraform
+    type: docker-image
+    source:
+      repository: dmutreja/oci-terraform-resource
 
 resources:
   - name: bosh-cpi-release-src
@@ -161,10 +235,22 @@ resources:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
        region_name: ((oracle-region))
        bucket: ((oracle-fixture-env-bucket-name))
-       regexp: ((oracle-fixture-env))-(.*).tgz
+       regexp: (.*).tgz
        access_key_id: ((oracle-s3-access-key-id))
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
+
+  - name: oci-resources-setup
+    type: terraform
+    source:
+       storage:
+         bucket: ((oracle-fixture-env-bucket-name))
+         bucket_path: terraform-ci/
+         access_key_id: ((oracle-s3-access-key-id))
+         secret_access_key: ((oracle-s3-secret-access-key))
+         region_name: ((oracle-region))
+         endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
+         use_signing_v4: true
 
   - name: bosh-release
     type: bosh-io-release

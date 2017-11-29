@@ -1,0 +1,35 @@
+<% properties = ENV.to_hash %>
+<% if ENV['TERRAFORM_OUTPUT']
+     contents = JSON.parse(File.read(ENV['TERRAFORM_OUTPUT']))
+     properties = properties.merge(contents)
+   end
+%>
+<%
+  ['oracle_user', 'oracle_tenancy', 'oracle_fingerprint', 'oracle_apikey_path', 'oracle_region',
+   'compartment_id', 'ad', 'vcn', 'subnet_name'].each do |val|
+    if properties[val].nil? || properties[val].empty?
+      raise "Missing variable: #{val}"
+    end
+  end
+%>
+
+[DEFAULT]
+user=<%= properties['oracle_user'] %>
+fingerprint=<%= properties['oracle_fingerprint'] %>
+key_file=<%= properties['oracle_apikey_path'] %>
+tenancy=<%= properties['oracle_tenancy'] %>
+region=<%= properties['oracle_region'] %>
+compartment=<%= properties['compartment_id'] %>
+ad=<%= properties['ad'] %>
+vcn=<%= properties['vcn'] %>
+subnet=<%= properties['subnet_name'] %>
+subnet2=<%= properties['subnet2_name'] || properties['subnet_name'] %>
+cpiUser=<%= properties['cpiUser'] || 'ubuntu' %>
+cpiPrivateKeyPath=<%= properties['cpiPrivateKeyPath'] || './cpikeys/id_rsa' %>
+cpiPublicKeyPath=<%= properties['cpiPublicKeyPath'] || './cpikeys/id_rsa.pub' %>
+userPublicKeyPath=<%= properties['userPublicKeyPath'] || './userkeys/id_rsa.pub' %>
+# Ubuntu image ubuntu14-stemcell-v9
+stemcellImage=<%= properties['stemcellImage'] || 'ocid1.image.oc1.phx.aaaaaaaaqqyosu5p7tidwhmywlnroqntmw5ka6q4kqvherv4sqvneku6be5q' %>
+stemcellImageSourceURI=<%= properties['stemcellImageSourceURI'] || 'https://objectstorage.us-phoenix-1.oraclecloud.com/p/37KVbIM7hSO9vJuO7cgUcUj9Ll4udobHOxLoTE7Y2tQ/n/cloudfoundry/b/stemcells/o/ubuntu14-stemcell-v9' %>
+logLevel=<%= properties['logLevel'] || 'DEBUG' %>
+usePublicIPForSSH=<%= properties['usePublicIPForSSH'] || 'true' %>
