@@ -3,10 +3,10 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: dmutreja/cpi-release-build-env
+    repository: dmutreja/ubuntu-xenial-boshcliv2 
     tag: "latest"
 inputs:
-  - name: cpi-src
+  - name: cpi-release-src
   - name: deployment
 run:
   path: cpi-release-src/ci/tasks/teardown-director.sh

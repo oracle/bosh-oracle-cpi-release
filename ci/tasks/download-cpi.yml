@@ -7,9 +7,11 @@ image_resource:
     tag: "latest"
 inputs:
   - name: cpi-release-src
+  - name: dev-version-semver
+outputs:
   - name: candidate
 run:
-  path: bosh-cpi-src/ci/tasks/download-cpi.sh
+  path: cpi-release-src/ci/tasks/download-cpi.sh
 params:
   oracle_tenancy: replace-me
   oracle_user:    replace-me

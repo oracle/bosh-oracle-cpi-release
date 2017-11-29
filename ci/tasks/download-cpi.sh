@@ -10,7 +10,7 @@ OCI_CONFIG="$OCI_DIR/config"
 
 mkdir -p ${OCI_DIR}
 cat > ${OCI_API_KEY} <<EOF
-${apikey}
+${oracle_apikey}
 EOF
 
 cat > $OCI_CONFIG <<EOF
@@ -25,7 +25,7 @@ EOF
 chmod 600 ${OCI_API_KEY}
 chmod 600 ${OCI_CONFIG}
 
-semver=`cat version-semver/number`
+semver=`cat dev-version-semver/number`
 
 cpi="bosh-oracle-cpi-dev-${semver}.tgz"
 

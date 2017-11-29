@@ -52,22 +52,22 @@ jobs:
       - aggregate:
         - {trigger: true, passed: [build-candidate], get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
-        - {trigger: true, passed: [build-candidate], get: candidate, resource: dev-release-cpi}
+#        - {trigger: true, passed: [build-candidate], get: candidate, resource: dev-release-cpi}
         - {trigger: true,                            get: oci-config, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
         - {trigger: false,                           get: bosh-release}
+        - {trigger: false,                           get: dev-version-semver}
 
       - task: download-cpi
         file: cpi-release-src/ci/tasks/download-cpi.yml
         params:
-          params:
-            oracle_tenancy:                 ((oracle-tenancy))
-            oracle_user:                    ((oracle-user))
-            oracle_region:                  ((oracle-region))
-            oracle_ad:                      ((oracle-ad))
-            oracle_fingerprint:             ((oracle-fingerprint))
-            oracle_apikey:                  ((oracle-apikey))
-            oracle_namespace:               ((oracle-namespace))
-            oracle_bucket:                  ((cpi-dev-release-bucket))
+          oracle_tenancy:                 ((oracle-tenancy))
+          oracle_user:                    ((oracle-user))
+          oracle_region:                  ((oracle-region))
+          oracle_ad:                      ((oracle-ad))
+          oracle_fingerprint:             ((oracle-fingerprint))
+          oracle_apikey:                  ((oracle-apikey))
+          oracle_namespace:               ((oracle-namespace))
+          oracle_bucket:                  ((cpi-dev-release-bucket))
 
       - task: setup-director
         file: cpi-release-src/ci/tasks/setup-director.yml
