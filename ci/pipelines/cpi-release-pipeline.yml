@@ -55,9 +55,10 @@ task-definitions:
   - &setup-director
     task: setup-director
     file: cpi-release-src/ci/tasks/setup-director.yml
-    on_failure:
-      task: teardown-director
-      file: cpi-release-src/ci/tasks/teardown-director.yml
+
+  - &teardown-director
+    task: teardown-director
+    file: cpi-release-src/ci/tasks/teardown-director.yml
 
 
 groups:
@@ -144,6 +145,7 @@ jobs:
         - <<: *setup-director
         ensure:
           do:
+            - <<: *teardown-director
             - <<: *terraform-destroy
 
   - name: build-final
@@ -151,7 +153,7 @@ jobs:
     plan:
       - aggregate:
          - {trigger: false, get: final-version-semver,   params: {bump: major}}
-         - {trigger: true, passed: [run-ocitests], get: cpi-src, resource: bosh-cpi-src}
+         - {trigger: true, passed: [run-ocitests, create-director], get: cpi-src, resource: bosh-cpi-src}
 
       - task: build-final-release
         file: cpi-release-src/ci/tasks/build-final-release.yml
