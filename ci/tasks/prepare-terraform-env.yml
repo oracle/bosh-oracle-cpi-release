@@ -18,8 +18,9 @@ params:
   oracle_fingerprint:             replace-me
   oracle_apikey:                  replace-me
   oracle_apikey_file_name:        oci_api_key.pem
-  director_subnet_cidr:           10.0.10.0/24
+  director_subnet_cidr:           replace_me
   director_compartment_name:      replace_me
   director_vcn:                   replace_me
   director_ad:                    WZYX:PHX-AD-1
-
+  bats_subnet1_cidr:              replace_me
+  bats_subnet2_cidr:              replace_me
