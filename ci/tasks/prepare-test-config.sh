@@ -5,7 +5,7 @@ set -e
 pwd=`pwd`
 
 #Inputs
-export TERRAFORM_OUTPUT=${pwd}/terraform-out/metadata
+export TERRAFORM_OUTPUT=${pwd}/terraform-oci/metadata
 templates_path=${pwd}/cpi-release-src/ci/templates
 keys=${pwd}/fixture-ssh-keys
 
