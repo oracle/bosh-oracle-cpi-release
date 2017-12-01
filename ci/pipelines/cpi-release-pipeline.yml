@@ -14,16 +14,12 @@ task-definitions:
       director_subnet_cidr: ((director-subnet-cidr))
 
   - &terraform-apply
-    put: oci-resources-setup
+    put: terraform-oci
     params:
       terraform_source: cpi-release-src/ci/terraform
       env_name:  oracle-pipeline-env
       var_files: [terraform-env/oci.vars]
       plugin_dir: /.terraform.d/plugins/linux_amd64
-
-  - &terraform-output
-    get: terraform-out
-    resource: oci-resources-setup
 
   - &prepare-test-config
     task: prepare-test-config
@@ -42,7 +38,7 @@ task-definitions:
       TEST_SPEC: "Test_Connect*"
 
   - &terraform-destroy
-    put: oci-resources-setup
+    put: terraform-oci
     params:
       terraform_source: cpi-release-src/ci/terraform
       env_name: oracle-pipeline-env
@@ -92,7 +88,6 @@ jobs:
 
       - <<: *terraform-setup
       - <<: *terraform-apply
-      - <<: *terraform-output
       - <<: *prepare-test-config
       - do:
         - <<: *oci-tests
@@ -143,7 +138,6 @@ jobs:
 
       - <<: *terraform-setup
       - <<: *terraform-apply
-      - <<: *terraform-output
       - <<: *prepare-test-config
       - do:
         - <<: *setup-director
@@ -260,7 +254,7 @@ resources:
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
 
-  - name: oci-resources-setup
+  - name: terraform-oci
     type: terraform
     source:
        storage:
