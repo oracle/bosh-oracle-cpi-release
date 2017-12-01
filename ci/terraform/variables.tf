@@ -25,3 +25,11 @@ variable "director_subnet_cidr" {
 variable "director_ad" {
     default  = "WZYX:PHX-AD-1"
 }
+
+variable "bats_subnet1_cidr" {
+    default = "10.0.2.0/24"
+}
+
+variable "bats_subnet2_cidr" {
+    default = "10.0.3.0/24"
+}

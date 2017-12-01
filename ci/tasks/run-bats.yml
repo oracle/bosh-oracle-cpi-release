@@ -1,0 +1,15 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: dmutreja/ubuntu-xenial-boshcliv2
+    tag: "latest"
+inputs:
+  - name: cpi-release-src
+  - name: stemcell
+  - name: oci-config
+  - name: deployment
+  - name: bats
+run:
+  path: cpi-release-src/ci/tasks/run-bats.sh
