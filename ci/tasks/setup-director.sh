@@ -17,7 +17,7 @@ cp ./oci-config/director-env-vars.yml ${deployment_dir}
 
 # Use the candidate artifacts
 local_yml="local.yml"
-cat >"${deployment_dir}/${local_cpi}"<<EOF
+cat >"${deployment_dir}/${local_yml}"<<EOF
 ---
 - type: replace
   path: /releases/name=bosh-oracle-cpi
