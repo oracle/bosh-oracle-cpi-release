@@ -6,7 +6,7 @@ image_resource:
     repository: dmutreja/ubuntu-xenial-boshcliv2 
     tag: "latest"
 inputs:
-  - name: terraform-out
+  - name: terraform-oci
   - name: fixture-ssh-keys
   - name: cpi-release-src
 outputs:

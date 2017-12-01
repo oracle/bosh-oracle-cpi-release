@@ -19,9 +19,14 @@ variable "vcn_cidr" {
 }
 
 variable "director_subnet_cidr" {
-    default = "10.0.1.0/24"
 }
 
 variable "director_ad" {
     default  = "WZYX:PHX-AD-1"
+}
+
+variable "bats_subnet1_cidr" {
+}
+
+variable "bats_subnet2_cidr" {
 }

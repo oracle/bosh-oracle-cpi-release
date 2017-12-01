@@ -27,6 +27,55 @@ output subnet_gw {
 output subnet_first_ip {
    value = "${cidrhost(oci_core_subnet.director_subnet.cidr_block, 2)}"
 }
+
+output bats_subnet1_name {
+   value = "${oci_core_subnet.bats_subnet1.display_name}"
+}
+
+output bats_subnet1_cidr {
+   value = "${oci_core_subnet.bats_subnet1.cidr_block}"
+}
+
+output bats_subnet1_gw {
+   value ="${cidrhost(oci_core_subnet.bats_subnet1.cidr_block, 1)}"
+}
+
+output bats_subnet1_reserved {
+   value = "${cidrhost(oci_core_subnet.bats_subnet1.cidr_block, 2)} - ${cidrhost(oci_core_subnet.bats_subnet1.cidr_block, 9)}"
+}
+
+output bats_subnet1_static {
+   value = "${cidrhost(oci_core_subnet.bats_subnet1.cidr_block, 10)} - ${cidrhost(oci_core_subnet.bats_subnet1.cidr_block, 30)}"
+}
+
+output bats_subnet1_static_ip {
+   value = "${cidrhost(oci_core_subnet.bats_subnet1.cidr_block, 30)}"
+}
+
+output bats_subnet2_name {
+   value = "${oci_core_subnet.bats_subnet2.display_name}"
+}
+
+output bats_subnet2_cidr {
+   value = "${oci_core_subnet.bats_subnet2.cidr_block}"
+}
+
+output bats_subnet2_gw {
+   value ="${cidrhost(oci_core_subnet.bats_subnet2.cidr_block, 1)}"
+}
+
+output bats_subnet2_reserved {
+   value = "${cidrhost(oci_core_subnet.bats_subnet2.cidr_block, 2)} - ${cidrhost(oci_core_subnet.bats_subnet2.cidr_block, 9)}"
+}
+
+output bats_subnet2_static {
+   value = "${cidrhost(oci_core_subnet.bats_subnet2.cidr_block, 10)} - ${cidrhost(oci_core_subnet.bats_subnet2.cidr_block, 30)}"
+}
+
+output bats_subnet2_static_ip {
+   value = "${cidrhost(oci_core_subnet.bats_subnet2.cidr_block, 30)}"
+}
+
 /*
 output director_subnet {
   value = <<EOS
