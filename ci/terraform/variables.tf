@@ -19,7 +19,7 @@ variable "vcn_cidr" {
 }
 
 variable "director_subnet_cidr" {
-    default = "10.0.1.0/24"
+    default = "10.0.7.0/24"
 }
 
 variable "director_ad" {
@@ -27,9 +27,9 @@ variable "director_ad" {
 }
 
 variable "bats_subnet1_cidr" {
-    default = "10.0.2.0/24"
+    default = "10.0.8.0/24"
 }
 
 variable "bats_subnet2_cidr" {
-    default = "10.0.3.0/24"
+    default = "10.0.9.0/24"
 }
