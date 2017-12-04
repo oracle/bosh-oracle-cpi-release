@@ -12,6 +12,8 @@ task-definitions:
       director_vcn: ((director-vcn))
       director_compartment_name: ((director-compartment-name))
       director_subnet_cidr: ((director-subnet-cidr))
+      bats_subnet1_cidr: ((bats-subnet1-cidr))
+      bats_subnet2_cidr: ((bats-subnet2-cidr))
 
   - &terraform-apply
     put: terraform-oci

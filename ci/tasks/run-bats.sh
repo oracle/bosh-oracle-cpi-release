@@ -26,7 +26,7 @@ export BAT_INFRASTRUCTURE=oci
 export BAT_NETWORKING="manual"
 
 # the path to ssh key, used by OS specs to ssh into BOSH VMs
-export BAT_PRIVATE_KEY="${PWD}/oci-config/cpikeys/id_rsa"
+export BAT_PRIVATE_KEY="${PWD}/oci-config/userkeys/id_rsa"
 
 # Run tests with --fail-fast and skip cleanup in case of failure (optional)
 export BAT_DEBUG_MODE=
@@ -50,5 +50,5 @@ pushd bats
   bundle install
 
   echo "Running BOSH Acceptance Tests..."
-  bundle exec rspec spec --tag ~vip_networking --tag ~dynamic_networking --tag ~root_partition --tag ~raw_ephemeral_storage --tag ~changing_static_ip --tag ~network_reconfiguration
+  bundle exec rspec spec --tag ~vip_networking --tag ~dynamic_networking --tag ~root_partition --tag ~raw_ephemeral_storage --tag ~changing_static_ip --tag ~network_reconfiguration --tag ~dns
 popd

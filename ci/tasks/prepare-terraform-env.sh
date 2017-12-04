@@ -26,6 +26,8 @@ director_compartment_name: ${director_compartment_name}
 director_vcn: ${director_vcn}
 director_subnet_cidr: ${director_subnet_cidr}
 director_ad: ${director_ad}
+bats_subnet1_cidr: ${bats_subnet1_cidr}
+bats_subnet2_cidr: ${bats_subnet2_cidr}
 EOF
 
 echo "Done. Created: " ${vars_file}
