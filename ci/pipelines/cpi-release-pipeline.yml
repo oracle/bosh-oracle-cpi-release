@@ -12,18 +12,16 @@ task-definitions:
       director_vcn: ((director-vcn))
       director_compartment_name: ((director-compartment-name))
       director_subnet_cidr: ((director-subnet-cidr))
+      bats_subnet1_cidr: ((bats-subnet1-cidr))
+      bats_subnet2_cidr: ((bats-subnet2-cidr))
 
   - &terraform-apply
-    put: oci-resources-setup
+    put: terraform-oci
     params:
       terraform_source: cpi-release-src/ci/terraform
       env_name:  oracle-pipeline-env
       var_files: [terraform-env/oci.vars]
       plugin_dir: /.terraform.d/plugins/linux_amd64
-
-  - &terraform-output
-    get: terraform-out
-    resource: oci-resources-setup
 
   - &prepare-test-config
     task: prepare-test-config
@@ -42,7 +40,7 @@ task-definitions:
       TEST_SPEC: "Test_Connect*"
 
   - &terraform-destroy
-    put: oci-resources-setup
+    put: terraform-oci
     params:
       terraform_source: cpi-release-src/ci/terraform
       env_name: oracle-pipeline-env
@@ -60,6 +58,9 @@ task-definitions:
     task: teardown-director
     file: cpi-release-src/ci/tasks/teardown-director.yml
 
+  - &run-bats
+    task: run-bats
+    file: cpi-release-src/ci/tasks/run-bats.yml
 
 groups:
   - name: bosh-oracle-cpi-release
@@ -67,7 +68,7 @@ groups:
       - run-unittests
       - run-ocitests
       - build-candidate
-      - create-director
+      - run-bats
       - build-final
 
 jobs:
@@ -89,7 +90,6 @@ jobs:
 
       - <<: *terraform-setup
       - <<: *terraform-apply
-      - <<: *terraform-output
       - <<: *prepare-test-config
       - do:
         - <<: *oci-tests
@@ -114,16 +114,18 @@ jobs:
       - put: dev-release-cpi
         params: {file: candidate/dev_release/bosh-oracle-cpi-dev-*.tgz}
 
-  - name: create-director
-    serial_groups: [run-bats, oci-resource-consumer]
+  - name: run-bats
+    serial_groups: [oci-resource-consumer]
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, passed: [build-candidate], get: cpi-src, resource: bosh-cpi-src}
+        - {trigger: true, passed: [run-ocitests],    get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true,                            get: stemcell, resource: oracle-ubuntu-stemcell}
         - {trigger: true,                            get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
         - {trigger: false,                           get: bosh-release}
         - {trigger: false,                           get: dev-version-semver}
+        - {trigger: false,                           get: bats}
 
       - task: download-cpi
         file: cpi-release-src/ci/tasks/download-cpi.yml
@@ -138,21 +140,22 @@ jobs:
 
       - <<: *terraform-setup
       - <<: *terraform-apply
-      - <<: *terraform-output
       - <<: *prepare-test-config
       - do:
         - <<: *setup-director
+        - <<: *run-bats
         ensure:
           do:
             - <<: *teardown-director
             - <<: *terraform-destroy
 
   - name: build-final
+    serial_groups: [oci-resource-consumer]
     serial: true
     plan:
       - aggregate:
          - {trigger: false, get: final-version-semver,   params: {bump: major}}
-         - {trigger: true, passed: [run-ocitests, create-director], get: cpi-release-src, resource: bosh-cpi-release-src}
+         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
 
       - task: build-final-release
         file: cpi-release-src/ci/tasks/build-final-release.yml
@@ -193,7 +196,7 @@ resources:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
        region_name: ((oracle-region))
        bucket: ((cpi-dev-release-bucket))
-       regexp: bosh-oracle-cpi-(.*).tgz
+       regexp: bosh-oracle-cpi-(.*)\.tgz
        access_key_id: ((oracle-s3-access-key-id))
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
@@ -204,7 +207,18 @@ resources:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
        region_name: ((oracle-region))
        bucket: ((cpi-final-release-bucket))
-       regexp: bosh-oracle-cpi-(.*).tgz
+       regexp: bosh-oracle-cpi-(.*)\.tgz
+       access_key_id: ((oracle-s3-access-key-id))
+       secret_access_key: ((oracle-s3-secret-access-key))
+       private: true
+
+  - name: oracle-ubuntu-stemcell
+    type: s3
+    source:
+       endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
+       region_name: ((oracle-region))
+       bucket: ((stemcell-bucket))
+       regexp: light-oracle-ubuntu-stemcell-(.*)\.tgz
        access_key_id: ((oracle-s3-access-key-id))
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
@@ -237,12 +251,12 @@ resources:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
        region_name: ((oracle-region))
        bucket: ((oracle-fixture-env-bucket-name))
-       regexp: (.*).tgz
+       regexp: (.*)\.tgz
        access_key_id: ((oracle-s3-access-key-id))
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
 
-  - name: oci-resources-setup
+  - name: terraform-oci
     type: terraform
     source:
        storage:
@@ -258,3 +272,9 @@ resources:
     type: bosh-io-release
     source:
       repository: cloudfoundry/bosh
+
+  - name: bats
+    type: git
+    source:
+      uri: https://github.com/cloudfoundry/bosh-acceptance-tests.git
+      branch: gocli-bats

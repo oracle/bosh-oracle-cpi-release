@@ -12,5 +12,5 @@ pushd ${deployment_dir}
   bosh -v
 
   echo "Deleting BOSH Director..."
-  bosh delete-env --ops-file ./cpi.yml --ops-file ./local-cpi.yml --vars-store ./creds.yml --state ${state_filename} --vars-file ./director-env-vars.yml ${manifest_filename}
+  bosh delete-env --ops-file ./cpi.yml --ops-file ./local.yml --vars-store ./creds.yml --state ${state_filename} --vars-file ./director-env-vars.yml ${manifest_filename}
 popd

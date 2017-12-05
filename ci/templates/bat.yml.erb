@@ -1,0 +1,44 @@
+<% properties = ENV.to_hash -%>
+<% if ENV['TERRAFORM_OUTPUT']
+     contents = JSON.parse(File.read(ENV['TERRAFORM_OUTPUT']))
+     properties = properties.merge(contents)
+   end
+-%>
+<%
+  ['oracle_user', 'oracle_tenancy', 'oracle_fingerprint', 'oracle_apikey', 'oracle_region',
+   'compartment_id', 'ad', 'vcn', 'subnet_name', 'subnet_cidr', 'subnet_gw','subnet_first_ip'].each do |val|
+    if properties[val].nil? || properties[val].empty?
+      raise "Missing environment variable: #{val}"
+    end
+  end
+-%>
+---
+cpi: oci
+properties:
+  stemcell:
+    name: light-oracle-ubuntu-stemcell
+    version: latest
+  instances: 1
+  instance_shape: 'VM.Standard1.2'
+  availability_domain: <%= properties['ad'] %>
+  networks:
+  - name: default
+    type: manual
+    static_ip: <%= properties['bats_subnet1_static_ip'] %> # Primary (private) IP assigned to the bat-release job vm (primary NIC), must be in the primary static range
+    cloud_properties:
+      vcn: <%= properties['vcn'] %>
+      subnet: <%= properties['bats_subnet1_name'] %>
+    cidr: <%= properties['bats_subnet1_cidr'] %>
+    reserved: ['<%= properties['bats_subnet1_reserved'] %>']
+    static: ['<%= properties['bats_subnet1_static'] %>']
+    gateway: <%= properties['bats_subnet1_gw'] %>
+  - name: second # Secondary network for testing jobs with multiple manual networks
+    type: manual
+    static_ip: <%= properties['bats_subnet2_static_ip'] %> # Primary (private) IP assigned to the bat-release job vm (primary NIC), must be in the primary static range
+    cloud_properties:
+      vcn: <%= properties['vcn'] %>
+      subnet: <%= properties['bats_subnet2_name'] %>
+    cidr: <%= properties['bats_subnet2_cidr'] %>
+    reserved: ['<%= properties['bats_subnet2_reserved'] %>']
+    static: ['<%= properties['bats_subnet2_static'] %>']
+    gateway: <%= properties['bats_subnet2_gw'] %>
