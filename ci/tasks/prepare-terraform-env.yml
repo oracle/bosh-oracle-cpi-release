@@ -21,6 +21,6 @@ params:
   director_subnet_cidr:           replace_me
   director_compartment_name:      replace_me
   director_vcn:                   replace_me
-  director_ad:                    WZYX:PHX-AD-1
+  director_ad:                    replace_me
   bats_subnet1_cidr:              replace_me
   bats_subnet2_cidr:              replace_me
