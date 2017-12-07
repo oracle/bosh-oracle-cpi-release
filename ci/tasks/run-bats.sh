@@ -29,7 +29,7 @@ export BAT_NETWORKING="manual"
 export BAT_PRIVATE_KEY="${PWD}/oci-config/userkeys/id_rsa"
 
 # Run tests with --fail-fast and skip cleanup in case of failure (optional)
-export BAT_DEBUG_MODE=
+# export BAT_DEBUG_MODE=
 
 env_vars="${PWD}/oci-config/director-env-vars.yml"
 creds_yml="${PWD}/deployment/creds.yml"
