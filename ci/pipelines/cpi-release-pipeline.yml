@@ -124,7 +124,6 @@ jobs:
         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: true,                            get: stemcell, resource: oracle-ubuntu-stemcell}
         - {trigger: true,                            get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
-        - {trigger: false,                           get: bosh-release}
         - {trigger: false,                           get: dev-version-semver}
         - {trigger: false,                           get: bats}
 
@@ -268,11 +267,6 @@ resources:
          region_name: ((oracle-region))
          endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
          use_signing_v4: true
-
-  - name: bosh-release
-    type: bosh-io-release
-    source:
-      repository: cloudfoundry/bosh
 
   - name: bats
     type: git
