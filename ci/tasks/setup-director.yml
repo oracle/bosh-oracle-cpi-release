@@ -8,7 +8,6 @@ image_resource:
 inputs:
   - name: cpi-src
   - name: cpi-release-src
-  - name: bosh-release
   - name: candidate
   - name: oci-config
   - name: stemcell

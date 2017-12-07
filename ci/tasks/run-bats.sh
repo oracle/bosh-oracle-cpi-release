@@ -29,7 +29,7 @@ export BAT_NETWORKING="manual"
 export BAT_PRIVATE_KEY="${PWD}/oci-config/userkeys/id_rsa"
 
 # Run tests with --fail-fast and skip cleanup in case of failure (optional)
-export BAT_DEBUG_MODE=
+# export BAT_DEBUG_MODE=
 
 env_vars="${PWD}/oci-config/director-env-vars.yml"
 creds_yml="${PWD}/deployment/creds.yml"
@@ -50,5 +50,5 @@ pushd bats
   bundle install
 
   echo "Running BOSH Acceptance Tests..."
-  bundle exec rspec spec --tag ~vip_networking --tag ~dynamic_networking --tag ~root_partition --tag ~raw_ephemeral_storage --tag ~changing_static_ip --tag ~network_reconfiguration --tag ~dns
+  bundle exec rspec spec --tag ~vip_networking --tag ~dynamic_networking --tag ~root_partition --tag ~raw_ephemeral_storage --tag ~changing_static_ip --tag ~network_reconfiguration --tag ~dns --tag ~multiple_manual_networks --tag ~persistent_disk
 popd
