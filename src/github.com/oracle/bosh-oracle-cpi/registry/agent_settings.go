@@ -3,14 +3,13 @@ package registry
 import "encoding/json"
 
 const defaultSystemDisk = "/dev/sda"
-const defaultEphemeralDisk = "/dev/sda"
 
 type agentSettingsResponse struct {
 	Settings string `json:"settings"`
 	Status   string `json:"status"`
 }
 
-// AgentSettings are the Agent settings for a particular VM.
+// AgentSettings holds bosh-agent settings for a particular VM.
 type AgentSettings struct {
 	// Agent ID
 	AgentID string `json:"agent_id"`
@@ -99,7 +98,6 @@ func NewAgentSettings(agentID string, vmCID string, networksSettings NetworksSet
 		AgentID: agentID,
 		Disks: DisksSettings{
 			System:     defaultSystemDisk,
-			Ephemeral:  defaultEphemeralDisk,
 			Persistent: map[string]PersistentSettings{},
 		},
 		Blobstore: BlobstoreSettings{

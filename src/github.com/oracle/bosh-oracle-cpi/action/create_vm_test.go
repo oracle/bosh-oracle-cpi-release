@@ -116,7 +116,6 @@ var _ = Describe("CreateVM", func() {
 					},
 					Disks: registry.DisksSettings{
 						System:     "/dev/sda",
-						Ephemeral:  "/dev/sda",
 						Persistent: map[string]registry.PersistentSettings{},
 					},
 					Mbus: "http://fake-mbus",
