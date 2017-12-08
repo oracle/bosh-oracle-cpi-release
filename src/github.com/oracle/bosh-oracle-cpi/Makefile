@@ -1,3 +1,7 @@
+# Uncomment here or export (in the launch shell) the following variables to control test configuration
+#CPITEST_CONFIG=/path/to/my/oci/config ini. Default is ~/.oci/config
+#CPITEST_PROFILE=section inside CPITEST_CONFIG file. Default is CPITEST
+
 default: build
 
 # Builds bosh-cpi for linux-amd64
@@ -47,25 +51,15 @@ single-test: get-deps
 
 # Runs OCI integration tests
 ocitest: 
-	# Uncomment or export (in the laucnh shell) following variables to control test configuration
-	# CPITEST_CONFIG=/path/to/my/oci/config ini. Default is ~/.oci/config
-	# CPITEST_PROFILE=section inside CPITEST_CONFIG file. Default is CPITEST
-	ginkgo oci/test -slowSpecThreshold=500 -progress -nodes=3 -randomizeAllSpecs -randomizeSuites $(GINKGO_ARGS) -v
+	ginkgo -slowSpecThreshold=500 -progress -nodes=3 -randomizeAllSpecs -randomizeSuites $(GINKGO_ARGS) -v oci/test
 
 # Runs a subset of OCI integration tests
 ocitest-subset:
-	go test -v  ./oci/test/... -run ${TEST_SPEC}
+	go test -v  ./oci/test/... -run $(TEST_SPEC)
 
 # Runs the integration tests from Concourse
-testintci: get-deps ocitest
-
-
-# Checks and creates, if necessary, resources in a project required to run integration tests.
-configint:
-	@echo "TODO: Integrate Terraform templates to setup test compartment and network"
-	exit 1
-
-# Deletes the resources created by the configint target
-cleanint: check-proj
-	@echo "TODO: Remove resources created by configint"
-	exit 1
+# Set TEST_SPEC to control which tests are run
+#. E.g. to skip long running stemcell tests set 
+# TEST_SPEC="Test_[^StemcellOps]"
+testintci: 
+	go test -v  ./oci/test/... -run $(TEST_SPEC) -timeout 60m
