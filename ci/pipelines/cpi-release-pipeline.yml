@@ -37,8 +37,7 @@ task-definitions:
   - &oci-tests
     task: oci-tests
     file: cpi-src/ci/tasks/oci-tests.yml
-    params:
-      TEST_SPEC: "Test_Connect*"
+
 
   - &terraform-destroy
     put: terraform-oci
@@ -161,6 +160,9 @@ jobs:
         file: cpi-release-src/ci/tasks/build-final-release.yml
 
       - put: final-version-semver
+        params: {file: final-version-semver/version}
+
+      - put: dev-version-semver
         params: {file: final-version-semver/version}
 
       - put: final-release-cpi
