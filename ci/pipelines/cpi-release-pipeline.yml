@@ -38,7 +38,8 @@ task-definitions:
     task: oci-tests
     file: cpi-src/ci/tasks/oci-tests.yml
     params:
-      TEST_SPEC: "Test_Connect*"
+          TEST_SPEC: "Test_[^StemcellOps]"
+
 
   - &terraform-destroy
     put: terraform-oci
@@ -155,12 +156,15 @@ jobs:
     plan:
       - aggregate:
          - {trigger: false, get: final-version-semver,   params: {bump: major}}
-         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
+         - {trigger: true, passed: [run-bats], get: cpi-release-src, resource: bosh-cpi-release-src}
 
       - task: build-final-release
         file: cpi-release-src/ci/tasks/build-final-release.yml
 
       - put: final-version-semver
+        params: {file: final-version-semver/version}
+
+      - put: dev-version-semver
         params: {file: final-version-semver/version}
 
       - put: final-release-cpi
