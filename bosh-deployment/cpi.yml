@@ -18,7 +18,7 @@
   path: /resource_pools/name=vms/cloud_properties?
   value:
     availability_domain: ((ad))
-    instance_shape: VM.Standard1.4
+    instance_shape: VM.Standard1.2
 
 - type: replace
   path: /disk_pools/name=disks/cloud_properties?
