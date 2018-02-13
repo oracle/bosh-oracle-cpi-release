@@ -222,7 +222,7 @@ resources:
        endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
        region_name: ((oracle-region))
        bucket: ((stemcell-bucket))
-       regexp: light-oracle-ubuntu-stemcell-(.*)\.tgz
+       regexp: light-oracle-ubuntu-trusty-(.*)\.tgz
        access_key_id: ((oracle-s3-access-key-id))
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
