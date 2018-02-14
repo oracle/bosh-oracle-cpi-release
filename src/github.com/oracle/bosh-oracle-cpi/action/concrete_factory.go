@@ -33,6 +33,7 @@ func NewConcreteFactory(
 			// Image management
 			"create_stemcell": NewCreateStemcell(connector, logger),
 			"delete_stemcell": NewDeleteStemcell(connector, logger),
+			"info":            NewInfo(),
 
 			// VM management
 			"create_vm":       NewCreateVM(connector, logger, registryClient, uuidGen),
