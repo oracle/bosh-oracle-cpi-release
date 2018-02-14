@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+const rateLimitErrorCode int = 429
+
 type Updater interface {
 	UpdateInstanceName(instanceID string, name string) error
 }
@@ -50,6 +52,10 @@ func (u *updater) tryUpdate() (bool, error) {
 func shouldRetry(modelError error) (bool, error) {
 	if _, ok := modelError.(*compute.UpdateInstanceConflict); ok {
 		return true, errors.New("Waiting for instance conflict to resolve")
+	}
+	u, ok := modelError.(*compute.UpdateInstanceDefault)
+	if ok && u.Code() == rateLimitErrorCode {
+		return true, errors.New("Waiting while being throttled")
 	}
 	return false, errors.New(oci.CoreModelErrorMsg(modelError))
 }
