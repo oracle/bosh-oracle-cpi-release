@@ -2,6 +2,10 @@
 #CPITEST_CONFIG=/path/to/my/oci/config ini. Default is ~/.oci/config
 #CPITEST_PROFILE=section inside CPITEST_CONFIG file. Default is CPITEST
 
+ifndef TEST_SPEC
+TEST_SPEC="Test_[^StemcellOps]"
+endif
+
 default: build
 
 # Builds bosh-cpi for linux-amd64
