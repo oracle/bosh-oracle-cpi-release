@@ -8,3 +8,9 @@ type StemcellCID string
 
 // VMCID is an identifier for an instance
 type VMCID string
+
+// StemcellInfo contains info about stemcells
+// supported by this CPI
+type StemcellInfo struct {
+	Formats []string `json:"stemcell_formats"`
+}

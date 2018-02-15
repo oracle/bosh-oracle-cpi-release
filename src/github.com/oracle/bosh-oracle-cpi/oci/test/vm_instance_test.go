@@ -182,9 +182,25 @@ func Test_VmOpsUpdateInstanceName(t *testing.T) {
 	state.Setup(t)
 	defer state.TearDown(t)
 
-	instance := state.Instance()
+	updateInstance(t, state)
+}
 
-	updater := vm.NewUpdater(state.Connector(), state.Logger())
+// Test_VmOpsUpdateMultipleInstancesConcurrently tests issue #21
+func Test_VmOpsUpdateMultipleInstancesConcurrently(t *testing.T) {
+
+	state := NewVMFixtures(10)
+	state.Setup(t)
+	defer state.TearDown(t)
+
+	for _, vf := range state.Fixtures() {
+		go updateInstance(t, vf)
+	}
+}
+
+func updateInstance(t *testing.T, f *VMFixture) {
+
+	instance := f.Instance()
+	updater := vm.NewUpdater(f.Connector(), f.Logger())
 	err := updater.UpdateInstanceName(instance.ID(), "test-vm-renamed")
 	assertIsNil(t, err, fmt.Sprintf("Unexpected failure in updateInstance %v", err))
 }

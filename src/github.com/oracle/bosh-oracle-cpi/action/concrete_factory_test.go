@@ -122,4 +122,9 @@ var _ = Describe("ConcreteFactory", func() {
 		Expect(err).ToNot(HaveOccurred())
 		Expect(action).To(Equal(NewGetDisks(connector, logger)))
 	})
+	It("returns info action", func() {
+		action, err := factory.Create("info")
+		Expect(err).ToNot(HaveOccurred())
+		Expect(action).To(Equal(NewInfo()))
+	})
 })
