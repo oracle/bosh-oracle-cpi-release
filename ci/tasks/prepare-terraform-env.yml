@@ -2,7 +2,9 @@
 platform: linux
 image_resource:
   type: docker-image
-  source: {repository: dmutreja/cpi-release-build-env, tag: "latest"}
+  source:
+    repository: ((docker-repo-name))/cpi-release-build-env
+    tag: "latest"
 inputs:
   - name: cpi-release-src
 outputs:
