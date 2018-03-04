@@ -8,7 +8,7 @@ task-definitions:
       oracle_user: ((oracle-user))
       oracle_region: ((oracle-region))
       oracle_fingerprint: ((oracle-fingerprint))
-      oracle_apikey: ((oracle-apikey))
+      oracle_apikey: ((oracle-apikey.private_key))
       director_vcn: ((director-vcn))
       director_compartment_name: ((director-compartment-name))
       director_ad: ((director-ad))
@@ -32,7 +32,7 @@ task-definitions:
       oracle_user: ((oracle-user))
       oracle_region: ((oracle-region))
       oracle_fingerprint: ((oracle-fingerprint))
-      oracle_apikey: ((oracle-apikey))
+      oracle_apikey: ((oracle-apikey.private_key))
 
   - &oci-tests
     task: oci-tests
@@ -135,7 +135,7 @@ jobs:
           oracle_user:                    ((oracle-user))
           oracle_region:                  ((oracle-region))
           oracle_fingerprint:             ((oracle-fingerprint))
-          oracle_apikey:                  ((oracle-apikey))
+          oracle_apikey:                  ((oracle-apikey.private_key))
           oracle_namespace:               ((oracle-namespace))
           oracle_bucket:                  ((cpi-dev-release-bucket))
 
@@ -183,16 +183,16 @@ resources:
     source:
       uri: https://github.com/((github-org))/bosh-oracle-cpi-release.git
       branch: ((cpi-release-branch)) 
-      username: ((github-user))
-      password: ((github-password))
+      username: ((github-user.username))
+      password: ((github-user.password))
 
   - name: bosh-cpi-src
     type: git
     source:
       uri: https://github.com/((github-org))/bosh-oracle-cpi.git
       branch: ((cpi-branch))
-      username: ((github-user))
-      password: ((github-password))
+      username: ((github-user.username))
+      password: ((github-user.password))
 
   - name: dev-release-cpi
     type: s3
