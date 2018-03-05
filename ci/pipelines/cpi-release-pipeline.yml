@@ -119,12 +119,13 @@ jobs:
   - name: run-bats
     serial_groups: [oci-resource-consumer]
     serial: true
+    disable_manual_trigger: true
     plan:
       - aggregate:
         - {trigger: true, passed: [run-ocitests],    get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
-        - {trigger: true,                            get: stemcell, resource: oracle-ubuntu-stemcell}
-        - {trigger: true,                            get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
+        - {trigger: false,                           get: stemcell, resource: oracle-ubuntu-stemcell}
+        - {trigger: false,                           get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
         - {trigger: false,                           get: dev-version-semver}
         - {trigger: false,                           get: bats}
 
