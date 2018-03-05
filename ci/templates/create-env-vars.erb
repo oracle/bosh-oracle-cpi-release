@@ -12,6 +12,7 @@
     end
   end
 -%>
+director_name: ci-bosh-director
 tenancy: <%= properties['oracle_tenancy'] %>
 user: <%= properties['oracle_user'] %>
 compartment: <%= properties['compartment_id'] %>
@@ -30,11 +31,3 @@ subnet: <%= properties['subnet_name'] %>
 internal_cidr: <%= properties['subnet_cidr'] %>
 internal_gw: <%= properties['subnet_gw'] %>
 internal_ip: <%= properties['subnet_first_ip'] %>
-admin_password: admin
-blobstore_agent_password: agent1
-blobstore_director_password: director1
-director_name: bosh-director
-hm_password: hm1
-mbus_bootstrap_password: mbus-secret
-nats_password: nats-secret
-postgres_password: postgres

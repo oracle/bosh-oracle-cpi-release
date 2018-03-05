@@ -31,12 +31,4 @@ apikey: |
        qIcj56P9+mehiKmglQ1Rlwo72hcc0zZAyBhPeZrR5EcsGp6/l6Le4/XIFFVRpqKu
        LZeO6W6RMUo4nWxZ/ZqgQi0QFguCG3SSqq00PKZcMUOvnJhJCIVo
        -----END RSA PRIVATE KEY-----
-# Passwords for BOSH director components
-admin_password: admin
-blobstore_agent_password: agent1
-blobstore_director_password: director1
-director_name: cpi-test-director
-hm_password: hm1
-mbus_bootstrap_password: mbus-secret
-nats_password: nats-secret
-postgres_password: postgres
+director_name: sample-bosh-director

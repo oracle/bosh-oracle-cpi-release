@@ -19,7 +19,7 @@ export BAT_BOSH_CLI=`which bosh2`
 
 export BAT_DNS_HOST=8.8.8.8
 
-# the name of infrastructure that is used by bosh deployment. Examples: aws, vsphere, openstack, warden.
+# the name of infrastructure that is used by bosh deployment. Examples: oci, aws, vsphere, openstack, warden.
 export BAT_INFRASTRUCTURE=oci
 
 # the type of networking being used: dynamic or manual.
