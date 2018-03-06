@@ -36,7 +36,7 @@ creds_yml="${PWD}/deployment/creds.yml"
 
 export BOSH_ENVIRONMENT="$(bosh2 int ${env_vars} --path /internal_ip)"
 export BOSH_CLIENT=admin
-export BOSH_CLIENT_SECRET="$(bosh2 int ${env_vars} --path /admin_password)"
+export BOSH_CLIENT_SECRET="$(bosh2 int ${creds_yml} --path /admin_password)"
 export BOSH_CA_CERT="$(bosh2 int ${creds_yml} --path /director_ssl/ca)"
 
 echo "Using BOSH CLI version..."
