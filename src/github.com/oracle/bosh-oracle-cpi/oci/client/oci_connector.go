@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 
 	"github.com/oracle/bosh-oracle-cpi/config"
@@ -15,11 +16,11 @@ import (
 )
 
 const (
-	logTag                 = "OCIConnector"
-	apiBasePath            = "20160918"
-	coreServices           = "iaas.us-phoenix-1.oraclecloud.com"
-	identityService string = "identity.us-phoenix-1.oraclecloud.com"
-	scheme          string = "https"
+	logTag                         = "OCIConnector"
+	apiBasePath                    = "20160918"
+	coreServiceTemplate            = "iaas.%s.oraclecloud.com"
+	identityServiceTemplate        = "identity.%s.oraclecloud.com"
+	scheme                  string = "https"
 )
 
 type Connector interface {
@@ -32,6 +33,7 @@ type Connector interface {
 	AgentRegistryEndpoint() string
 	SSHTunnelConfig() config.SSHTunnel
 	SSHConfig() config.SSHConfig
+	Region() string
 }
 
 type connectorImpl struct {
@@ -53,7 +55,6 @@ func (c *connectorImpl) Connect() error {
 }
 
 func (c *connectorImpl) CoreSevice() *cclient.CoreServices {
-
 	return c.coreService
 }
 
@@ -63,6 +64,9 @@ func (c *connectorImpl) IamService() *iclient.IdentityAndAccessManagementService
 
 func (c *connectorImpl) Tenancy() string {
 	return c.config.Properties.OCI.Tenancy
+}
+func (c *connectorImpl) Region() string {
+	return c.config.Properties.OCI.Region
 }
 
 func (c *connectorImpl) CompartmentId() string {
@@ -106,6 +110,8 @@ func (c *connectorImpl) SSHConfig() config.SSHConfig {
 
 func (c *connectorImpl) createServiceClients(config config.OCIProperties, basePath string) error {
 
+	region := c.Region()
+	coreServices := fmt.Sprintf(coreServiceTemplate, region)
 	authCSClient, err := c.authenticatedHttpsClient(coreServices, basePath,
 		config.TransportConfig(coreServices))
 	if err != nil {
@@ -114,6 +120,7 @@ func (c *connectorImpl) createServiceClients(config config.OCIProperties, basePa
 	}
 	cs := cclient.New(authCSClient, strfmt.Default)
 
+	identityService := fmt.Sprintf(identityServiceTemplate, region)
 	authIdentityClient, err := c.authenticatedHttpsClient(identityService, basePath,
 		config.TransportConfig(identityService))
 	if err != nil {
