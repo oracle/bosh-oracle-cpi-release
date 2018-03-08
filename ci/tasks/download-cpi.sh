@@ -2,6 +2,12 @@
 
 set -e
 
+#Inputs
+version=`cat dev-version-semver/number`
+
+#Outputs
+mkdir -p ${pwd}/candidate
+
 # Create OCI config
 echo "Creating oci config..."
 OCI_DIR="$HOME/.oci"
@@ -25,10 +31,9 @@ EOF
 chmod 600 ${OCI_API_KEY}
 chmod 600 ${OCI_CONFIG}
 
-semver=`cat dev-version-semver/number`
 
-cpi="bosh-oracle-cpi-dev-${semver}.tgz"
+cpi="bosh-oracle-cpi-dev-${version}.tgz"
 
 # Download CPI
 oci os object get -ns ${oracle_namespace} -bn ${oracle_bucket} --name ${cpi} --file ${cpi}
-cp ${cpi} candidate/
+mv ${cpi} candidate/

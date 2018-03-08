@@ -8,25 +8,56 @@ semver=`cat final-version-semver/number`
 pwd=`pwd`
 
 #Inputs
-release_dir=${pwd}/cpi-release-src
+src_repo=${pwd}/cpi-release-src
+dev_release_tarball=${pwd}/candidate/*.tgz
 
 #Outputs
-release_artifact_path=${pwd}/candidate/release
+mkdir -p ${pwd}/promoted
+
+cp -r ${src_repo} promoted/repo
+
+release_artifact_path=${pwd}/promoted
 tarball_name=${cpi_release_name}-${semver}.tgz
 tarball_path=${release_artifact_path}/${tarball_name}
 tarball_sha=${release_artifact_path}/${tarball_name}.sha1
 
-mkdir -p ${release_artifact_path}
 
-echo "Using BOSH CLI version..."
-bosh -v
+pushd promoted/repo
 
-source ${release_dir}/ci/tasks/add-blobs.sh
+  echo "Creating config/private.yml with blobstore secrets"
+  cat > config/private.yml << EOF
+---
+blobstore:
+  options:
+    host: ${host}
+    region: ${region_name}
+    access_key_id: ${access_key_id}
+    secret_access_key: ${secret_access_key}
+    bucket_name: ${bucket}
+    credentials_source: static
+    signature_version: "4"
+EOF
 
-echo "Creating BOSH Oracle CPI Final Release..."
-bosh create-release --final --dir ${release_dir} --name ${cpi_release_name} --version ${semver} --force --tarball="$tarball_path"
+  echo "Using BOSH CLI version..."
+  bosh -v
 
-echo -n $(sha1sum $tarball_path | awk '{print $1}') > ${tarball_sha} 
+  echo "Creating BOSH Oracle CPI Final Release..."
+  bosh finalize-release ${dev_release_tarball}  --name ${cpi_release_name} --version ${semver} --force
 
-echo "Built: ${tarball_path}"
-echo "sha1: " `cat ${tarball_sha}` 
+  cp ${dev_release_tarball} ${tarball_path}
+
+  echo -n $(sha1sum $tarball_path | awk '{print $1}') > ${tarball_sha}
+  echo
+
+  echo "Built: ${tarball_path}"
+  echo "sha1: " `cat ${tarball_sha}`
+
+  git add .
+  git config --global user.email bosh-build@oracle.com
+  git config --global user.name CI
+  git commit -m "BOSH Oracle CPI BOSH Release v${semver}"
+
+popd
+
+echo ${semver} > promoted/version
+echo "BOSH Oracle CPI BOSH Release v${semver}" > promoted/annotation_message
