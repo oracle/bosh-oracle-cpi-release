@@ -1,0 +1,9 @@
+out
+pkg
+gobin/*
+*\.test
+.idea
+test/work
+stemcell/*.tgz
+*.iml
+.DS_Store

@@ -1,0 +1,10 @@
+language: go
+
+go:
+  - 1.8.3
+
+go_import_path: github.com/oracle/bosh-oracle-cpi
+
+install: make get-deps
+
+script: make test

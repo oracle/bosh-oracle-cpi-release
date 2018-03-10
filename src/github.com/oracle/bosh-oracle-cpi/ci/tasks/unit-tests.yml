@@ -1,0 +1,12 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: "1.8.3"
+inputs:
+  - name: cpi-src
+    path: cpi-src/src/github.com/oracle/bosh-oracle-cpi
+run:
+  path: cpi-src/src/github.com/oracle/bosh-oracle-cpi/ci/tasks/unit-tests.sh
