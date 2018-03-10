@@ -36,7 +36,7 @@ task-definitions:
 
   - &oci-tests
     task: oci-tests
-    file: cpi-src/ci/tasks/oci-tests.yml
+    file: cpi-release-src/ci/tasks/oci-tests.yml
     params:
           TEST_SPEC: "Test_[Connect]"
 
@@ -75,10 +75,10 @@ groups:
 jobs:
   - name: run-unittests
     plan:
-      - {trigger: true, get: cpi-src, resource: bosh-cpi-release-src}
+      - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
 
       - task: unit-tests
-        file: cpi-src/src/github.com/oracle/bosh-oracle-cpi/ci/tasks/unit-tests.yml
+        file: cpi-release-src/ci/tasks/unit-tests.yml
 
 
   - name: run-ocitests
@@ -86,8 +86,7 @@ jobs:
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, passed: [run-unittests], get: cpi-src, resource: bosh-cpi-release-src}
-        - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true, passed: [run-unittests], get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: true, get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
 
       - <<: *terraform-setup
@@ -103,7 +102,7 @@ jobs:
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true, passed: [run-unittests, run-ocitests], get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: false, get: dev-version-semver,   params: {bump: patch}}
 
       - put: dev-version-semver

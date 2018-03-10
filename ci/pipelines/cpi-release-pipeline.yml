@@ -36,7 +36,7 @@ task-definitions:
 
   - &oci-tests
     task: oci-tests
-    file: cpi-src/ci/tasks/oci-tests.yml
+    file: cpi-release-src/ci/tasks/oci-tests.yml
     params:
           TEST_SPEC: "Test_[^StemcellOps]"
 
@@ -76,18 +76,18 @@ groups:
 jobs:
   - name: run-unittests
     plan:
-      - {trigger: true, get: cpi-src, resource: bosh-cpi-src}
+      - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
 
       - task: unit-tests
-        file: cpi-src/ci/tasks/unit-tests.yml
+        file: cpi-release-src/ci/tasks/unit-tests.yml
+
 
   - name: run-ocitests
     serial_groups: [oci-resource-consumer]
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, passed: [run-unittests], get: cpi-src, resource: bosh-cpi-src}
-        - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true, passed: [run-unittests], get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: true, get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
 
       - <<: *terraform-setup
@@ -103,8 +103,7 @@ jobs:
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, passed: [run-unittests, run-ocitests], get: cpi-src, resource: bosh-cpi-src}
-        - {trigger: true, get: cpi-release-src, resource: bosh-cpi-release-src}
+        - {trigger: true, passed: [run-unittests, run-ocitests], get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: false, get: dev-version-semver,   params: {bump: patch}}
 
       - put: dev-version-semver
@@ -121,7 +120,6 @@ jobs:
     serial: true
     plan:
       - aggregate:
-        - {trigger: true, passed: [run-ocitests],    get: cpi-src, resource: bosh-cpi-src}
         - {trigger: true, passed: [build-candidate], get: cpi-release-src, resource: bosh-cpi-release-src}
         - {trigger: true,                            get: stemcell, resource: oracle-ubuntu-stemcell}
         - {trigger: true,                            get: fixture-ssh-keys, resource: fixture-env, params: {file: oci-config.tgz, unpack: true}}
@@ -208,14 +206,6 @@ resources:
     source:
       uri: https://github.com/((github-org))/bosh-oracle-cpi-release.git
       branch: ((cpi-release-branch)) 
-      username: ((github-user.username))
-      password: ((github-user.password))
-
-  - name: bosh-cpi-src
-    type: git
-    source:
-      uri: https://github.com/((github-org))/bosh-oracle-cpi.git
-      branch: ((cpi-branch))
       username: ((github-user.username))
       password: ((github-user.password))
 

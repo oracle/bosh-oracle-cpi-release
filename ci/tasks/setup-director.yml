@@ -6,7 +6,6 @@ image_resource:
     repository: ((docker-repo-name))/ubuntu-xenial-boshcliv2
     tag: "latest"
 inputs:
-  - name: cpi-src
   - name: cpi-release-src
   - name: candidate
   - name: oci-config

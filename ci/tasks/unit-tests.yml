@@ -6,7 +6,6 @@ image_resource:
     repository: golang
     tag: "1.8.3"
 inputs:
-  - name: cpi-src
-  - name: oci-config
+  - name: cpi-release-src
 run:
-  path: cpi-src/src/github.com/oracle/bosh-oracle-cpi/ci/tasks/oci-tests.sh
+  path: cpi-release-src/ci/tasks/unit-tests.sh
