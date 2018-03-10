@@ -7,7 +7,6 @@ image_resource:
     tag: "1.8.3"
 inputs:
   - name: cpi-src
-    path: cpi-src/src/github.com/oracle/bosh-oracle-cpi
   - name: oci-config
 run:
   path: cpi-src/src/github.com/oracle/bosh-oracle-cpi/ci/tasks/oci-tests.sh
