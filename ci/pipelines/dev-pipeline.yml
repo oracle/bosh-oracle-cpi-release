@@ -65,13 +65,12 @@ task-definitions:
     file: cpi-release-src/ci/tasks/run-bats.yml
 
 groups:
-  - name: bosh-oracle-cpi-release
+  - name: bosh-oracle-cpi-dev-release
     jobs:
       - run-unittests
       - run-ocitests
       - build-candidate
       - run-bats
-      - build-final
 
 jobs:
   - name: run-unittests
@@ -150,45 +149,6 @@ jobs:
             - <<: *teardown-director
             - <<: *terraform-destroy
 
-  - name: build-final
-    serial_groups: [oci-resource-consumer]
-    serial: true
-    plan:
-      - aggregate:
-         - {trigger: false, get: dev-version-semver}
-         - {trigger: false, get: final-version-semver,   params: {bump: major}}
-         - {trigger: true, passed: [run-bats], get: cpi-release-src, resource: bosh-cpi-release-src}
-
-      - task: download-cpi
-        file: cpi-release-src/ci/tasks/download-cpi.yml
-        params:
-          oracle_tenancy:                 ((oracle-tenancy))
-          oracle_user:                    ((oracle-user))
-          oracle_region:                  ((oracle-region))
-          oracle_fingerprint:             ((oracle-fingerprint))
-          oracle_apikey:                  ((oracle-apikey.private_key))
-          oracle_namespace:               ((oracle-namespace))
-          oracle_bucket:                  ((cpi-dev-release-bucket))
-
-      - task: build-final-release
-        file: cpi-release-src/ci/tasks/build-final-release.yml
-        params:
-          host: ((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
-          region_name: ((oracle-region))
-          bucket: ((cpi-blobs-bucket))
-          access_key_id: ((oracle-s3-access-key-id))
-          secret_access_key: ((oracle-s3-secret-access-key))
-
-      - put: final-version-semver
-        params: {file: final-version-semver/version}
-
-      - put: final-release-cpi
-        params:
-          file: promoted/bosh-oracle-cpi-*.tgz
-
-      - put: bosh-cpi-release-publish
-        params: {repository: promoted/repo, rebase: true, tag_prefix: "v", tag: promoted/version}
-
 resource_types:
   - name: terraform
     type: docker-image
@@ -196,13 +156,6 @@ resource_types:
       repository: ((docker-repo-name))/oci-terraform-resource
 
 resources:
-  - name: bosh-cpi-release-publish
-    type: git
-    source:
-      uri: git@github.com:((github-org))/bosh-oracle-cpi-release.git
-      branch: ((cpi-release-branch))
-      private_key: ((github-private-key))
-
   - name: bosh-cpi-release-src
     type: git
     source:
@@ -230,17 +183,6 @@ resources:
        secret_access_key: ((oracle-s3-secret-access-key))
        private: true
 
-  - name: final-release-cpi
-    type: s3
-    source:
-       endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
-       region_name: ((oracle-region))
-       bucket: ((cpi-final-release-bucket))
-       regexp: bosh-oracle-cpi-(.*)\.tgz
-       access_key_id: ((oracle-s3-access-key-id))
-       secret_access_key: ((oracle-s3-secret-access-key))
-       private: true
-
   - name: oracle-ubuntu-stemcell
     type: s3
     source:
@@ -262,17 +204,6 @@ resources:
       region_name: ((oracle-region))
       endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
       initial_version:   1.0.0
-
-  - name: final-version-semver
-    type: semver
-    source:
-      key: current-final-version
-      bucket: ((version-semver-bucket-name))
-      access_key_id: ((oracle-s3-access-key-id))
-      secret_access_key: ((oracle-s3-secret-access-key))
-      region_name: ((oracle-region))
-      endpoint: https://((oracle-namespace)).compat.objectstorage.((oracle-region)).oraclecloud.com
-      initial_version: 1.0.0
 
   - name: fixture-env
     type: s3

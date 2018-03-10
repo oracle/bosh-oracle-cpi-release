@@ -3,7 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: dmutreja/oci-cli
+    repository: ((docker-repo-name))/oci-cli
     tag: "latest"
 inputs:
   - name: artifacts

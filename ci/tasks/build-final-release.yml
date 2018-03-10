@@ -3,12 +3,13 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: dmutreja/cpi-release-build-env
+    repository: ((docker-repo-name))/cpi-release-build-env
     tag: "latest"
 inputs:
+  - name: candidate
   - name: cpi-release-src
   - name: final-version-semver
 outputs:
-  - name: candidate
+  - name: promoted
 run:
   path: cpi-release-src/ci/tasks/build-final-release.sh
