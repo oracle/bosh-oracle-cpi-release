@@ -22,7 +22,7 @@ type OCIProperties struct {
 	CompartmentID string `json:"compartment"`
 
 	// Region name
-	Region string `json:"region, omitempty"`
+	Region string `json:"region"`
 
 	// Fingerprint of the User API key
 	Fingerprint string `json:"fingerprint"`

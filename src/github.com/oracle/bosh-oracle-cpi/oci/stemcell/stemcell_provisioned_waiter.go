@@ -38,9 +38,10 @@ func (w *imageAvailableWaiter) WaitFor(img *models.Image) error {
 			w.imageProvisionedHandler(img)
 			return true, nil
 
-		case models.ImageLifecycleStateDELETED,
-			models.ImageLifecycleStateDISABLED:
-			return false, fmt.Errorf("Image %s is either disabled or terminated", *img.ID)
+		case models.ImageLifecycleStateDELETED:
+			return false, fmt.Errorf("Image %s is deleted", *img.ID)
+		case models.ImageLifecycleStateDISABLED:
+			return false, fmt.Errorf("Image %s is disabled", *img.ID)
 		default:
 			return false, fmt.Errorf("Unknown image lifecycle state %s", *img.LifecycleState)
 

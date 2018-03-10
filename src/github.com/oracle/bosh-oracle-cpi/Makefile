@@ -36,7 +36,7 @@ clean:
 fmt:
 	gofmt -l -w .
 
-# Run linter with non-stric checking
+# Run linter with non-strict checking
 lint:
 	@echo ls -d */ | grep -v vendor | xargs -L 1 golint
 	ls -d */ | grep -v vendor | xargs -L 1 golint

@@ -22,6 +22,10 @@ func (fc *FakeConnector) Tenancy() string {
 	return "fake-tenancy"
 }
 
+func (fc *FakeConnector) Region() string {
+	return "fake-region"
+}
+
 func (fc *FakeConnector) CompartmentId() string {
 	return "fake-compartment-id"
 }
