@@ -1,3 +1,0 @@
-[submodule "bosh-oracle-cpi"]
-	path = src/github.com/oracle/bosh-oracle-cpi
-	url = ../bosh-oracle-cpi.git
