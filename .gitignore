@@ -19,3 +19,5 @@ ci/terraform/.terraform
 *~
 *#
 #*
+pkg/*
+bin/*
