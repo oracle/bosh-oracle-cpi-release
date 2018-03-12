@@ -24,12 +24,11 @@ ad=<%= properties['ad'] %>
 vcn=<%= properties['vcn'] %>
 subnet=<%= properties['subnet_name'] %>
 subnet2=<%= properties['subnet2_name'] || properties['subnet_name'] %>
-cpiUser=<%= properties['cpiUser'] || 'ubuntu' %>
 cpiPrivateKeyPath=<%= properties['cpiPrivateKeyPath'] || './cpikeys/id_rsa' %>
 cpiPublicKeyPath=<%= properties['cpiPublicKeyPath'] || './cpikeys/id_rsa.pub' %>
 userPublicKeyPath=<%= properties['userPublicKeyPath'] || './userkeys/id_rsa.pub' %>
-# Ubuntu image ubuntu14-stemcell-v9
-stemcellImage=<%= properties['stemcellImage'] || 'ocid1.image.oc1.phx.aaaaaaaaqqyosu5p7tidwhmywlnroqntmw5ka6q4kqvherv4sqvneku6be5q' %>
-stemcellImageSourceURI=<%= properties['stemcellImageSourceURI'] || 'https://objectstorage.us-phoenix-1.oraclecloud.com/p/37KVbIM7hSO9vJuO7cgUcUj9Ll4udobHOxLoTE7Y2tQ/n/cloudfoundry/b/stemcells/o/ubuntu14-stemcell-v9' %>
+# Pre-imported custom image sourced from bosh-oracle-kvm-ubuntu-trusty-go_agent-2001.22.img
+stemcellImage=<%= properties['stemcellImage'] || 'ocid1.image.oc1.phx.aaaaaaaafapqibxlbnpeq5nowaaoexsovxvtr7izo3756fmqfsjuusbb7tuq' %>
+stemcellImageSourceURI=<%= properties['stemcellImageSourceURI'] || 'https://objectstorage.us-phoenix-1.oraclecloud.com/p/aQfykkqUPaIOIW1_gh-GJk33EVpiOU1ubf6R1mzjDqc/n/cloudfoundry/b/images/o/bosh-oracle-kvm-ubuntu-trusty-go_agent-2001.22.img' %>
 logLevel=<%= properties['logLevel'] || 'DEBUG' %>
 usePublicIPForSSH=<%= properties['usePublicIPForSSH'] || 'true' %>

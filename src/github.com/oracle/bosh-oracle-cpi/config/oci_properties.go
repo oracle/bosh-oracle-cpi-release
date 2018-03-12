@@ -9,6 +9,8 @@ import (
 	"oracle/oracle-iaas-go.git/transport"
 )
 
+const stemcellUserName string = "vcap"
+
 // OCIProperties contains the properties for configuring
 // BOSH CPI for Oracle Cloud Infrastructure
 type OCIProperties struct {
@@ -33,9 +35,6 @@ type OCIProperties struct {
 	// CPIKeyfile is the path to the private key used by the CPI
 	// used for SSH connections
 	CpiKeyFile string `json:"cpikeyfile"`
-
-	// CpiUser is name of the user to use for CPI SSH connections
-	CpiUser string `json:"cpiuser"`
 
 	// UsePublicIPForSSH controls whether to use public or private IP
 	// of the target insatnce for establishing SSH connections
@@ -68,7 +67,6 @@ func (b OCIProperties) Validate() error {
 		"fingerprint": b.Fingerprint,
 		"apikeyfile":  b.APIKeyFile,
 		"compartment": b.CompartmentID,
-		"cpiuser":     b.CpiUser,
 		"cpikeyfile":  b.CpiKeyFile,
 	}); err != nil {
 		return err
@@ -112,7 +110,6 @@ func newSanitizedConfig(configFullPath string, b OCIProperties) OCIProperties {
 		Fingerprint:       b.Fingerprint,
 		APIKeyFile:        filepath.Join(dir, filepath.Base(b.APIKeyFile)),
 		CpiKeyFile:        filepath.Join(dir, filepath.Base(b.CpiKeyFile)),
-		CpiUser:           b.CpiUser,
 		UsePublicIPForSSH: b.UsePublicIPForSSH,
 		AuthorizedKeys:    b.AuthorizedKeys,
 		SSHTunnel:         b.SSHTunnel,
@@ -140,7 +137,7 @@ func (b OCIProperties) CpiSSHPublicKeyContent() (string, error) {
 
 // CpiSSHConfig returns the CPI ssh configuration
 func (b OCIProperties) CpiSSHConfig() SSHConfig {
-	return SSHConfig{b.CpiUser, b.CpiKeyFile, b.UsePublicIPForSSH}
+	return SSHConfig{stemcellUserName, b.CpiKeyFile, b.UsePublicIPForSSH}
 }
 
 func sanitizeSSHKey(key string) (string, error) {

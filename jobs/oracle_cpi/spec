@@ -43,9 +43,6 @@ properties:
     description: Fingerprint of the api signing key
   oci.cpikey:
     description: Private CPI SSH Key
-  oci.cpiuser:
-    description: First user provisioned in a VM
-    default: 'vcap'
 
 
   blobstore.provider:

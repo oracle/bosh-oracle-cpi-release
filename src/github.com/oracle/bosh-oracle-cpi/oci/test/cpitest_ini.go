@@ -21,7 +21,6 @@ type CpiTestIni struct {
 	VcnName                string `ini:"vcn" mapstructure:"VcnName"`
 	SubnetName             string `ini:"subnet" mapstructure:"SubnetName"`
 	Subnet2Name            string `ini:"subnet2" mapstructure:"Subnet2Name"`
-	CpiUser                string `ini:"cpiUser" mapstructure:"CpiUser"`
 	CpiPrivateKeyPath      string `ini:"cpiPrivateKeyPath" mapstructure:"CpiPrivateKeyPath"`
 	CpiPublicKeyPath       string `ini:"cpiPublicKeyPath" mapstructure:"CpiPublicKeyPath"`
 	UserPublicKeyPath      string `ini:"userPublicKeyPath" mapstructure:"UserPublicKeyPath"`

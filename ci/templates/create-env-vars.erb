@@ -22,7 +22,6 @@ apikey: |
     <%= line %>
 <% end -%>
 fingerprint: <%= properties['oracle_fingerprint'] %>
-provisioned_username: <%= properties['cpiUser'] || 'vcap' %>
 ssh_key: <%= File.read(properties['userPublicKeyPath']) %>
 region: <%= properties['oracle_region'] %>
 ad: <%= properties['ad'] %>
