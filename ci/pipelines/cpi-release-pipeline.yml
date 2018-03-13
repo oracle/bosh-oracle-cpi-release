@@ -280,7 +280,7 @@ resources:
     source:
        storage:
          bucket: ((oracle-fixture-env-bucket-name))
-         bucket_path: terraform-ci/
+         bucket_path: terraform-prod-ci/
          access_key_id: ((oracle-s3-access-key-id))
          secret_access_key: ((oracle-s3-secret-access-key))
          region_name: ((oracle-region))
