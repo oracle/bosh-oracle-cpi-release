@@ -3,15 +3,12 @@
   path: /releases/-
   value:
     name: bosh-oracle-cpi
-    version: 0.1
-    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/v6pTKDO3762dZoLpNQzwijyzZaE7XUBGxjUPi_VK8Sg/n/cloudfoundry/b/cpireleases/o/bosh-oracle-cpi-0+dev.16.tgz
-    sha1: 4d908a4016e86c744395783015bff8a7752f2029
+    url: file://((local_oracle_cpi_release))
 
 - type: replace
   path: /resource_pools/name=vms/stemcell?
   value:
-    url: https://objectstorage.us-phoenix-1.oraclecloud.com/p/qFzKHkdhfqdDH3BBFhcXWTjZ4VMvSnxB_5n7diUerWw/n/cloudfoundry/b/stemcells/o/light-oracle-ubuntu-stemcell-2000.13.tgz
-    sha1: 04300c151683fa297cea3ae46a4ec04ed978d0d5 
+    url: file://((local_oracle_light_stemcell))
 
 # Configure instance shapes 
 - type: replace
@@ -19,10 +16,6 @@
   value:
     availability_domain: ((ad))
     instance_shape: VM.Standard1.2
-
-- type: replace
-  path: /disk_pools/name=disks/cloud_properties?
-  value: {type: standard}
 
 # Configure VCN and subnet
 - type: replace
@@ -69,7 +62,6 @@
     apikey: ((apikey))
     cpikey: ((cpikeys.private_key))
     authorized_keys:
-       user: ((ssh_key))
        cpi: ((cpikeys.public_key))
 
 # Add CPI job

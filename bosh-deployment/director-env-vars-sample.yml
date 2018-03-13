@@ -1,25 +1,26 @@
 # Properties controlling BOSH director deployment
+director_name: sample-bosh-director
+local_oracle_cpi_release: /full/path/to/cpi/release.tgz
+local_oracle_light_stemcell: /full/path/to/light/stemcell.tgz
 # Tenancy
 tenancy: "ocid1.tenancy.oc1..."
-# Connect to OCI using this user. Specify the user OCID
+# User
 user: "ocid1.user.oc1..."
-# OCID of the compartment to deploy to
+# OCID of the compartment in which the director VM and disks will be created.
+# User specified above must have permissions to manage resources in this compartment
 compartment: "ocid1.compartment.oc1.."
-# VCN name, Subnet name,  Region name, and availability domain name
-# to create the director VM in
+# Region, VCN name, subnet name, and availability domain name in which the director VM should be created
 region: "us-phoenix-1"
-ad1: WZYX:PHX-AD-1
 vcn: "BoshDirectorVCN"
 subnet: "director-subnet-ad1"
+ad: WZYX:PHX-AD-1
+# CIDR range of the subnet listed above.
 internal_cidr: 10.0.1.0/24
 internal_gw: 10.0.1.1
 # Private IP that will be assigned to the BOSH director VM
 # Must fall within the subnet CIDR range above and must be available
 internal_ip: 10.0.1.XX
-# Contents of the public part of a SSH keypair that will be added to the provisioned user account.
-# Must conform to the ssh-rsa key format. Typically the public key is in ~/.ssh/id_rsa.pub
-ssh_key: ""
-#Fingerprint and contents of the API signing key
+#Fingerprint and contents of the API signing key associated with the User
 fingerprint:
 apikey: |
        -----BEGIN RSA PRIVATE KEY-----
@@ -29,4 +30,4 @@ apikey: |
        qIcj56P9+mehiKmglQ1Rlwo72hcc0zZAyBhPeZrR5EcsGp6/l6Le4/XIFFVRpqKu
        LZeO6W6RMUo4nWxZ/ZqgQi0QFguCG3SSqq00PKZcMUOvnJhJCIVo
        -----END RSA PRIVATE KEY-----
-director_name: sample-bosh-director
+
