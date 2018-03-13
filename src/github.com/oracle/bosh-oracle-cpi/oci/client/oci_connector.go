@@ -47,7 +47,7 @@ type connectorImpl struct {
 func NewConnector(c config.Cloud, logger boshlog.Logger) Connector {
 
 	return &connectorImpl{config: c, logger: logger,
-		coreService: nil, iamService: nil}
+		coreService:              nil, iamService: nil}
 }
 
 func (c *connectorImpl) Connect() error {
@@ -74,22 +74,7 @@ func (c *connectorImpl) CompartmentId() string {
 }
 
 func (c *connectorImpl) AuthorizedKeys() []string {
-	keys := []string{}
-	userKey, err := c.config.Properties.OCI.UserSSHPublicKeyContent()
-	if err != nil {
-		c.logger.Debug(logTag, "Ignored error while getting user key %v", err)
-	} else {
-		keys = append(keys, userKey)
-	}
-
-	cpiKey, err := c.config.Properties.OCI.CpiSSHPublicKeyContent()
-	if err != nil {
-		c.logger.Debug(logTag, "Ignored error while getting cpi key %v", err)
-	} else {
-		keys = append(keys, cpiKey)
-
-	}
-	return keys
+	return c.config.Properties.OCI.AuthorizedKeysContents()
 }
 
 func (c *connectorImpl) AgentOptions() registry.AgentOptions {

@@ -78,9 +78,8 @@ $GOPATH/src/github.com/oracle/bosh-oracle-cpi/Makefile has targets to run two ki
     | ad            | Name of the Avaialibilty Domain in the region
     | vcn           | Name of the VCN to use
     | subnet        | Name of the subnet in that VCN to use
-    | cpiUser       | Name of the provisioned user in the image. Used by CPI ssh to attach iscsi block volumes
-    | cpiPrivateKeyPath | Path to locally provisioned ssh private key
-    | cpiPublicKeyPath | Path to locally provisioned ssh public key
+    | cpiPrivateKeyPath | Path to locally provisioned ssh private key used by CPI ssh to attach iscsi block volumes
+    | cpiPublicKeyPath | Path to locally provisioned ssh public key used by CPI ssh to attach iscsi block volumes
     | userPublicKeyPath | (Optional) Public key to install when creating a new instance
     | stemcellImage | OCID of the stemcell image for creating new instances
 

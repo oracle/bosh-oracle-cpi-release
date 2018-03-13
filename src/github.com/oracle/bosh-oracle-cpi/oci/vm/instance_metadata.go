@@ -22,8 +22,8 @@ type MetadataEntry interface {
 type InstanceMetadata []MetadataEntry
 
 // UserData is CPI representation of user data expected by bosh-agent.
-// Bosh agent picks reads UserData from the metadata service configured on
-// the agent. It mirrors
+// Bosh agent reads UserData from the metadata service configured on
+// the agent. UserData mirrors
 // https://godoc.org/github.com/cloudfoundry/bosh-agent/infrastructure#UserDataContentsType
 type UserData struct {
 	Server   UserDataServerName        `json:"server"`

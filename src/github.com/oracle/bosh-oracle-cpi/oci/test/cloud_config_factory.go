@@ -25,7 +25,6 @@ func NewTestConfig(iniPath string, section string) (config.Cloud, CpiTestIni, er
 		Fingerprint:       ini.Fingerprint,
 		APIKeyFile:        absolutePath(iniPath, ini.KeyFile),
 		CpiKeyFile:        absolutePath(iniPath, ini.CpiPrivateKeyPath),
-		CpiUser:           ini.CpiUser,
 		UsePublicIPForSSH: ini.UsePublicIPForSSH,
 		AuthorizedKeys: config.AuthorizedKeys{
 			User: publicKeyFileContent(absolutePath(iniPath, ini.UserPublicKeyPath)),
@@ -59,4 +58,9 @@ func absolutePath(iniPath string, relativePath string) string {
 	}
 	basePath := filepath.Dir(iniPath)
 	return filepath.Join(basePath, relativePath)
+}
+
+func assetsDir() string {
+	dir, _ := os.Getwd()
+	return filepath.Join(dir, "assets")
 }
