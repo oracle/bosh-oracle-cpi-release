@@ -5,7 +5,7 @@ set -e
 deployment_dir="${PWD}/deployment"
 cpi_release_name="bosh-oracle-cpi"
 manifest_filename="director-manifest.yml"
-state_filename="director-manifest-state.json"
+state_filename="director-state.json"
 
 echo "Setting up artifacts..."
 cp ./candidate/*.tgz ${deployment_dir}/${cpi_release_name}.tgz

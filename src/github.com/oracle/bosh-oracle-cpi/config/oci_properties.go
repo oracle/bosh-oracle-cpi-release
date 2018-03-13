@@ -122,16 +122,16 @@ func newSanitizedConfig(configFullPath string, b OCIProperties) OCIProperties {
 func (b OCIProperties) TransportConfig(host string) transport.Config {
 
 	return transport.Config{Tenant: b.Tenancy, User: b.User,
-		Fingerprint: b.Fingerprint, Host: host, KeyFile: b.APIKeyFile}
+		Fingerprint:                b.Fingerprint, Host: host, KeyFile: b.APIKeyFile}
 }
 
 // UserSSHPublicKeyContent returns the configured ssh-rsa user public key
-func (b OCIProperties) UserSSHPublicKeyContent() (string, error) {
+func (b OCIProperties) UserSSHPublicKeyContent() string {
 	return sanitizeSSHKey(b.AuthorizedKeys.User)
 }
 
 // CpiSSHPublicKeyContent returns the configured cpi user's ssh-rsa public key
-func (b OCIProperties) CpiSSHPublicKeyContent() (string, error) {
+func (b OCIProperties) CpiSSHPublicKeyContent() string {
 	return sanitizeSSHKey(b.AuthorizedKeys.Cpi)
 }
 
@@ -140,6 +140,22 @@ func (b OCIProperties) CpiSSHConfig() SSHConfig {
 	return SSHConfig{stemcellUserName, b.CpiKeyFile, b.UsePublicIPForSSH}
 }
 
-func sanitizeSSHKey(key string) (string, error) {
-	return strings.TrimSuffix(strings.TrimSpace(key), "\n"), nil
+func sanitizeSSHKey(key string) string {
+	if key != "" {
+		return strings.TrimSuffix(strings.TrimSpace(key), "\n")
+	}
+	return key
+}
+
+func (b OCIProperties) AuthorizedKeysContents() []string {
+	keys := []string{}
+	userKey := b.UserSSHPublicKeyContent()
+	if userKey != "" {
+		keys = append(keys, userKey)
+	}
+	cpiKey := b.CpiSSHPublicKeyContent()
+	if cpiKey != "" {
+		keys = append(keys, cpiKey)
+	}
+	return keys
 }

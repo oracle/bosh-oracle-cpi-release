@@ -4,7 +4,7 @@ set -e
 
 deployment_dir="${PWD}/deployment"
 manifest_filename="director-manifest.yml"
-state_filename="director-manifest-state.json"
+state_filename="director-state.json"
 
 pushd ${deployment_dir}
 

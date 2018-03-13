@@ -59,3 +59,8 @@ func absolutePath(iniPath string, relativePath string) string {
 	basePath := filepath.Dir(iniPath)
 	return filepath.Join(basePath, relativePath)
 }
+
+func assetsDir() string {
+	dir, _ := os.Getwd()
+	return filepath.Join(dir, "assets")
+}

@@ -3,13 +3,16 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	fakesys "github.com/cloudfoundry/bosh-utils/system/fakes"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
-	"github.com/oracle/bosh-oracle-cpi/registry"
 	"os"
 	"path/filepath"
 	"testing"
+
+	fakesys "github.com/cloudfoundry/bosh-utils/system/fakes"
+
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+
+	"github.com/oracle/bosh-oracle-cpi/registry"
 )
 
 var apiKeyFile = fakeAPIKeyPath()
