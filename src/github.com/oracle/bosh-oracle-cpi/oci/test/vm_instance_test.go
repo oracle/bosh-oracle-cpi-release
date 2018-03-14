@@ -153,8 +153,9 @@ func Test_VmOpsAttachMultipleVnics(t *testing.T) {
 	defer deleteInstance()
 
 	icfg := state.DefaultInstanceConfiguration()
-	icfg.Network = append(icfg.Network, vm.NetworkConfiguration{VcnName: state.VCN(),
-		SubnetName: state.Subnet2()})
+	icfg.Network = append(icfg.Network,
+		vm.NetworkConfiguration{VcnName: state.VCN(),
+			SubnetName: state.Subnet2()})
 	in, err = creator.CreateInstance(icfg, vm.InstanceMetadata{})
 
 	if err != nil {
@@ -202,5 +203,6 @@ func updateInstance(t *testing.T, f *VMFixture) {
 	instance := f.Instance()
 	updater := vm.NewUpdater(f.Connector(), f.Logger())
 	err := updater.UpdateInstanceName(instance.ID(), "test-vm-renamed")
-	assertIsNil(t, err, fmt.Sprintf("Unexpected failure in updateInstance %v", err))
+	assertIsNil(t, err, fmt.Sprintf("Unexpected failure when updating instance %s.  Error = [%v]",
+		instance.ID(), err))
 }
