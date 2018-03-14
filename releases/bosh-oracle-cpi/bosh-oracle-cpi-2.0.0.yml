@@ -1,0 +1,21 @@
+name: bosh-oracle-cpi
+version: 2.0.0
+commit_hash: 7e7ae7f
+uncommitted_changes: false
+jobs:
+- name: oracle_cpi
+  version: bd8986a670e7dc503c9b8187988e08e47abcbf5f
+  fingerprint: bd8986a670e7dc503c9b8187988e08e47abcbf5f
+  sha1: 93a3b5ef20b3a88fb1527426d311f50877466c43
+packages:
+- name: bosh-oracle-cpi
+  version: 5c5ac4ef804f343fed7a8c0d452a326a683ec351
+  fingerprint: 5c5ac4ef804f343fed7a8c0d452a326a683ec351
+  sha1: 663d7357e234f1db88bd6e5e2b0485d0b153f1f1
+  dependencies:
+  - golang
+- name: golang
+  version: 4c951c57c964ec7efc745d52b1f6f114661721eb
+  fingerprint: 4c951c57c964ec7efc745d52b1f6f114661721eb
+  sha1: b13759623692ae8e3cd51a21eca73a929657d30e
+  dependencies: []
