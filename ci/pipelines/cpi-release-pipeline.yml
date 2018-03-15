@@ -205,7 +205,11 @@ resources:
     type: git
     source:
       uri: https://github.com/((github-org))/bosh-oracle-cpi-release.git
-      branch: ((cpi-release-branch)) 
+      branch: ((cpi-release-branch))
+      ignore_paths:
+        - .final_builds/**/*.yml
+        -  releases/**/*.yml
+
       username: ((github-user.username))
       password: ((github-user.password))
 
