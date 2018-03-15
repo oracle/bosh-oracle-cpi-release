@@ -14,6 +14,7 @@ dev_release_tarball=${pwd}/candidate/*.tgz
 #Outputs
 mkdir -p ${pwd}/promoted
 
+source ${src_repo}/ci/tasks/add-blobs.sh
 cp -r ${src_repo} promoted/repo
 
 release_artifact_path=${pwd}/promoted
@@ -40,6 +41,9 @@ EOF
 
   echo "Using BOSH CLI version..."
   bosh -v
+
+  # bosh add-blob
+  addGolangBlobToRelease .
 
   echo "Creating BOSH Oracle CPI Final Release..."
   bosh finalize-release ${dev_release_tarball}  --name ${cpi_release_name} --version ${semver} --force

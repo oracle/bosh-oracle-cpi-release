@@ -1,8 +1,8 @@
 ---
 final_name: bosh-oracle-cpi
-#blobstore:
-#  provider: local
-#  options:
-#    blobstore_path: /blobstore
 blobstore:
-  provider: s3
+  provider: local
+  options:
+    blobstore_path: /blobstore
+#blobstore:
+#  provider: s3
