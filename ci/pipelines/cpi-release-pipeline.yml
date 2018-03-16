@@ -199,7 +199,7 @@ resources:
     source:
       uri: git@github.com:((github-org))/bosh-oracle-cpi-release.git
       branch: ((cpi-release-branch))
-      private_key: ((github-private-key))
+      private_key: ((github-private-key.private_key))
 
   - name: bosh-cpi-release-src
     type: git
@@ -249,7 +249,7 @@ resources:
   - name: dev-version-semver
     type: semver
     source:
-      key: current-dev-version
+      key: current-cpi-version
       bucket: ((version-semver-bucket-name))
       access_key_id: ((oracle-s3-access-key-id))
       secret_access_key: ((oracle-s3-secret-access-key))
@@ -260,7 +260,7 @@ resources:
   - name: final-version-semver
     type: semver
     source:
-      key: current-final-version
+      key: current-cpi-version
       bucket: ((version-semver-bucket-name))
       access_key_id: ((oracle-s3-access-key-id))
       secret_access_key: ((oracle-s3-secret-access-key))
