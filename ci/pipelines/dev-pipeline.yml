@@ -187,7 +187,7 @@ resources:
   - name: dev-version-semver
     type: semver
     source:
-      key: current-dev-version
+      key: current-cpi-version
       bucket: ((version-semver-bucket-name))
       access_key_id: ((oracle-s3-access-key-id))
       secret_access_key: ((oracle-s3-secret-access-key))
