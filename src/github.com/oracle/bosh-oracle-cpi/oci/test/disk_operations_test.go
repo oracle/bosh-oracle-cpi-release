@@ -80,7 +80,7 @@ func Test_DiskOpsAttachDisk(t *testing.T) {
 	err = attacher.AttachVolumeToInstance(volume, instance)
 
 	if err != nil {
-		t.Fatalf("Attaching volume %v, %T", volume, err)
+		t.Fatalf("Attaching volume %v, %v", volume, err)
 	}
 	if !volume.IsAttached() {
 		t.Fail()

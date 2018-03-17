@@ -19,7 +19,7 @@ type sshCmdRunner struct {
 	runner       boshsys.CmdRunner
 }
 
-const cmdArgTemplate = "-o StrictHostKeyChecking=no %v@%v -i %s %s"
+const cmdArgTemplate = "-vvv -o StrictHostKeyChecking=no %v@%v -i %s %s"
 
 type SSHCmdResultHandler func(stdout string, stderr string) (retry bool, reasonToRetry string)
 
