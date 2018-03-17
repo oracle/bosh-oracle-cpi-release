@@ -25,20 +25,23 @@ func (t *terminator) TerminateInstance(instanceID string) error {
 
 	t.logger.Info(logTag, "Deleting VM %s...", instanceID)
 
-	// Find and detach any attached Vnics
+	// Find attached Vnics
 	ids, err := t.vnicAttachmentIDs(instanceID)
 	if err != nil {
 		t.logger.Info(logTag, "Ignoring error finding attached Vnics %s", oci.CoreModelErrorMsg(err))
 	}
-	t.detachAllVnics(ids)
 
-	// Delete instance
+	// Issue delete instance request
 	p := compute.NewTerminateInstanceParams().WithInstanceID(instanceID)
 	_, err = t.connector.CoreSevice().Compute.TerminateInstance(p)
 	if err != nil {
 		t.logger.Info(logTag, "Ignoring error deleting instance %s", oci.CoreModelErrorMsg(err))
 	}
 
+    // Ensure all VNICs detached
+	t.detachAllVnics(ids)
+
+	// Wait for instance to be deleted
 	waiter := instanceTerminatedWaiter{connector: t.connector, logger: t.logger, deletedHandler: func(_ string) {
 		t.logger.Info(logTag, "Deleted")
 	}}
@@ -72,8 +75,9 @@ func (t *terminator) detachAllVnics(attachmentIDs []string) {
 
 func (t *terminator) detachVnic(attachmentID string) error {
 
-	p := compute.NewDetachVnicParams().WithVnicAttachmentID(attachmentID)
-	_, err := t.connector.CoreSevice().Compute.DetachVnic(p)
-
-	return err
+	waiter := vnicDetachmentWaiter{logger: t.logger,
+		connector: t.connector,
+		detachedHandler: nil,
+	}
+	return waiter.WaitFor(attachmentID)
 }

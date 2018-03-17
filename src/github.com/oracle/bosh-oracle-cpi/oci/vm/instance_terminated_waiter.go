@@ -31,6 +31,7 @@ func (w *instanceTerminatedWaiter) WaitFor(ocid string) (err error) {
 		case "STARTING", "PROVISIONING", "CREATING_IMAGE", "STOPPING", "STOPPED", "TERMINATING":
 			return true, fmt.Errorf("Waiting. Current state %s", *instance.LifecycleState)
 		case "TERMINATED":
+			w.logger.Debug(logTag, "Reached TERMINATED state")
 			if w.deletedHandler != nil {
 				w.deletedHandler(ocid)
 			}
@@ -47,6 +48,5 @@ func (w *instanceTerminatedWaiter) WaitFor(ocid string) (err error) {
 		w.logger.Debug(logTag, "Error waiting for instance to reach TERMINATED state %v. Giving up", err)
 		return err
 	}
-	w.logger.Debug(logTag, "Reached TERMINATED state")
 	return nil
 }
