@@ -38,7 +38,7 @@ task-definitions:
     task: oci-tests
     file: cpi-release-src/ci/tasks/oci-tests.yml
     params:
-          TEST_SPEC: "Test_[Connect]"
+          TEST_SPEC: "Test_[^StemcellOps]"
 
 
   - &terraform-destroy
