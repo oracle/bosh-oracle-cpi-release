@@ -1,12 +1,12 @@
 package test
 
 import (
-	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/config"
+	"github.com/oracle/bosh-oracle-cpi/oci/client"
 
-	"oracle/oci/core/client/compute"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshsys "github.com/cloudfoundry/bosh-utils/system"
+	"oracle/oci/core/client/compute"
 	"path/filepath"
 	"strings"
 	"testing"

@@ -38,7 +38,7 @@ func (t *terminator) TerminateInstance(instanceID string) error {
 		t.logger.Info(logTag, "Ignoring error deleting instance %s", oci.CoreModelErrorMsg(err))
 	}
 
-    // Ensure all VNICs detached
+	// Ensure all VNICs detached
 	t.detachAllVnics(ids)
 
 	// Wait for instance to be deleted
@@ -76,7 +76,7 @@ func (t *terminator) detachAllVnics(attachmentIDs []string) {
 func (t *terminator) detachVnic(attachmentID string) error {
 
 	waiter := vnicDetachmentWaiter{logger: t.logger,
-		connector: t.connector,
+		connector:       t.connector,
 		detachedHandler: nil,
 	}
 	return waiter.WaitFor(attachmentID)

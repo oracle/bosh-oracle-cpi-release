@@ -3,11 +3,11 @@ package vm
 import (
 	"errors"
 	"fmt"
-	"time"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 	boshretry "github.com/cloudfoundry/bosh-utils/retrystrategy"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"oracle/oci/core/client/compute"
+	"time"
 )
 
 type vnicDetachmentWaiter struct {
