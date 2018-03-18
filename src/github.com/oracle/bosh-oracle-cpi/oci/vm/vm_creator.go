@@ -10,7 +10,7 @@ import (
 	"oracle/oci/core/models"
 )
 
-const logTag = "VMOperations"
+const logTag = "OCIVMOperations"
 
 type InstanceConfiguration struct {
 	ImageId string
