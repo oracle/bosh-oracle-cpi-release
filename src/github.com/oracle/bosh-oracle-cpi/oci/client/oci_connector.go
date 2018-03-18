@@ -47,7 +47,7 @@ type connectorImpl struct {
 func NewConnector(c config.Cloud, logger boshlog.Logger) Connector {
 
 	return &connectorImpl{config: c, logger: logger,
-		coreService:              nil, iamService: nil}
+		coreService: nil, iamService: nil}
 }
 
 func (c *connectorImpl) Connect() error {

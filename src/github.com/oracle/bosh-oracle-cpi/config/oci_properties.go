@@ -122,7 +122,7 @@ func newSanitizedConfig(configFullPath string, b OCIProperties) OCIProperties {
 func (b OCIProperties) TransportConfig(host string) transport.Config {
 
 	return transport.Config{Tenant: b.Tenancy, User: b.User,
-		Fingerprint:                b.Fingerprint, Host: host, KeyFile: b.APIKeyFile}
+		Fingerprint: b.Fingerprint, Host: host, KeyFile: b.APIKeyFile}
 }
 
 // UserSSHPublicKeyContent returns the configured ssh-rsa user public key
