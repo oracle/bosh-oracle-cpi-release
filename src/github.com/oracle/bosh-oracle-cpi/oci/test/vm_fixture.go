@@ -42,7 +42,7 @@ func (vf *VMFixture) Setup(t *testing.T) error {
 		})
 
 	if err != nil {
-		t.Fatalf("Error creating instance %v", err)
+		t.Fatal(err)
 	}
 	vf.instance = in
 	return nil
