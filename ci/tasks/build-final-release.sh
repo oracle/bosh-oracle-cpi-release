@@ -56,10 +56,12 @@ EOF
   echo "Built: ${tarball_path}"
   echo "sha1: " `cat ${tarball_sha}`
 
-  git add .
-  git config --global user.email bosh-build@oracle.com
-  git config --global user.name CI
-  git commit -m "BOSH Oracle CPI BOSH Release v${semver}"
+#  Don't commit .final_builds until bosh s3 client and OCI s3 blobstore are working correctly
+#
+#  git add .
+#  git config --global user.email bosh-build@oracle.com
+#  git config --global user.name CI
+#  git commit -m "BOSH Oracle CPI BOSH Release v${semver}"
 
 popd
 
