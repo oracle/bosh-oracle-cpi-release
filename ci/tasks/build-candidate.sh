@@ -5,7 +5,6 @@ set -e
 
 cpi_release_name="bosh-oracle-cpi"
 semver=`cat dev-version-semver/number`
-golang_ver=1.8.3
 
 
 pwd=`pwd`
