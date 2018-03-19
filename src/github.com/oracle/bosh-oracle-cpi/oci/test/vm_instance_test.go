@@ -8,6 +8,7 @@ import (
 	"github.com/oracle/bosh-oracle-cpi/oci/vm"
 	"github.com/oracle/bosh-oracle-cpi/registry"
 	"testing"
+	"sync"
 )
 
 type getIPsFunc func(client.Connector, boshlog.Logger) ([]string, error)
@@ -183,7 +184,7 @@ func Test_VmOpsUpdateInstanceName(t *testing.T) {
 	state.Setup(t)
 	defer state.TearDown(t)
 
-	updateInstance(t, state)
+	updateInstance(t, state, nil)
 }
 
 // Test_VmOpsUpdateMultipleInstancesConcurrently tests issue #21
@@ -193,12 +194,21 @@ func Test_VmOpsUpdateMultipleInstancesConcurrently(t *testing.T) {
 	state.Setup(t)
 	defer state.TearDown(t)
 
+	wg := sync.WaitGroup{}
 	for _, vf := range state.Fixtures() {
-		go updateInstance(t, vf)
+		wg.Add(1)
+		go updateInstance(t, vf, &wg)
 	}
+	wg.Wait()
 }
 
-func updateInstance(t *testing.T, f *VMFixture) {
+func updateInstance(t *testing.T, f *VMFixture, wg *sync.WaitGroup) {
+
+	defer func() {
+		if wg != nil {
+			wg.Done()
+		}
+	}()
 
 	instance := f.Instance()
 	updater := vm.NewUpdater(f.Connector(), f.Logger())
