@@ -37,7 +37,8 @@ func (n *NetworkConfiguration) subnetID(connector client.Connector) (string, err
 	}
 	for _, s := range response.Payload {
 		if s.DisplayName == n.SubnetName {
-			return *s.ID, nil
+			n.subnetId = *s.ID
+			return n.subnetId, nil
 		}
 	}
 	return "", fmt.Errorf("Unable to find ID of subnet %s", n.SubnetName)
