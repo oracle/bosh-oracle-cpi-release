@@ -8,10 +8,18 @@ var DiscriminatorTypeValues = map[string]string{
 
 	"AttachIScsiVolumeDetails":                "iscsi",
 	"IScsiVolumeAttachment":                   "iscsi",
+
 	"DhcpDnsOption":                           "DomainNameServer",
 	"DhcpSearchDomainOption":                  "SearchDomain",
+
 	"ExportImageViaObjectStorageTupleDetails": "objectStorageTuple",
 	"ExportImageViaObjectStorageUriDetails":   "objectStorageUri",
 	"ImageSourceViaObjectStorageTupleDetails": "objectStorageTuple",
 	"ImageSourceViaObjectStorageUriDetails":   "objectStorageUri",
+
+	"InstanceSourceViaBootVolumeDetails":     "bootVolume",
+	"InstanceSourceViaImageDetails": "image",
+
+	"VolumeSourceFromVolumeBackupDetails": "volumeBackup",
+	"VolumeSourceFromVolumeDetails": "volume",
 }

@@ -7,8 +7,8 @@ import (
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 	"github.com/oracle/bosh-oracle-cpi/oci/vm"
 	"github.com/oracle/bosh-oracle-cpi/registry"
-	"testing"
 	"sync"
+	"testing"
 )
 
 type getIPsFunc func(client.Connector, boshlog.Logger) ([]string, error)
