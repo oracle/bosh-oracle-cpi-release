@@ -79,17 +79,17 @@ func (cv *creator) buildLaunchInstanceParams(icfg InstanceConfiguration, md Inst
 	ad := cv.location.AvailabilityDomain()
 	cid := cv.location.CompartmentID()
 
-	details := models.LaunchInstanceDetails{
+	details := &models.LaunchInstanceDetails{
 		AvailabilityDomain: &ad,
 		DisplayName:        icfg.Name,
 		CompartmentID:      &cid,
 		Shape:              &icfg.Shape,
-		ImageID:            &icfg.ImageId,
 		CreateVnicDetails:  primaryVnic,
+		ImageID:            icfg.ImageId,
 	}
 	details.Metadata = md.AsMap()
 
-	return req.WithLaunchInstanceDetails(&details)
+	return req.WithLaunchInstanceDetails(details)
 }
 
 func extractMsgFromError(err error) string {
@@ -107,7 +107,7 @@ func (cv *creator) logLaunchingInstanceDebugMsg(p *compute.LaunchInstanceParams)
 		p.LaunchInstanceDetails.DisplayName,
 		*p.LaunchInstanceDetails.Shape,
 		*p.LaunchInstanceDetails.CompartmentID,
-		*p.LaunchInstanceDetails.ImageID,
+		p.LaunchInstanceDetails.ImageID,
 	}
 	if p.LaunchInstanceDetails.CreateVnicDetails != nil {
 		fmtStr += "Subnet:%s, IP:%s\n"

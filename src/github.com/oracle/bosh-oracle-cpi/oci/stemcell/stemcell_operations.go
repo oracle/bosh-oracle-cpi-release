@@ -27,16 +27,17 @@ func (so stemcellOperations) CreateStemcell(sourceURI string, customImageName st
 
 	cid := so.connector.CompartmentId()
 
-	ci := models.CreateImageDetails{
+	imageURI := &models.ImageSourceViaObjectStorageURIDetails{}
+	imageURI.SetSourceURI(&sourceURI)
+
+	ci := &models.CreateImageDetails{
 		CompartmentID: &cid,
 		DisplayName:   customImageName,
-		ImageSourceDetails: &models.ImageSourceViaObjectStorageURIDetails{
-			SourceURI: &sourceURI,
-		},
 	}
+	ci.SetImageSourceDetails(imageURI)
 
 	cs := so.connector.CoreSevice()
-	p := compute.NewCreateImageParams().WithCreateImageDetails(&ci)
+	p := compute.NewCreateImageParams().WithCreateImageDetails(ci)
 	ok, err := cs.Compute.CreateImage(p)
 
 	if err != nil {
