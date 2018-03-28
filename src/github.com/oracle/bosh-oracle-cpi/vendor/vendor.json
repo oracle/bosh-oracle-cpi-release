@@ -408,16 +408,16 @@
 			"revisionTime": "2018-03-15T20:20:44Z"
 		},
 		{
-			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"checksumSHA1": "9jjO5GjLa0XF/nfWihF02RoH4qc=",
 			"path": "golang.org/x/net/context",
-			"revision": "84f0e6f92b10139f986b1756e149a7d9de270cdc",
-			"revisionTime": "2017-05-12T21:27:43Z"
+			"revision": "b1a2d6e8c8b5fc8f601ead62536f02a8e1b6217d",
+			"revisionTime": "2016-12-10T00:34:51Z"
 		},
 		{
 			"checksumSHA1": "WHc3uByvGaMcnSoI21fhzYgbOgg=",
 			"path": "golang.org/x/net/context/ctxhttp",
-			"revision": "84f0e6f92b10139f986b1756e149a7d9de270cdc",
-			"revisionTime": "2017-05-12T21:27:43Z"
+			"revision": "b1a2d6e8c8b5fc8f601ead62536f02a8e1b6217d",
+			"revisionTime": "2016-12-10T00:34:51Z"
 		},
 		{
 			"checksumSHA1": "VrzPJyWI6disCgYuVEQzkjqUsJk=",
@@ -517,47 +517,44 @@
 			"revisionTime": "2017-02-08T14:18:51Z"
 		},
 		{
-			"checksumSHA1": "bYbSTUumgKnRXXGJHawo4D26aMs=",
+			"checksumSHA1": "Ksl2DOmdrvjebXfHJdfV39tJYnI=",
 			"path": "oracle/oci/core/client",
 			"revision": ""
 		},
 		{
-			"checksumSHA1": "EKBtbNjCsVLIdsBJPhB75EqMRxk=",
+			"checksumSHA1": "rq6cG1PmVSFJJKZ52CO+5bTJv8o=",
 			"path": "oracle/oci/core/client/blockstorage",
 			"revision": ""
 		},
 		{
-			"checksumSHA1": "ta9RUh1TAMb63mfoDf0LE8R9BQA=",
+			"checksumSHA1": "C862M0kkdiibVFi4gODsFPJTMjs=",
 			"path": "oracle/oci/core/client/compute",
 			"revision": ""
 		},
 		{
-			"checksumSHA1": "mSObw8dkamuiKO4btHz5g6Achr4=",
+			"checksumSHA1": "FYh6frQ15manAClADNxeYxJx3+E=",
 			"path": "oracle/oci/core/client/virtual_network",
 			"revision": ""
 		},
 		{
-			"checksumSHA1": "+oNTBNgghsO1Mzlj4Uz/miQSme8=",
+			"checksumSHA1": "azdhNH1h5EfcOTghzo3misv1Y1k=",
 			"path": "oracle/oci/core/models",
 			"revision": ""
 		},
 		{
 			"checksumSHA1": "kZdYzWsT1ulI2xCljBTb8mRtRfY=",
 			"path": "oracle/oci/identity/client",
-			"revision": "4b2ae2a64580d74149dc5a6528f9a62677bd326a",
-			"revisionTime": "2017-09-21T06:49:22Z"
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "MJYG3PDH51T01hHJGmPIv2KMdPI=",
 			"path": "oracle/oci/identity/client/identity",
-			"revision": "4b2ae2a64580d74149dc5a6528f9a62677bd326a",
-			"revisionTime": "2017-09-21T06:49:22Z"
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "M3/lDDK0rfe9G4HFCeBSpxnWFJ4=",
 			"path": "oracle/oci/identity/models",
-			"revision": "4b2ae2a64580d74149dc5a6528f9a62677bd326a",
-			"revisionTime": "2017-09-21T06:49:22Z"
+			"revision": ""
 		},
 		{
 			"checksumSHA1": "6A6Vh7XE79NL6OmMeYh5beBxo+g=",

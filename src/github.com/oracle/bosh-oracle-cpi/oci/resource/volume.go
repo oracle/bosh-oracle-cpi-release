@@ -101,9 +101,9 @@ func (v *Volume) EnsureAttached(c client.Connector, l boshlog.Logger,
 }
 
 func (v *Volume) SetAttachment(a *models.IScsiVolumeAttachment) {
-	v.attachmentIQN = *a.Iqn
-	v.attachmentIP = *a.IPV4
-	v.attachmentPort = *a.Port
+	v.attachmentIQN = *a.Iqn()
+	v.attachmentIP = *a.IPV4()
+	v.attachmentPort = *a.Port()
 	v.attachmentID = *a.ID()
 }
 

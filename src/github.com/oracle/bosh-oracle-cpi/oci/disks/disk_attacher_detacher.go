@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	boshlog "github.com/cloudfoundry/bosh-utils/logger"
+	"github.com/oracle/bosh-oracle-cpi/oci"
 	"github.com/oracle/bosh-oracle-cpi/oci/client"
 	"github.com/oracle/bosh-oracle-cpi/oci/resource"
 	"oracle/oci/core/client/compute"
@@ -22,13 +23,14 @@ func NewAttacherDetacher(c client.Connector, l boshlog.Logger, adm IscsiNodeAdmi
 
 func (ad *diskAttacherDetacher) AttachVolumeToInstance(v *resource.Volume, in *resource.Instance) error {
 
-	var details models.AttachVolumeDetails
-	details = &models.AttachIScsiVolumeDetails{}
+	details := &models.AttachIScsiVolumeDetails{}
 
 	id := in.ID()
 	vid := v.ID()
 	details.SetInstanceID(&id)
 	details.SetVolumeID(&vid)
+	details.SetType(details.Type())
+	details.SetDisplayName("bosh-disk-attachment")
 
 	ad.logger.Debug(diskOperationsLogTag, "Attaching Volume %s", vid)
 
@@ -36,8 +38,7 @@ func (ad *diskAttacherDetacher) AttachVolumeToInstance(v *resource.Volume, in *r
 	res, err := ad.connector.CoreSevice().Compute.AttachVolume(req)
 
 	if err != nil {
-		ad.logger.Error(diskOperationsLogTag, "Error attaching volume %v", err)
-		return err
+		return fmt.Errorf("Error attaching volume %s. Reason: %s", vid, oci.CoreModelErrorMsg(err))
 	}
 	attachment := res.Payload
 	iscsi, ok := attachment.(*models.IScsiVolumeAttachment)
@@ -49,7 +50,6 @@ func (ad *diskAttacherDetacher) AttachVolumeToInstance(v *resource.Volume, in *r
 		ad.logger.Error(diskOperationsLogTag, "Error attaching volume %v", err)
 		return err
 	}
-
 	return ad.connectAttachment(v)
 }
 
